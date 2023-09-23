@@ -1,38 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:hostmi/api/providers/auth_provider.dart';
+import 'package:hostmi/api/providers/hostmi_provider.dart';
 import 'package:hostmi/api/providers/locale_provider.dart';
 import 'package:hostmi/routes.dart';
-import 'package:hostmi/ui/pages/choice_page/choice_page.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hostmi/utils/app_color.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'api/constants/roles.dart';
 
 void main() async {
-  //Initializing hive store
+  Supabase client = await Supabase.initialize(
+    url: 'https://rwwurjrdtxmszqpwpocx.supabase.co',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3d3VyanJkdHhtc3pxcHdwb2N4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTM5MjI3MTUsImV4cCI6MjAwOTQ5ODcxNX0.UebMujaHkwjvN30VEmt_2nBDm2DLW4OdWJb02Hf64OY',
+  );
+
   await initHiveForFlutter();
-
-  final _httpLink = HttpLink(
-    'http://127.0.0.1:8000/api/',
-  );
-
-  final _authLink = AuthLink(getToken: () => 'JWT dggfgg');
-  Link _link = _authLink.concat(_httpLink);
-
-  final ValueNotifier<GraphQLClient> client = ValueNotifier(
-    GraphQLClient(
-      link: _link,
-      cache: GraphQLCache(store: HiveStore()),
-    ),
-  );
+  Hive.registerAdapter(RoleAdapter());
+  await Hive.openBox("hostmiLocalDatabase");
 
   runApp(
-      MultiProvider(
+    MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => HostmiProvider()),
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
       ],
-      child: const HostMi()));
+      child: const HostMi(),
+    ),
+  );
 }
 
 class HostMi extends StatelessWidget {
@@ -80,7 +78,7 @@ class HostMi extends StatelessWidget {
             fontFamily: 'Roboto',
           ),
         ),
-        bottomAppBarTheme: BottomAppBarTheme(color: AppColor.grey),
+        bottomAppBarTheme: const BottomAppBarTheme(color: AppColor.grey),
       ),
       debugShowCheckedModeBanner: false,
     );

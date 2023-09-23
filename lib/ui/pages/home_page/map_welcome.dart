@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hostmi/ui/pages/ball_loading_page.dart';
 import 'package:hostmi/ui/pages/home_page/map_search_delegate.dart';
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hostmi/utils/app_color.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
+//import 'package:flutter_map/flutter_map.dart';
+//import 'package:latlong2/latlong.dart';
 
 class MapWelcome extends StatefulWidget {
   const MapWelcome({Key? key}) : super(key: key);
@@ -16,7 +18,7 @@ class MapWelcome extends StatefulWidget {
 }
 
 class _MapWelcomeState extends State<MapWelcome> {
-  final MapController _mapController = MapController();
+  //final MapController _mapController = MapController();
   final List<LatLng> _points = [];
   LatLng? _center;
   final bool _isDrawable = false;
@@ -48,12 +50,12 @@ class _MapWelcomeState extends State<MapWelcome> {
         Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
         setState(() {
           _center = LatLng(position.latitude, position.longitude);
-          _mapController.move(_center!, _zoom);
+          //_mapController.move(_center, _zoom);
         });
       }
     }
     else{
-      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
       setState(() {
         _center = LatLng(position.latitude, position.longitude);
       });
@@ -121,11 +123,8 @@ class _MapWelcomeState extends State<MapWelcome> {
                         color: Colors.white,
                         child: ListTile(
                           onTap: () async {
-                            final String? selected = await showSearch<String>(
-                              context: context,
-                              delegate: _delegate,
-                            );
-                            if (selected != null) {}
+                            context.go("/map/search-place");
+
                           },
                           style: ListTileStyle.list,
                           leading: const Icon(Icons.search),
@@ -157,7 +156,7 @@ class _MapWelcomeState extends State<MapWelcome> {
                 ),
               ),
               Expanded(
-                  child: FlutterMap(
+                  child: /*FlutterMap(
                 mapController: _mapController,
                 options: MapOptions(
                     center: _center,
@@ -244,11 +243,11 @@ class _MapWelcomeState extends State<MapWelcome> {
                     ],
                   )
                 ],
-              )
-                  /*GoogleMap(
+              )*/
+                  GoogleMap(
                     initialCameraPosition: CameraPosition(
-                        target: LatLng(12.253609, -2.378845), zoom: 1.0),
-                  ),*/
+                        target: _center!, zoom: _zoom),
+                  ),
                   ),
             ],
           ),

@@ -4,6 +4,7 @@ import 'package:hostmi/ui/pages/choice_page/choice_page.dart';
 import 'package:hostmi/ui/pages/create_page.dart';
 import 'package:hostmi/ui/pages/filter_page.dart';
 import 'package:hostmi/ui/pages/home_page/map_page.dart';
+import 'package:hostmi/ui/pages/home_page/search_place.dart';
 import 'package:hostmi/ui/pages/language_page/language_page.dart';
 import 'package:hostmi/ui/pages/list_page.dart';
 import 'package:hostmi/ui/pages/login_page.dart';
@@ -27,12 +28,17 @@ Map<String, WidgetBuilder> getRoutes(BuildContext context) {
     CreatePage.path: (BuildContext context) => const CreatePage(),
   };
 }
+
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorMapKey = GlobalKey<NavigatorState>(debugLabel: 'shellMap');
-final _shellNavigatorListKey = GlobalKey<NavigatorState>(debugLabel: 'shellList');
-final _shellNavigatorMessageKey = GlobalKey<NavigatorState>(debugLabel: 'shellList');
-final _shellNavigatorPublishKey = GlobalKey<NavigatorState>(debugLabel: 'shellList');
-final _shellNavigatorMenuKey = GlobalKey<NavigatorState>(debugLabel: 'shellList');
+final _shellNavigatorListKey =
+    GlobalKey<NavigatorState>(debugLabel: 'shellList');
+final _shellNavigatorMessageKey =
+    GlobalKey<NavigatorState>(debugLabel: 'shellList');
+final _shellNavigatorPublishKey =
+    GlobalKey<NavigatorState>(debugLabel: 'shellList');
+final _shellNavigatorMenuKey =
+    GlobalKey<NavigatorState>(debugLabel: 'shellList');
 
 class HostMiRouter {
   // private navigators
@@ -52,15 +58,15 @@ class HostMiRouter {
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginPage(),
-      ),GoRoute(
-        path: '/phone-login',
-        builder: (context, state) => const LoginPhoneNumberPage(),
-        routes: [
-          GoRoute(path: "code",
-          builder: (context, state) => const VerifyPhoneNumberScreen()
-          )
-        ]
       ),
+      GoRoute(
+          path: '/phone-login',
+          builder: (context, state) => const LoginPhoneNumberPage(),
+          routes: [
+            GoRoute(
+                path: "code",
+                builder: (context, state) => const VerifyPhoneNumberScreen())
+          ]),
       GoRoute(
         path: '/register',
         builder: (context, state) => const RegisterPage(),
@@ -83,11 +89,15 @@ class HostMiRouter {
                 routes: [
                   GoRoute(
                     path: 'main',
-                    builder: (context, state) => MapPage(),
+                    builder: (context, state) => const MapPage(),
                   ),
                   GoRoute(
                     path: 'filter',
                     builder: (context, state) => const FilterPage(),
+                  ),
+                  GoRoute(
+                    path: 'search-place',
+                    builder: (context, state) => SearchPlace(),
                   ),
                 ],
               ),
@@ -105,7 +115,7 @@ class HostMiRouter {
                 routes: [
                   GoRoute(
                     path: 'details',
-                    builder: (context, state) =>  ProductDetailsScreen(),
+                    builder: (context, state) => ProductDetailsScreen(),
                   ),
                 ],
               ),
@@ -123,7 +133,7 @@ class HostMiRouter {
                 routes: [
                   GoRoute(
                     path: 'chat',
-                    builder: (context, state) =>  ChatPage(),
+                    builder: (context, state) => const ChatPage(),
                   ),
                 ],
               ),
@@ -141,7 +151,7 @@ class HostMiRouter {
                 routes: [
                   GoRoute(
                     path: 'no-page',
-                    builder: (context, state) =>  const NoPage(),
+                    builder: (context, state) => const NoPage(),
                   ),
                 ],
               ),
@@ -159,11 +169,11 @@ class HostMiRouter {
                 routes: [
                   GoRoute(
                     path: 'profile',
-                    builder: (context, state) =>  ProfilePage(),
+                    builder: (context, state) => ProfilePage(),
                   ),
                   GoRoute(
                     path: 'language',
-                    builder: (context, state) =>  LanguagePage(),
+                    builder: (context, state) => const LanguagePage(),
                   ),
                 ],
               ),

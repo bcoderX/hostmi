@@ -26,6 +26,8 @@ class AddNewPropertyAddressScreen extends StatelessWidget {
 
   TextEditingController zipcodeController = TextEditingController();
 
+  AddNewPropertyAddressScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(

@@ -3,7 +3,7 @@
 import 'package:country_pickers/country.dart';
 import 'package:country_pickers/utils/utils.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hostmi/api/providers/auth_provider.dart';
+import 'package:hostmi/api/providers/hostmi_provider.dart';
 import 'package:hostmi/core/utils/color_constant.dart';
 import 'package:hostmi/ui/pages/ball_loading_page.dart';
 import 'package:hostmi/ui/pages/login_page.dart';
@@ -77,7 +77,7 @@ class _LoginPhoneNumberPageState extends State<LoginPhoneNumberPage> {
                                 debugPrint(selectedCountry.phoneCode +
                                     phoneNumberController.text);
                                 //context.go("/phone-login/code/");
-                                context.read<AuthProvider>().sendOTP(
+                                context.read<HostmiProvider>().sendOTP(
                                       phoneNumber: selectedCountry.phoneCode +
                                           phoneNumberController.text,
                                     );

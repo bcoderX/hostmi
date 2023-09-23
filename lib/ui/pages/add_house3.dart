@@ -16,7 +16,7 @@ class AddHouse3 extends StatefulWidget {
 }
 
 class _AddHouse3State extends State<AddHouse3> {
-  final SizedBox _spacer = new SizedBox(
+  final SizedBox _spacer = const SizedBox(
     height: 25.0,
   );
   @override
@@ -42,10 +42,10 @@ class _AddHouse3State extends State<AddHouse3> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                   Text(
+                  Text(
                     AppLocalizations.of(context)!.features,
-                    style:
-                        const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16.0),
                   ),
                   Container(
                     margin: const EdgeInsets.symmetric(
@@ -58,7 +58,7 @@ class _AddHouse3State extends State<AddHouse3> {
                       borderRadius: BorderRadius.circular(5.0),
                       color: AppColor.primary,
                     ),
-                    child:  Center(
+                    child: Center(
                       child: Text(
                         "${AppLocalizations.of(context)!.step} 3/3",
                         style: const TextStyle(
@@ -157,21 +157,25 @@ class _AddHouse3State extends State<AddHouse3> {
                 ],
               ),
               _spacer,
-              Container(width: double.infinity, height: 1, color: AppColor.placeholderGrey,),
+              Container(
+                width: double.infinity,
+                height: 1,
+                color: AppColor.placeholderGrey,
+              ),
               _spacer,
-               LabeledField(
+              LabeledField(
                 label: AppLocalizations.of(context)!.description,
                 placeholder: AppLocalizations.of(context)!.houseDescHint,
                 maxLines: 4,
               ),
               _spacer,
-               LabeledField(
+              LabeledField(
                 label: AppLocalizations.of(context)!.accessConditions,
                 placeholder: AppLocalizations.of(context)!.accessConditionsHint,
                 maxLines: 4,
               ),
               _spacer,
-               LabeledField(
+              LabeledField(
                 label: AppLocalizations.of(context)!.nearbyPlaces,
                 placeholder: AppLocalizations.of(context)!.nearbyPlacesHint,
                 maxLines: 4,
@@ -183,25 +187,27 @@ class _AddHouse3State extends State<AddHouse3> {
               ),*/
               _spacer,
               MaterialButton(
-                  color: AppColor.primary,
-                  padding: const EdgeInsets.symmetric(vertical: 20.0),
-                  minWidth: double.infinity,
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (BuildContext context) {
-                          return GearsLoadingPage(
-                              page: const UnderVerificationPage(page: LandlordPage()
-                              ), operationTitle: AppLocalizations.of(context)!.savingHouse,
-                          );
-                        },
-                      ),
-                    );
-                  },
-                  child:  Text(
-                    AppLocalizations.of(context)!.publishNow,
-                    style: const TextStyle(color: AppColor.grey),
-                  ),
+                color: AppColor.primary,
+                padding: const EdgeInsets.symmetric(vertical: 20.0),
+                minWidth: double.infinity,
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) {
+                        return GearsLoadingPage(
+                          page:
+                              const UnderVerificationPage(page: LandlordPage()),
+                          operationTitle:
+                              AppLocalizations.of(context)!.savingHouse,
+                        );
+                      },
+                    ),
+                  );
+                },
+                child: Text(
+                  AppLocalizations.of(context)!.publishNow,
+                  style: const TextStyle(color: AppColor.grey),
+                ),
               ),
             ],
           ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hostmi/api/providers/auth_provider.dart';
+import 'package:hostmi/api/providers/hostmi_provider.dart';
 import 'package:hostmi/ui/pages/gears_loading_page.dart';
 import 'package:hostmi/ui/pages/landlord_page.dart';
 import 'package:hostmi/ui/pages/success_page.dart';

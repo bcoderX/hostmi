@@ -4,7 +4,7 @@ import 'package:hostmi/api/schemas/authentication_schema.dart';
 import 'package:hostmi/api/schemas/page_schema.dart';
 import 'package:hostmi/api/utils/end_point.dart';
 
-class AuthProvider with ChangeNotifier {
+class HostmiProvider with ChangeNotifier {
   bool _isLoading = false;
   String _response = '';
   dynamic _list = [];
@@ -18,9 +18,9 @@ class AuthProvider with ChangeNotifier {
   bool _isCreated = false;
 
   void queryFunc(bool isLocal) async {
-    ValueNotifier<GraphQLClient> _client = _point.getClient();
+    ValueNotifier<GraphQLClient> client = _point.getClient();
 
-    QueryResult result = await _client.value.query(
+    QueryResult result = await client.value.query(
       QueryOptions(
         document: gql(AuthenticationSchema.sendOTP),
         fetchPolicy: isLocal == true ? null : FetchPolicy.networkOnly,

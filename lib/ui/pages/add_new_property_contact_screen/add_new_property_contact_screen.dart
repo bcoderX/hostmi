@@ -15,6 +15,8 @@ class AddNewPropertyContactScreen extends StatelessWidget {
 
   TextEditingController phoneNumberController = TextEditingController();
 
+  AddNewPropertyContactScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -88,7 +90,7 @@ class AddNewPropertyContactScreen extends StatelessWidget {
                               onTap: (Country country) {
                                 selectedCountry = country;
                               })),
-                      Container(
+                      SizedBox(
                           width: double.maxFinite,
                           child: Container(
                               width: getHorizontalSize(327),

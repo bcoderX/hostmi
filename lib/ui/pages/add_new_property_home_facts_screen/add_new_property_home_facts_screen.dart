@@ -218,8 +218,8 @@ class AddNewPropertyHomeFactsScreen extends StatelessWidget {
                                           focusNode: FocusNode(),
                                           controller: inputTwoController,
                                           hintText: "0",
-                                          margin: getMargin(top: 7))
-                                    ]),
+                                          margin: getMargin(top: 7),),
+                                    ],),
                                 Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,

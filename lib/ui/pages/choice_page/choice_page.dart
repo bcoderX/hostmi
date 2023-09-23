@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hostmi/ui/pages/ball_loading_page.dart';
-import 'package:hostmi/ui/pages/login_phone_number_page.dart';
-import 'package:hostmi/ui/pages/main_page.dart';
-import 'package:hostmi/ui/pages/register_page.dart';
+import 'package:hostmi/api/hostmi_local_database/hostmi_local_database.dart';
 import 'package:hostmi/ui/widgets/rounded_button.dart';
-import 'package:hostmi/ui/widgets/square_field.dart';
 import 'package:hostmi/utils/app_color.dart';
 import 'package:hostmi/utils/app_text_size.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../../../api/constants/roles.dart';
 
 class ChoicePage extends StatefulWidget {
   const ChoicePage({Key? key}) : super(key: key);
@@ -54,6 +52,7 @@ class _ChoicePageState extends State<ChoicePage> {
                                     .lookingForRental,
                                 textColor: AppColor.white,
                                 onTap: () {
+                                  setRole(Role.TENANT);
                                   context.go("/map");
                                 },
                               )),
@@ -66,6 +65,7 @@ class _ChoicePageState extends State<ChoicePage> {
                               text: AppLocalizations.of(context)!.wantToPublish,
                               textColor: AppColor.primary,
                               onTap: () {
+                                setRole(Role.DEVELOPER);
                                 context.go("/login");
                               },
                             ),
