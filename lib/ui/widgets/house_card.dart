@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hostmi/api/models/house_model.dart';
-import 'package:hostmi/ui/pages/ball_loading_page.dart';
+import 'package:hostmi/ui/screens/ball_loading_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:hostmi/ui/pages/house_details.dart';
-import 'package:hostmi/ui/pages/login_page.dart';
-import 'package:hostmi/ui/pages/product_details_screen/product_details_screen.dart';
+import 'package:hostmi/ui/screens/house_details.dart';
+import 'package:hostmi/ui/screens/login_screen.dart';
+import 'package:hostmi/ui/screens/product_details_screen/product_details_screen.dart';
 import 'package:hostmi/utils/app_color.dart';
 
 class HouseCard extends StatefulWidget {
@@ -26,8 +26,9 @@ class _HouseCardState extends State<HouseCard> {
       child: Column(children: [
         Column(mainAxisSize: MainAxisSize.min, children: [
           GestureDetector(
-            onTap: (){
-              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context){
+            onTap: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (BuildContext context) {
                 return ProductDetailsScreen();
               }));
             },
@@ -68,7 +69,7 @@ class _HouseCardState extends State<HouseCard> {
                     ),
                     Row(
                       mainAxisSize: MainAxisSize.min,
-                      children:  [
+                      children: [
                         Icon(
                           Icons.location_on,
                           color: AppColor.primary,
@@ -76,9 +77,9 @@ class _HouseCardState extends State<HouseCard> {
                         IconButton(
                           icon: Icon(Icons.favorite_outline),
                           color: AppColor.primary,
-                          onPressed: (){
-                            Navigator.of(context, rootNavigator: true).pushReplacement(
-
+                          onPressed: () {
+                            Navigator.of(context, rootNavigator: true)
+                                .pushReplacement(
                               MaterialPageRoute(
                                 builder: (BuildContext context) {
                                   return const LoginPage();
@@ -95,7 +96,7 @@ class _HouseCardState extends State<HouseCard> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                     Text(
+                    Text(
                       "2 ${AppLocalizations.of(context)!.bedsAbbreviation} 2 ${AppLocalizations.of(context)!.bathRoomsAbbreviation}",
                       style: const TextStyle(
                         color: AppColor.black,
@@ -129,7 +130,7 @@ class _HouseCardState extends State<HouseCard> {
                   ],
                 ),
                 _spacer,
-                 Text(
+                Text(
                   "${AppLocalizations.of(context)!.sector} 8, Koudougou, Burkina Faso",
                   style: const TextStyle(
                     color: AppColor.black,
@@ -140,9 +141,9 @@ class _HouseCardState extends State<HouseCard> {
                   children: [
                     TextButton(
                       onPressed: () {},
-                      child:  Text(
+                      child: Text(
                         AppLocalizations.of(context)!.share,
-                        style:const TextStyle(
+                        style: const TextStyle(
                           color: AppColor.primary,
                           fontSize: 14.0,
                         ),
@@ -150,9 +151,9 @@ class _HouseCardState extends State<HouseCard> {
                     ),
                     TextButton(
                       onPressed: () {},
-                      child:  Text(
+                      child: Text(
                         AppLocalizations.of(context)!.virtualTour,
-                        style:const TextStyle(
+                        style: const TextStyle(
                           color: AppColor.primary,
                           fontSize: 14.0,
                         ),

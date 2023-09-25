@@ -1,33 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:hostmi/ui/pages/chat_page.dart';
-import 'package:hostmi/ui/pages/choice_page/choice_page.dart';
-import 'package:hostmi/ui/pages/create_page.dart';
-import 'package:hostmi/ui/pages/filter_page.dart';
-import 'package:hostmi/ui/pages/home_page/map_page.dart';
-import 'package:hostmi/ui/pages/home_page/search_place.dart';
-import 'package:hostmi/ui/pages/language_page/language_page.dart';
-import 'package:hostmi/ui/pages/list_page.dart';
-import 'package:hostmi/ui/pages/login_page.dart';
-import 'package:hostmi/ui/pages/login_phone_number_page.dart';
-import 'package:hostmi/ui/pages/main_page.dart';
+import 'package:hostmi/ui/screens/chat_page.dart';
+import 'package:hostmi/ui/screens/choice_page/choice_page.dart';
+import 'package:hostmi/ui/screens/create_screen.dart';
+import 'package:hostmi/ui/screens/filter_page.dart';
+import 'package:hostmi/ui/screens/home_screen/map_screen.dart';
+import 'package:hostmi/ui/screens/home_screen/search_place.dart';
+import 'package:hostmi/ui/screens/language_screen/language_screen.dart';
+import 'package:hostmi/ui/screens/list_screen.dart';
+import 'package:hostmi/ui/screens/login_screen.dart';
+import 'package:hostmi/ui/screens/login_phone_number_screen.dart';
+import 'package:hostmi/ui/screens/main_screen.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hostmi/ui/pages/home_page/map_welcome.dart';
-import 'package:hostmi/ui/pages/menu_page.dart';
-import 'package:hostmi/ui/pages/message_page/message_page.dart';
-import 'package:hostmi/ui/pages/no_page.dart';
-import 'package:hostmi/ui/pages/product_details_screen/product_details_screen.dart';
-import 'package:hostmi/ui/pages/profile_page/profile_page.dart';
-import 'package:hostmi/ui/pages/publisher_page.dart';
-import 'package:hostmi/ui/pages/register_page.dart';
-import 'package:hostmi/ui/pages/verify_phone_number_screen/verify_phone_number_screen.dart';
+import 'package:hostmi/ui/screens/home_screen/map_welcome.dart';
+import 'package:hostmi/ui/screens/menu_screen.dart';
+import 'package:hostmi/ui/screens/message_screen/message_screen.dart';
+import 'package:hostmi/ui/screens/no_agency.dart';
+import 'package:hostmi/ui/screens/product_details_screen/product_details_screen.dart';
+import 'package:hostmi/ui/screens/profile_screen/profile_screen.dart';
+import 'package:hostmi/ui/screens/publisher_screen.dart';
+import 'package:hostmi/ui/screens/register_screen.dart';
+import 'package:hostmi/ui/screens/verify_phone_number_screen/verify_phone_number_screen.dart';
 
-Map<String, WidgetBuilder> getRoutes(BuildContext context) {
-  return <String, WidgetBuilder>{
-    LoginPage.path: (BuildContext context) => const LoginPage(),
-    MainPage.path: (BuildContext context) => const MainPage(),
-    CreatePage.path: (BuildContext context) => const CreatePage(),
-  };
-}
+//Routes keys
+const String keyLoginRoute = "/login";
+//End route keys
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorMapKey = GlobalKey<NavigatorState>(debugLabel: 'shellMap');
@@ -56,7 +52,7 @@ class HostMiRouter {
         builder: (context, state) => const ChoicePage(),
       ),
       GoRoute(
-        path: '/login',
+        path: keyLoginRoute,
         builder: (context, state) => const LoginPage(),
       ),
       GoRoute(
@@ -115,7 +111,7 @@ class HostMiRouter {
                 routes: [
                   GoRoute(
                     path: 'details',
-                    builder: (context, state) => ProductDetailsScreen(),
+                    builder: (context, state) => const ProductDetailsScreen(),
                   ),
                 ],
               ),
@@ -169,7 +165,7 @@ class HostMiRouter {
                 routes: [
                   GoRoute(
                     path: 'profile',
-                    builder: (context, state) => ProfilePage(),
+                    builder: (context, state) => const ProfilePage(),
                   ),
                   GoRoute(
                     path: 'language',
