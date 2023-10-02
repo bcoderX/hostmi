@@ -1,5 +1,6 @@
 //import 'package:hostmi/ui/pages/main_screen.dart';
 //import 'package:hostmi/ui/pages/register_screen.dart';
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:go_router/go_router.dart';
@@ -12,10 +13,15 @@ import 'package:hostmi/utils/app_color.dart';
 import 'package:hostmi/utils/app_text_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../../api/constants/roles.dart';
+import '../../api/hostmi_local_database/hostmi_local_database.dart';
+import '../../api/supabase/supabase_client.dart';
+import '../../routes.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
-  static const String path = "login";
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -23,6 +29,83 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final SizedBox _spacer = const SizedBox(height: 20);
+
+  bool _isLoading = false;
+
+  bool _redirecting = false;
+
+  final _formState = GlobalKey<FormState>();
+
+  final TextEditingController _emailController = TextEditingController();
+
+  final TextEditingController _passwordController = TextEditingController();
+
+  late final StreamSubscription<AuthState> _authStateSubscription;
+
+  Role role = getRole();
+
+  Future<void> _signIn() async {
+    if (_formState.currentState!.validate()) {
+      try {
+        setState(() {
+          _isLoading = true;
+        });
+
+        await supabase.auth.signInWithPassword(
+            email: _emailController.text.trim(),
+            password: _passwordController.text.trim());
+        if (mounted) {
+          //_emailController.clear();
+          //_passwordController.clear();
+        }
+      } on AuthException catch (error) {
+        print(error);
+        SnackBar(
+          content: Text(error.message),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        );
+      } catch (error) {
+        print(error);
+        SnackBar(
+          content: const Text("Une erreur s'est produite. Veuillez réessayer"),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        );
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    _authStateSubscription = supabase.auth.onAuthStateChange.listen((data) {
+      if (_redirecting) return;
+      final session = data.session;
+      if (session != null) {
+        _redirecting = true;
+        if (role == Role.DEVELOPER) {
+          context.go(keyPublishRoute);
+        } else if (role == Role.TENANT) {
+          context.go("/list");
+        } else {
+          context.go("/");
+        }
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _authStateSubscription.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,20 +127,23 @@ class _LoginPageState extends State<LoginPage> {
                     style: Theme.of(context).primaryTextTheme.titleLarge,
                   ),
                   Form(
+                    key: _formState,
                     child: Column(
                       children: [
                         _spacer,
-                        const SquareTextField(
-                          prefixIcon: Icon(
+                         SquareTextField(
+                          prefixIcon: const Icon(
                             Icons.email,
                             color: AppColor.primary,
                           ),
                           placeholder: "example@email.com",
-                          errorText: 'Please enter your email',
+                          errorText: 'Veuillez saisir votre email',
                           keyboardType: TextInputType.emailAddress,
+                          controller: _emailController,
                         ),
                         _spacer,
                         SquareTextField(
+                          controller: _passwordController,
                           prefixIcon: const Icon(
                             Icons.lock,
                             color: AppColor.primary,
@@ -74,11 +160,11 @@ class _LoginPageState extends State<LoginPage> {
                             borderRadius: BorderRadius.circular(10.0),
                             color: AppColor.primary,
                             child: MaterialButton(
-                              onPressed: () {
-                                context.go("/map");
-                              },
+                              onPressed: _isLoading ? null : _signIn,
                               child: Text(
-                                AppLocalizations.of(context)!.login,
+                                _isLoading
+                                    ? 'Chargement...'
+                                    :AppLocalizations.of(context)!.login,
                                 style: const TextStyle(
                                   fontSize: AppTextSize.heading18,
                                   color: AppColor.white,

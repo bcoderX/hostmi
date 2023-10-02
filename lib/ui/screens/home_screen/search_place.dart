@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class SearchPlace extends StatefulWidget {
-  SearchPlace({Key? key}) : super(key: key);
+  const SearchPlace({Key? key}) : super(key: key);
 
   @override
   _SearchPlaceState createState() => _SearchPlaceState();
@@ -12,10 +12,9 @@ class SearchPlace extends StatefulWidget {
 
 class _SearchPlaceState extends State<SearchPlace> {
   final _controller = TextEditingController();
-  var uuid = new Uuid();
+  var uuid = const Uuid();
   String? _sessionToken;
   List<dynamic> _placeList = [];
-
 
   _onChanged(String? value) {
     if (_sessionToken == null) {
@@ -27,11 +26,12 @@ class _SearchPlaceState extends State<SearchPlace> {
   }
 
   void getSuggestion(String input) async {
-    String kPLACES_API_KEY = "AIzaSyAWO3hxU9IfAC3y2geMwP4f7nRMdUX0kNk";
+    String kplacesApiKey = "AIzaSyAWO3hxU9IfAC3y2geMwP4f7nRMdUX0kNk";
     String type = '(regions)';
     String baseURL =
         'https://maps.googleapis.com/maps/api/place/autocomplete/json';
-    var request = Uri.parse('$baseURL?input=$input&key=$kPLACES_API_KEY&sessiontoken=$_sessionToken');
+    var request = Uri.parse(
+        '$baseURL?input=$input&key=$kplacesApiKey&sessiontoken=$_sessionToken');
     var response = await http.get(request);
     if (response.statusCode == 200) {
       debugPrint(response.body);
@@ -39,7 +39,6 @@ class _SearchPlaceState extends State<SearchPlace> {
         _placeList = json.decode(response.body)['predictions'];
       });
     } else {
-
       throw Exception('Failed to load predictions');
     }
   }
@@ -48,7 +47,7 @@ class _SearchPlaceState extends State<SearchPlace> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Search a place"),
+        title: const Text("Search a place"),
       ),
       body: Center(
         child: Column(
@@ -63,16 +62,16 @@ class _SearchPlaceState extends State<SearchPlace> {
                   hintText: "Seek your location here",
                   focusColor: Colors.white,
                   floatingLabelBehavior: FloatingLabelBehavior.never,
-                  prefixIcon: Icon(Icons.map),
+                  prefixIcon: const Icon(Icons.map),
                   suffixIcon: IconButton(
-                    onPressed: (){},
-                    icon: Icon(Icons.cancel),
+                    onPressed: () {},
+                    icon: const Icon(Icons.cancel),
                   ),
                 ),
               ),
             ),
             ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemCount: _placeList.length,
               itemBuilder: (context, index) {

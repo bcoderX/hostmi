@@ -38,6 +38,8 @@ class AddNewPropertyHomeFactsScreen extends StatelessWidget {
 
   TextEditingController priceOneController = TextEditingController();
 
+  AddNewPropertyHomeFactsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -122,19 +124,19 @@ class AddNewPropertyHomeFactsScreen extends StatelessWidget {
                               style: AppStyle.txtManropeMedium12Bluegray500
                                   .copyWith(
                                       letterSpacing: getHorizontalSize(0.4)))),
-                      CustomDropDown(
-                          focusNode: FocusNode(),
-                          icon: Container(
-                              margin: getMargin(left: 30, right: 16),
-                              child: CustomImageView(
-                                  svgPath: ImageConstant.imgArrowdownGray900)),
-                          hintText: "Select type",
-                          margin: getMargin(left: 1, top: 6),
-                          variant: DropDownVariant.FillBluegray50,
-                          fontStyle:
-                              DropDownFontStyle.ManropeMedium14Bluegray500,
-                          items: dropdownItemList,
-                          onChanged: (value) {}),
+                      // CustomDropDown(
+                      //     focusNode: FocusNode(),
+                      //     icon: Container(
+                      //         margin: getMargin(left: 30, right: 16),
+                      //         child: CustomImageView(
+                      //             svgPath: ImageConstant.imgArrowdownGray900)),
+                      //     hintText: "Select type",
+                      //     margin: getMargin(left: 1, top: 6),
+                      //     variant: DropDownVariant.FillBluegray50,
+                      //     fontStyle:
+                      //         DropDownFontStyle.ManropeMedium14Bluegray500,
+                      //     items: dropdownItemList,
+                      //     onChanged: (value) {}),
                       Padding(
                           padding: getPadding(left: 1, top: 13, right: 1),
                           child: Row(
@@ -201,25 +203,26 @@ class AddNewPropertyHomeFactsScreen extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text("Year Built",
-                                          overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.left,
-                                          style: AppStyle
-                                              .txtManropeMedium12Bluegray500
-                                              .copyWith(
-                                                  letterSpacing:
-                                                      getHorizontalSize(0.4))),
-                                      CustomTextFormField(
-                                          width: getHorizontalSize(158),
-                                          focusNode: FocusNode(),
-                                          controller: inputTwoController,
-                                          hintText: "0",
-                                          margin: getMargin(top: 7),),
-                                    ],),
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text("Year Built",
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.left,
+                                        style: AppStyle
+                                            .txtManropeMedium12Bluegray500
+                                            .copyWith(
+                                                letterSpacing:
+                                                    getHorizontalSize(0.4))),
+                                    CustomTextFormField(
+                                      width: getHorizontalSize(158),
+                                      focusNode: FocusNode(),
+                                      controller: inputTwoController,
+                                      hintText: "0",
+                                      margin: getMargin(top: 7),
+                                    ),
+                                  ],
+                                ),
                                 Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,

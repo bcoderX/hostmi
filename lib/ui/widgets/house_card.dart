@@ -21,21 +21,22 @@ class _HouseCardState extends State<HouseCard> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      elevation: 3.0,
       borderRadius: BorderRadius.circular(15.0),
+      elevation: 1.0,
+      color: AppColor.white,
       child: Column(children: [
         Column(mainAxisSize: MainAxisSize.min, children: [
           GestureDetector(
             onTap: () {
               Navigator.of(context)
                   .push(MaterialPageRoute(builder: (BuildContext context) {
-                return ProductDetailsScreen();
+                return const ProductDetailsScreen();
               }));
             },
             child: Container(
               height: 150,
               decoration: const BoxDecoration(
-                color: Colors.grey,
+                color: AppColor.white,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(15.0),
                   topRight: Radius.circular(15.0),
@@ -70,12 +71,12 @@ class _HouseCardState extends State<HouseCard> {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.location_on,
                           color: AppColor.primary,
                         ),
                         IconButton(
-                          icon: Icon(Icons.favorite_outline),
+                          icon: const Icon(Icons.favorite_outline),
                           color: AppColor.primary,
                           onPressed: () {
                             Navigator.of(context, rootNavigator: true)
@@ -102,9 +103,9 @@ class _HouseCardState extends State<HouseCard> {
                         color: AppColor.black,
                       ),
                     ),
-                    Row(
+                    const Row(
                       mainAxisSize: MainAxisSize.min,
-                      children: const [
+                      children: [
                         Icon(
                           Icons.star,
                           color: AppColor.primary,

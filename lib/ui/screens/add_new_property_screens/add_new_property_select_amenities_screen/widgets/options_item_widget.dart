@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:hostmi/core/app_export.dart';
+import 'package:hostmi/utils/app_color.dart';
 
-// ignore: must_be_immutable
 class OptionsItemWidget extends StatelessWidget {
-  OptionsItemWidget();
+  const OptionsItemWidget({
+    super.key,
+    required this.amenity,
+    required this.selected,
+    this.onPressed,
+  });
+
+  final Map<String, dynamic> amenity;
+  final List<int> selected;
+  final void Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
     return Theme(
       data: ThemeData(
-        canvasColor: Colors.transparent,
+        canvasColor: selected.contains(amenity["id"])
+            ? AppColor.primary
+            : Colors.transparent,
       ),
       child: RawChip(
         padding: getPadding(
@@ -19,10 +30,12 @@ class OptionsItemWidget extends StatelessWidget {
         showCheckmark: false,
         labelPadding: EdgeInsets.zero,
         label: Text(
-          "Free WiFi",
+          amenity["fr"],
           textAlign: TextAlign.left,
           style: TextStyle(
-            color: ColorConstant.gray900,
+            color: selected.contains(amenity["id"])
+                ? AppColor.grey
+                : ColorConstant.gray900,
             fontSize: getFontSize(
               14,
             ),
@@ -46,7 +59,7 @@ class OptionsItemWidget extends StatelessWidget {
             ),
           ),
         ),
-        onSelected: (value) {},
+        onPressed: onPressed,
       ),
     );
   }

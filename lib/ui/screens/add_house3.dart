@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hostmi/ui/screens/gears_loading_page.dart';
-import 'package:hostmi/ui/screens/landlord_screen.dart';
+import 'package:hostmi/ui/screens/agency_screen/agency_screen.dart';
 import 'package:hostmi/ui/screens/under_verification_screen.dart';
 import 'package:hostmi/ui/widgets/labeled_dropdown.dart';
 import 'package:hostmi/ui/widgets/labeled_field.dart';
@@ -195,8 +195,8 @@ class _AddHouse3State extends State<AddHouse3> {
                     MaterialPageRoute(
                       builder: (BuildContext context) {
                         return GearsLoadingPage(
-                          page:
-                              const UnderVerificationPage(page: LandlordPage()),
+                          // page:
+                          //     const UnderVerificationPage(page: LandlordPage()),
                           operationTitle:
                               AppLocalizations.of(context)!.savingHouse,
                         );

@@ -9,6 +9,7 @@ class SquareTextField extends StatefulWidget {
     this.label,
     required this.errorText,
     this.maxLines,
+    this.isRequired = true,
     this.isEnabled = true,
     this.isPassword = false,
     this.isFullyBordered = false,
@@ -19,6 +20,7 @@ class SquareTextField extends StatefulWidget {
     this.onTap,
   }) : super(key: key);
 
+  final bool isRequired;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final String? label;
@@ -77,12 +79,14 @@ class _SquareTextFieldState extends State<SquareTextField> {
               ),
       ),
 
-      validator: (value) {
-        if (value!.isEmpty) {
+
+      validator: !widget.isRequired ? null : (value) {
+        if (value!.isEmpty || value==null ) {
           return widget.errorText;
         } else {
           return null;
         }
+
       },
       onChanged: widget.onChanged,
       onTap: widget.onTap,

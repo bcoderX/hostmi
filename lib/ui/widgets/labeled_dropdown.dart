@@ -9,6 +9,7 @@ class LabeledDropdownField extends StatelessWidget {
         this.errorText,
         this.items,
         this.onChanged,
+        this.onTap,
       })
       : super(key: key);
   final String? label;
@@ -16,6 +17,7 @@ class LabeledDropdownField extends StatelessWidget {
   final String? value;
   final List<DropdownMenuItem<String>>? items;
   void Function(String?)? onChanged;
+  void Function()? onTap;
 
 
   @override
@@ -37,7 +39,10 @@ class LabeledDropdownField extends StatelessWidget {
                 border: OutlineInputBorder(),
               errorText: errorText
             ),
-            items: items, onChanged: onChanged,),
+            items: items,
+          onTap: onTap,
+          onChanged: onChanged,
+        ),
       ],
     );
   }

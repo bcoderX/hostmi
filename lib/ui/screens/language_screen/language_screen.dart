@@ -31,7 +31,7 @@ class _LanguagePageState extends State<LanguagePage> {
           statusBarIconBrightness: Brightness.dark,
         ),
         title: const Text(
-          "Language",
+          "Langue",
           style: TextStyle(
             color: AppColor.black,
             fontWeight: FontWeight.bold,
@@ -40,42 +40,46 @@ class _LanguagePageState extends State<LanguagePage> {
       ),
       body: ListView(
         children: [
-          Padding(
-            padding: getPadding(
-              left: 8,
-            ),
-            child: CustomRadioButton(
-              text: "System Language",
-              value: "auto",
-              groupValue: radioGroup,
-              margin: getMargin(left: 8, top: 18),
-              fontStyle: RadioFontStyle.ManropeMedium14Gray900,
-              onChange: (value) {
-                context.read<LocaleProvider>().set(null);
-                setState(() {
-                  radioGroup = value;
-                });
-              },
-            ),
-          ),
-          Padding(
-            padding: getPadding(
-              left: 8,
-            ),
-            child: CustomRadioButton(
-              text: "English",
-              value: "en",
-              groupValue: radioGroup,
-              margin: getMargin(left: 8, top: 18),
-              fontStyle: RadioFontStyle.ManropeMedium14Gray900,
-              onChange: (value) {
-                context.read<LocaleProvider>().set(const Locale("en"));
-                setState(() {
-                  radioGroup = value;
-                });
-              },
-            ),
-          ),
+          // IgnorePointer(
+          //   child: Padding(
+          //     padding: getPadding(
+          //       left: 8,
+          //     ),
+          //     child: CustomRadioButton(
+          //       text: "System Language",
+          //       value: "auto",
+          //       groupValue: radioGroup,
+          //       margin: getMargin(left: 8, top: 18),
+          //       fontStyle: RadioFontStyle.ManropeMedium14Gray900,
+          //       onChange: (value) {
+          //         context.read<LocaleProvider>().set(null);
+          //         setState(() {
+          //           radioGroup = value;
+          //         });
+          //       },
+          //     ),
+          //   ),
+          // ),
+          // IgnorePointer(
+          //   child: Padding(
+          //     padding: getPadding(
+          //       left: 8,
+          //     ),
+          //     child: CustomRadioButton(
+          //       text: "English",
+          //       value: "en",
+          //       groupValue: radioGroup,
+          //       margin: getMargin(left: 8, top: 18),
+          //       fontStyle: RadioFontStyle.ManropeMedium14Gray900,
+          //       onChange: (value) {
+          //         context.read<LocaleProvider>().set(const Locale("en"));
+          //         setState(() {
+          //           radioGroup = value;
+          //         });
+          //       },
+          //     ),
+          //   ),
+          // ),
           Padding(
             padding: getPadding(
               left: 8,

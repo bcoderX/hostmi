@@ -66,7 +66,17 @@ class FilterScreen extends StatelessWidget {
                                     variant: DropDownVariant.None,
                                     fontStyle: DropDownFontStyle
                                         .ManropeSemiBold14Gray900,
-                                    items: dropdownItemList4,
+                                    items: dropdownItemList4
+                                        .map<DropdownMenuItem<String>>(
+                                            (String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(
+                                          value,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      );
+                                    }).toList(),
                                     onChanged: (value) {})
                               ]))
                         ])),
@@ -501,8 +511,21 @@ class FilterScreen extends StatelessWidget {
                                                                                     .imgArrowdownBlueGray50016x16)),
                                                                         hintText:
                                                                             "Min",
-                                                                        items:
-                                                                            dropdownItemList,
+                                                                        items: dropdownItemList.map<
+                                                                            DropdownMenuItem<
+                                                                                String>>((String
+                                                                            value) {
+                                                                          return DropdownMenuItem<
+                                                                              String>(
+                                                                            value:
+                                                                                value,
+                                                                            child:
+                                                                                Text(
+                                                                              value,
+                                                                              overflow: TextOverflow.ellipsis,
+                                                                            ),
+                                                                          );
+                                                                        }).toList(),
                                                                         onChanged:
                                                                             (value) {}),
                                                                     CustomImageView(
@@ -539,8 +562,21 @@ class FilterScreen extends StatelessWidget {
                                                                         margin: getMargin(
                                                                             left:
                                                                                 17),
-                                                                        items:
-                                                                            dropdownItemList1,
+                                                                        items: dropdownItemList1.map<
+                                                                            DropdownMenuItem<
+                                                                                String>>((String
+                                                                            value) {
+                                                                          return DropdownMenuItem<
+                                                                              String>(
+                                                                            value:
+                                                                                value,
+                                                                            child:
+                                                                                Text(
+                                                                              value,
+                                                                              overflow: TextOverflow.ellipsis,
+                                                                            ),
+                                                                          );
+                                                                        }).toList(),
                                                                         onChanged:
                                                                             (value) {})
                                                                   ]))),
@@ -589,8 +625,21 @@ class FilterScreen extends StatelessWidget {
                                                                                     .imgArrowdownBlueGray50016x16)),
                                                                         hintText:
                                                                             "Min",
-                                                                        items:
-                                                                            dropdownItemList2,
+                                                                        items: dropdownItemList2.map<
+                                                                            DropdownMenuItem<
+                                                                                String>>((String
+                                                                            value) {
+                                                                          return DropdownMenuItem<
+                                                                              String>(
+                                                                            value:
+                                                                                value,
+                                                                            child:
+                                                                                Text(
+                                                                              value,
+                                                                              overflow: TextOverflow.ellipsis,
+                                                                            ),
+                                                                          );
+                                                                        }).toList(),
                                                                         onChanged:
                                                                             (value) {}),
                                                                     CustomImageView(
@@ -627,8 +676,21 @@ class FilterScreen extends StatelessWidget {
                                                                         margin: getMargin(
                                                                             left:
                                                                                 17),
-                                                                        items:
-                                                                            dropdownItemList3,
+                                                                        items: dropdownItemList3.map<
+                                                                            DropdownMenuItem<
+                                                                                String>>((String
+                                                                            value) {
+                                                                          return DropdownMenuItem<
+                                                                              String>(
+                                                                            value:
+                                                                                value,
+                                                                            child:
+                                                                                Text(
+                                                                              value,
+                                                                              overflow: TextOverflow.ellipsis,
+                                                                            ),
+                                                                          );
+                                                                        }).toList(),
                                                                         onChanged:
                                                                             (value) {})
                                                                   ]))),

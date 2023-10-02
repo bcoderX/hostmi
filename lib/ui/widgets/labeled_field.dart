@@ -10,7 +10,9 @@ class LabeledField extends StatelessWidget {
         this.controller,
         this.errorText,
         this.maxLines,
-        this.isRequired = false
+        this.isRequired = false,
+        this.isFullyBordered = true,
+    this.keyboardType = TextInputType.text,
       })
       : super(key: key);
 
@@ -18,7 +20,9 @@ class LabeledField extends StatelessWidget {
   final String? placeholder;
   final String? errorText;
   final bool isRequired;
+  final bool isFullyBordered;
   final int? maxLines;
+  final TextInputType keyboardType;
   final TextEditingController? controller;
 
   @override
@@ -39,9 +43,11 @@ class LabeledField extends StatelessWidget {
         ),
         SquareTextField(
           errorText: errorText,
+          keyboardType: keyboardType,
+          isRequired: isRequired,
           placeholder: placeholder,
           maxLines: maxLines,
-          isFullyBordered: true,
+          isFullyBordered: isFullyBordered,
           controller: controller,
         ),
       ],

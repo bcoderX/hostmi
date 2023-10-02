@@ -3,7 +3,8 @@ import 'package:hostmi/core/app_export.dart';
 
 class CustomDropDown extends StatelessWidget {
   CustomDropDown(
-      {this.shape,
+      {super.key,
+      this.shape,
       this.padding,
       this.variant,
       this.fontStyle,
@@ -13,6 +14,7 @@ class CustomDropDown extends StatelessWidget {
       this.focusNode,
       this.icon,
       this.hintText,
+      this.value,
       this.prefix,
       this.prefixConstraints,
       this.items,
@@ -38,12 +40,13 @@ class CustomDropDown extends StatelessWidget {
   Widget? icon;
 
   String? hintText;
+  String? value;
 
   Widget? prefix;
 
   BoxConstraints? prefixConstraints;
 
-  List<String>? items;
+  List<DropdownMenuItem<String>>? items;
 
   Function(String)? onChanged;
 
@@ -63,20 +66,13 @@ class CustomDropDown extends StatelessWidget {
     return Container(
       width: width ?? double.maxFinite,
       margin: margin,
-      child: DropdownButtonFormField(
+      child: DropdownButtonFormField<String>(
+        value: value ?? "",
         focusNode: focusNode,
         icon: icon,
         style: _setFontStyle(),
         decoration: _buildDecoration(),
-        items: items?.map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(
-              value,
-              overflow: TextOverflow.ellipsis,
-            ),
-          );
-        }).toList(),
+        items: items,
         onChanged: (value) {
           onChanged!(value.toString());
         },
@@ -147,7 +143,7 @@ class CustomDropDown extends StatelessWidget {
       default:
         return BorderRadius.circular(
           getHorizontalSize(
-            10.00,
+            5.00,
           ),
         );
     }
@@ -208,14 +204,17 @@ class CustomDropDown extends StatelessWidget {
 enum DropDownShape {
   RoundedBorder10,
 }
+
 enum DropDownPadding {
   PaddingT11,
 }
+
 enum DropDownVariant {
   None,
   OutlineBluegray400,
   FillBluegray50,
 }
+
 enum DropDownFontStyle {
   ManropeRegular14Bluegray500,
   ManropeSemiBold14Gray900,

@@ -3,7 +3,8 @@ import 'package:hostmi/core/app_export.dart';
 
 class CustomTextFormField extends StatelessWidget {
   CustomTextFormField(
-      {this.shape,
+      {super.key,
+      this.shape,
       this.padding,
       this.variant,
       this.fontStyle,
@@ -160,7 +161,7 @@ class CustomTextFormField extends StatelessWidget {
       default:
         return BorderRadius.circular(
           getHorizontalSize(
-            10.00,
+            5.00,
           ),
         );
     }
@@ -265,12 +266,14 @@ enum TextFormFieldShape {
   RoundedBorder10,
   CircleBorder24,
 }
+
 enum TextFormFieldPadding {
   PaddingAll16,
   PaddingT14,
   PaddingAll5,
   PaddingT13,
 }
+
 enum TextFormFieldVariant {
   None,
   FillBluegray50,
@@ -279,6 +282,7 @@ enum TextFormFieldVariant {
   OutlineBluegray40014,
   OutlineBlue500,
 }
+
 enum TextFormFieldFontStyle {
   ManropeMedium14Bluegray500,
   ManropeSemiBold14Gray900,

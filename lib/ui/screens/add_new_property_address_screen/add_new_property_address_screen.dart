@@ -109,19 +109,19 @@ class AddNewPropertyAddressScreen extends StatelessWidget {
                           controller: citynameController,
                           hintText: "City name",
                           margin: getMargin(top: 12)),
-                      CustomDropDown(
-                          focusNode: FocusNode(),
-                          icon: Container(
-                              margin: getMargin(left: 30, right: 16),
-                              child: CustomImageView(
-                                  svgPath: ImageConstant.imgArrowdownGray900)),
-                          hintText: "Select state",
-                          margin: getMargin(top: 12),
-                          variant: DropDownVariant.FillBluegray50,
-                          fontStyle:
-                              DropDownFontStyle.ManropeMedium14Bluegray500,
-                          items: dropdownItemList,
-                          onChanged: (value) {}),
+                      // CustomDropDown(
+                      //     focusNode: FocusNode(),
+                      //     icon: Container(
+                      //         margin: getMargin(left: 30, right: 16),
+                      //         child: CustomImageView(
+                      //             svgPath: ImageConstant.imgArrowdownGray900)),
+                      //     hintText: "Select state",
+                      //     margin: getMargin(top: 12),
+                      //     variant: DropDownVariant.FillBluegray50,
+                      //     fontStyle:
+                      //         DropDownFontStyle.ManropeMedium14Bluegray500,
+                      //     items: dropdownItemList,
+                      //     onChanged: (value) {}),
                       CustomTextFormField(
                           focusNode: FocusNode(),
                           controller: zipcodeController,

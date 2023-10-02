@@ -48,8 +48,7 @@ class _ChoicePageState extends State<ChoicePage> {
                               child: RoundedButton(
                                 buttonColor: AppColor.primary,
                                 fontSize: AppTextSize.heading16,
-                                text: AppLocalizations.of(context)!
-                                    .lookingForRental,
+                                text: "Je suis locataire",
                                 textColor: AppColor.white,
                                 onTap: () {
                                   setRole(Role.TENANT);
@@ -62,7 +61,7 @@ class _ChoicePageState extends State<ChoicePage> {
                             child: RoundedButton(
                               buttonColor: AppColor.grey,
                               fontSize: AppTextSize.heading16,
-                              text: AppLocalizations.of(context)!.wantToPublish,
+                              text: "Je suis promoteur immobilier",
                               textColor: AppColor.primary,
                               onTap: () {
                                 setRole(Role.DEVELOPER);

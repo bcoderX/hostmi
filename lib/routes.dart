@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hostmi/ui/screens/chat_page.dart';
 import 'package:hostmi/ui/screens/choice_page/choice_page.dart';
-import 'package:hostmi/ui/screens/create_screen.dart';
+import 'package:hostmi/ui/screens/create_agency_screen/add_pictures.dart';
+import 'package:hostmi/ui/screens/create_agency_screen/create_agency_basic_details.dart';
+import 'package:hostmi/ui/screens/create_agency_screen/create_agency_advanced_details.dart';
+import 'package:hostmi/ui/screens/create_agency_screen/review_agency_details.dart';
 import 'package:hostmi/ui/screens/filter_page.dart';
 import 'package:hostmi/ui/screens/home_screen/map_screen.dart';
 import 'package:hostmi/ui/screens/home_screen/search_place.dart';
@@ -14,7 +17,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hostmi/ui/screens/home_screen/map_welcome.dart';
 import 'package:hostmi/ui/screens/menu_screen.dart';
 import 'package:hostmi/ui/screens/message_screen/message_screen.dart';
-import 'package:hostmi/ui/screens/no_agency.dart';
+import 'package:hostmi/ui/screens/create_agency_screen/no_agency.dart';
 import 'package:hostmi/ui/screens/product_details_screen/product_details_screen.dart';
 import 'package:hostmi/ui/screens/profile_screen/profile_screen.dart';
 import 'package:hostmi/ui/screens/publisher_screen.dart';
@@ -23,6 +26,23 @@ import 'package:hostmi/ui/screens/verify_phone_number_screen/verify_phone_number
 
 //Routes keys
 const String keyLoginRoute = "/login";
+const String publishs = "pu";
+const String keyPublishRoute = "/publish";
+const String keyCreateAgencyRoute = "create-agency";
+const String keyCreateAgencyFullRoute = "publish/$keyCreateAgencyRoute";
+const String keyCreateAgencyBasicDetailsRoute = "basic-details";
+const String keyCreateAgencyBasicDetailsFullRoute =
+    "$keyPublishRoute/$keyCreateAgencyRoute/$keyCreateAgencyBasicDetailsRoute";
+const String keyCreateAgencyAdvancedDetailsRoute = "advanced-details";
+const String keyCreateAgencyAdvancedDetailsFullRoute =
+    "$keyPublishRoute/$keyCreateAgencyRoute/$keyCreateAgencyAdvancedDetailsRoute";
+const String keyReviewAgencyDetailsRoute = "review-details";
+const String keyReviewAgencyDetailsFullRoute =
+    "$keyPublishRoute/$keyCreateAgencyRoute/$keyReviewAgencyDetailsRoute";
+const String keyCreateAgencyAddPicturesRoute = "add-pictures";
+const String keyCreateAgencyAddPicturesFullRoute =
+    "$keyPublishRoute/$keyCreateAgencyRoute/$keyCreateAgencyAddPicturesRoute";
+
 //End route keys
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -138,17 +158,37 @@ class HostMiRouter {
           StatefulShellBranch(
             navigatorKey: _shellNavigatorPublishKey,
             routes: [
-              // Shopping Cart
               GoRoute(
-                path: '/publisher',
+                path: keyPublishRoute,
                 pageBuilder: (context, state) => const NoTransitionPage(
                   child: PublisherPage(),
                 ),
                 routes: [
                   GoRoute(
-                    path: 'no-page',
-                    builder: (context, state) => const NoPage(),
-                  ),
+                      path: keyCreateAgencyRoute,
+                      builder: (context, state) => const NoAgency(),
+                      routes: [
+                        GoRoute(
+                          path: keyCreateAgencyBasicDetailsRoute,
+                          builder: (context, state) =>
+                              const CreateAgencyBasicDetails(),
+                        ),
+                        GoRoute(
+                          path: keyCreateAgencyAdvancedDetailsRoute,
+                          builder: (context, state) =>
+                              CreateAgencyAdvancedDetails(),
+                        ),
+                        GoRoute(
+                          path: keyReviewAgencyDetailsRoute,
+                          builder: (context, state) =>
+                              const ReviewAgencyDetails(),
+                        ),
+                        GoRoute(
+                          path: keyCreateAgencyAddPicturesRoute,
+                          builder: (context, state) =>
+                              const AddAgencyPictures(),
+                        ),
+                      ]),
                 ],
               ),
             ],

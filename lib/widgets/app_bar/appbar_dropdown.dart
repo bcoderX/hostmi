@@ -5,7 +5,8 @@ import 'package:hostmi/widgets/custom_drop_down.dart';
 // ignore: must_be_immutable
 class AppbarDropdown extends StatelessWidget {
   AppbarDropdown(
-      {required this.hintText,
+      {super.key,
+      required this.hintText,
       required this.items,
       required this.onTap,
       this.margin});
@@ -38,7 +39,15 @@ class AppbarDropdown extends StatelessWidget {
         hintText: "St. Celina, Delaware",
         variant: DropDownVariant.None,
         fontStyle: DropDownFontStyle.ManropeSemiBold14Gray900,
-        items: items,
+        items: items.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(
+              value,
+              overflow: TextOverflow.ellipsis,
+            ),
+          );
+        }).toList(),
         onChanged: (value) {
           onTap(value);
         },

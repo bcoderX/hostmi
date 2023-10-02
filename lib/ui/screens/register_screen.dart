@@ -80,7 +80,7 @@ class _RegisterPageState extends State<RegisterPage> {
       if (session != null) {
         _redirecting = true;
         if (role == Role.DEVELOPER) {
-          context.go("/publisher");
+          context.go(keyPublishRoute);
         } else if (role == Role.TENANT) {
           context.go("/list");
         } else {

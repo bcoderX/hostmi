@@ -76,10 +76,7 @@ class _LoginPhoneNumberPageState extends State<LoginPhoneNumberPage> {
                                 debugPrint(selectedCountry.phoneCode +
                                     phoneNumberController.text);
                                 //context.go("/phone-login/code/");
-                                context.read<HostmiProvider>().sendOTP(
-                                      phoneNumber: selectedCountry.phoneCode +
-                                          phoneNumberController.text,
-                                    );
+
                               },
                               child: const Text(
                                 "Se connecter",
