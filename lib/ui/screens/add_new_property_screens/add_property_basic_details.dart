@@ -1,10 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:hostmi/api/providers/hostmi_provider.dart';
 import 'package:hostmi/api/providers/locale_provider.dart';
 import 'package:hostmi/core/utils/color_constant.dart';
+import 'package:hostmi/core/utils/image_constant.dart';
 import 'package:hostmi/core/utils/size_utils.dart';
 import 'package:hostmi/theme/app_style.dart';
 import 'package:hostmi/ui/screens/add_new_property_screens/add_property_address.dart';
@@ -13,6 +16,8 @@ import 'package:hostmi/ui/widgets/landloard_action_button.dart';
 import 'package:hostmi/utils/app_color.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hostmi/widgets/custom_button.dart';
+import 'package:hostmi/widgets/custom_drop_down.dart';
+import 'package:hostmi/widgets/custom_image_view.dart';
 import 'package:hostmi/widgets/custom_radio_button.dart';
 import 'package:hostmi/widgets/custom_text_form_field.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -28,16 +33,25 @@ class SetPropertyBasicDetails extends StatefulWidget {
 }
 
 class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
-  String? radioTypeGroup = "simple";
-  String? radioCategoryGroup = "unique_house";
-  final SizedBox _spacer = const SizedBox(
-    height: 25,
-  );
+  final SizedBox _spacer = const SizedBox(height: 25);
   File? mainImage;
   File? mainCroppedImage;
+  String selectedHouseType = "1";
+  String selectedHouseCategory = "1";
+  String selectedPriceType = "1";
+  String selectedCurrency = "159";
+  TextEditingController numberOfBeds = TextEditingController();
+  TextEditingController numberOfBaths = TextEditingController();
+  TextEditingController price = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<HostmiProvider>().getPriceTypes();
+      context.read<HostmiProvider>().getHouseTypes();
+      context.read<HostmiProvider>().getHouseCategories();
+      context.read<HostmiProvider>().getCurrencies();
+    });
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColor.grey,
@@ -47,7 +61,6 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
             statusBarColor: AppColor.grey,
             statusBarIconBrightness: Brightness.dark),
         title: Text(AppLocalizations.of(context)!.addHouse),
-        actions: const [],
       ),
       body: Scrollbar(
         child: SingleChildScrollView(
@@ -69,22 +82,25 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
                       fontStyle: ButtonFontStyle.ManropeSemiBold14WhiteA700_1)
                 ]),
                 Padding(
-                    padding: getPadding(top: 16),
-                    child: Container(
-                        height: getVerticalSize(6),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            color: ColorConstant.blueGray50,
-                            borderRadius:
-                                BorderRadius.circular(getHorizontalSize(3))),
-                        child: ClipRRect(
-                            borderRadius:
-                                BorderRadius.circular(getHorizontalSize(3)),
-                            child: LinearProgressIndicator(
-                                value: 0.25,
-                                backgroundColor: ColorConstant.blueGray50,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    ColorConstant.brown500))))),
+                  padding: getPadding(top: 16),
+                  child: Container(
+                    height: getVerticalSize(6),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        color: ColorConstant.blueGray50,
+                        borderRadius:
+                            BorderRadius.circular(getHorizontalSize(3))),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(getHorizontalSize(3)),
+                      child: LinearProgressIndicator(
+                        value: 0.25,
+                        backgroundColor: ColorConstant.blueGray50,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            ColorConstant.brown500),
+                      ),
+                    ),
+                  ),
+                ),
                 _spacer,
                 Column(
                   mainAxisSize: MainAxisSize.min,
@@ -103,16 +119,15 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
                       ),
                     ),
                     const SizedBox(
-                        width: double.infinity,
-                        child: Text(
-                          "La photo principale est la première photo que les gens vont voir avant de chercher plus de détails. ",
-                          style: TextStyle(
-                            color: AppColor.listItemGrey,
-                          ),
-                        )),
-                    const SizedBox(
-                      height: 15,
+                      width: double.infinity,
+                      child: Text(
+                        "La photo principale est la première photo que les gens vont voir avant de chercher plus de détails. ",
+                        style: TextStyle(
+                          color: AppColor.listItemGrey,
+                        ),
+                      ),
                     ),
+                    const SizedBox(height: 15),
                     Padding(
                       padding: const EdgeInsets.all(5.0),
                       child: Column(
@@ -120,7 +135,7 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
                         children: [
                           InkWell(
                             onTap: () async {
-                              pickImage(0);
+                              pickImage();
                             },
                             child: Container(
                               width: double.infinity,
@@ -128,7 +143,8 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
                               decoration: BoxDecoration(
                                 image: DecorationImage(
                                   image: mainCroppedImage == null
-                                      ? const AssetImage("assets/images/3.jpg")
+                                      ? const AssetImage(
+                                          "assets/images/image_not_found.png")
                                       : FileImage(mainCroppedImage!)
                                           as ImageProvider,
                                   fit: BoxFit.cover,
@@ -149,7 +165,7 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
                                   icon: const Icon(Icons.camera_alt),
                                   text: "Choisis une photo",
                                   onPressed: () async {
-                                    await pickImage(0);
+                                    await pickImage();
                                   },
                                 ),
                                 ActionButton(
@@ -189,72 +205,41 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
                   child: Text(
                     "Choisir le type de maison",
                     style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
-                        color: AppColor.listItemGrey),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0,
+                      color: AppColor.listItemGrey,
+                    ),
                   ),
                 ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                        padding: const EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                          color: AppColor.white,
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        child: CustomRadioButton(
-                          text: "Maison simple",
-                          value: "simple",
-                          groupValue: radioTypeGroup,
-                          margin: getMargin(
-                            left: 8,
-                          ),
-                          fontStyle: RadioFontStyle.ManropeMedium14Gray900,
-                          onChange: (value) {
-                            context
-                                .read<LocaleProvider>()
-                                .set(const Locale("fr"));
-                            setState(() {
-                              radioTypeGroup = value;
-                            });
-                          },
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                        padding: const EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                          color: AppColor.white,
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        child: CustomRadioButton(
-                          text: "Residence (Villa meublée)",
-                          value: "residence",
-                          groupValue: radioTypeGroup,
-                          margin: getMargin(
-                            left: 8,
-                          ),
-                          fontStyle: RadioFontStyle.ManropeMedium14Gray900,
-                          onChange: (value) {
-                            context
-                                .read<LocaleProvider>()
-                                .set(const Locale("fr"));
-                            setState(() {
-                              radioTypeGroup = value;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                CustomDropDown(
+                    value: context
+                        .read<HostmiProvider>()
+                        .houseForm
+                        .houseType
+                        .toString(),
+                    focusNode: FocusNode(),
+                    icon: Container(
+                        margin: getMargin(left: 30, right: 16),
+                        child: CustomImageView(
+                            svgPath: ImageConstant.imgArrowdownGray900)),
+                    hintText: "Choisir un type de maison",
+                    margin: getMargin(top: 12),
+                    variant: DropDownVariant.FillBluegray50,
+                    fontStyle: DropDownFontStyle.ManropeMedium14Bluegray500,
+                    items: context
+                        .watch<HostmiProvider>()
+                        .houseTypesList
+                        .map((houseType) {
+                      return DropdownMenuItem<String>(
+                          value: houseType["id"].toString(),
+                          child: Text(
+                            houseType["fr"].toString(),
+                            overflow: TextOverflow.ellipsis,
+                          ));
+                    }).toList(),
+                    onChanged: (value) {
+                      selectedHouseType = value;
+                    }),
                 _spacer,
                 const SizedBox(
                   width: double.infinity,
@@ -269,132 +254,35 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
                 const SizedBox(
                   height: 10,
                 ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                        padding: const EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                          color: AppColor.white,
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        child: CustomRadioButton(
-                          text: "Cours unique",
-                          value: "unique_house",
-                          groupValue: radioCategoryGroup,
-                          margin: getMargin(
-                            left: 8,
-                          ),
-                          fontStyle: RadioFontStyle.ManropeMedium14Gray900,
-                          onChange: (value) {
-                            context
-                                .read<LocaleProvider>()
-                                .set(const Locale("fr"));
-                            setState(() {
-                              radioCategoryGroup = value;
-                            });
-                          },
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                        padding: const EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                          color: AppColor.white,
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        child: CustomRadioButton(
-                          text: "Cours commune",
-                          value: "common_house",
-                          groupValue: radioCategoryGroup,
-                          margin: getMargin(
-                            left: 8,
-                          ),
-                          fontStyle: RadioFontStyle.ManropeMedium14Gray900,
-                          onChange: (value) {
-                            context
-                                .read<LocaleProvider>()
-                                .set(const Locale("fr"));
-                            setState(() {
-                              radioCategoryGroup = value;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                _spacer,
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                        padding: const EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                          color: AppColor.white,
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        child: CustomRadioButton(
-                          text: "Appartement",
-                          value: "appartement",
-                          groupValue: radioCategoryGroup,
-                          margin: getMargin(
-                            left: 8,
-                          ),
-                          fontStyle: RadioFontStyle.ManropeMedium14Gray900,
-                          onChange: (value) {
-                            context
-                                .read<LocaleProvider>()
-                                .set(const Locale("fr"));
-                            setState(() {
-                              radioCategoryGroup = value;
-                            });
-                          },
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                        padding: const EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                          color: AppColor.white,
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        child: CustomRadioButton(
-                          text: "Building",
-                          value: "building",
-                          groupValue: radioCategoryGroup,
-                          margin: getMargin(
-                            left: 8,
-                          ),
-                          fontStyle: RadioFontStyle.ManropeMedium14Gray900,
-                          onChange: (value) {
-                            context
-                                .read<LocaleProvider>()
-                                .set(const Locale("fr"));
-                            setState(() {
-                              radioCategoryGroup = value;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                CustomDropDown(
+                    value: context
+                        .read<HostmiProvider>()
+                        .houseForm
+                        .houseCategory
+                        .toString(),
+                    focusNode: FocusNode(),
+                    icon: Container(
+                        margin: getMargin(left: 30, right: 16),
+                        child: CustomImageView(
+                            svgPath: ImageConstant.imgArrowdownGray900)),
+                    hintText: "Choisir une catégorie",
+                    margin: getMargin(top: 12),
+                    variant: DropDownVariant.FillBluegray50,
+                    fontStyle: DropDownFontStyle.ManropeMedium14Bluegray500,
+                    items: context
+                        .watch<HostmiProvider>()
+                        .houseCategoriesList
+                        .map((category) {
+                      return DropdownMenuItem<String>(
+                          value: category["id"].toString(),
+                          child: Text(
+                            category["fr"].toString(),
+                            overflow: TextOverflow.ellipsis,
+                          ));
+                    }).toList(),
+                    onChanged: (value) {
+                      selectedHouseCategory = value;
+                    }),
                 _spacer,
                 Container(
                   width: double.infinity,
@@ -414,8 +302,8 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
                   ),
                 ),
                 CustomTextFormField(
-                  focusNode: FocusNode(),
-                  controller: TextEditingController(),
+                  //focusNode: FocusNode(),
+                  controller: numberOfBeds,
                   hintText: "0",
                   margin: getMargin(top: 13),
                 ),
@@ -432,8 +320,8 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
                   ),
                 ),
                 CustomTextFormField(
-                  focusNode: FocusNode(),
-                  controller: TextEditingController(),
+                  //focusNode: FocusNode(),
+                  controller: numberOfBaths,
                   hintText: "0",
                   margin: getMargin(top: 13),
                 ),
@@ -457,28 +345,80 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
                     ),
                     Expanded(
                         child: DropdownButtonFormField<String>(
-                      value: "mois",
+                      value: context
+                          .read<HostmiProvider>()
+                          .houseForm
+                          .priceType
+                          .toString(),
                       padding: const EdgeInsets.symmetric(vertical: 15.0),
-                      items: const [
-                        DropdownMenuItem(
-                          value: "mois",
-                          child: Text("par mois"),
-                        ),
-                        DropdownMenuItem(
-                          value: "nuit",
-                          child: Text("par nuit"),
-                        ),
-                      ],
-                      onChanged: (Object? value) {},
+                      items: context
+                          .watch<HostmiProvider>()
+                          .priceTypesList
+                          .map((priceType) {
+                        return DropdownMenuItem<String>(
+                            value: priceType["id"].toString(),
+                            child: Text(
+                              priceType["fr"].toString(),
+                              overflow: TextOverflow.ellipsis,
+                            ));
+                      }).toList(),
+                      onChanged: (value) {
+                        selectedPriceType = value!;
+                      },
                     ))
                   ],
                 ),
                 CustomTextFormField(
-                  focusNode: FocusNode(),
-                  controller: TextEditingController(),
+                  //variant: TextFormFieldVariant.OutlineRed,
+                  //focusNode: FocusNode(),
+                  controller: price,
                   hintText: "0",
                   margin: getMargin(top: 13),
                 ),
+                _spacer,
+                const SizedBox(
+                  width: double.infinity,
+                  child: Text(
+                    "Monnaie utilisée",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                        color: AppColor.listItemGrey),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                CustomDropDown(
+                    value: context
+                        .read<HostmiProvider>()
+                        .houseForm
+                        .currency
+                        .toString(),
+                    //focusNode: FocusNode(),
+                    icon: Container(
+                        margin: getMargin(left: 30, right: 16),
+                        child: CustomImageView(
+                            svgPath: ImageConstant.imgArrowdownGray900)),
+                    hintText: "Choisir une monnaie",
+                    margin: getMargin(top: 12),
+                    variant: DropDownVariant.FillBluegray50,
+                    fontStyle: DropDownFontStyle.ManropeMedium14Bluegray500,
+                    items: context
+                        .watch<HostmiProvider>()
+                        .currenciesList
+                        .map((currency) {
+                      return DropdownMenuItem<String>(
+                          value: currency["id"].toString(),
+                          child: Text(
+                            "${currency["currency"] + ' - ' + currency["en"]}",
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                          ));
+                    }).toList(),
+                    onChanged: (value) {
+                      selectedCurrency = value;
+                    }),
                 _spacer,
                 DefaultAppButton(
                   text: "Suivant",
@@ -486,7 +426,26 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) {
-                          return AddPropertyAddressScreen();
+                          context.read<HostmiProvider>().houseForm.mainImage =
+                              mainCroppedImage;
+                          context.read<HostmiProvider>().houseForm.houseType =
+                              int.tryParse(selectedHouseType) ?? 1;
+                          context
+                                  .read<HostmiProvider>()
+                                  .houseForm
+                                  .houseCategory =
+                              int.tryParse(selectedHouseCategory) ?? 1;
+                          context.read<HostmiProvider>().houseForm.currency =
+                              int.tryParse(selectedCurrency) ?? 159;
+                          context.read<HostmiProvider>().houseForm.beds =
+                              int.tryParse(numberOfBeds.text.trim()) ?? 0;
+                          context.read<HostmiProvider>().houseForm.bathrooms =
+                              int.tryParse(numberOfBaths.text.trim()) ?? 0;
+                          context.read<HostmiProvider>().houseForm.priceType =
+                              int.tryParse(selectedPriceType) ?? 1;
+                          context.read<HostmiProvider>().houseForm.price =
+                              int.tryParse(price.text.trim()) ?? 0;
+                          return const AddPropertyAddressScreen();
                         },
                       ),
                     );
@@ -500,7 +459,7 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
     );
   }
 
-  Future pickImage(int index) async {
+  Future pickImage() async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (image == null) return;

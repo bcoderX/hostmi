@@ -27,7 +27,7 @@ class _SearchPlaceState extends State<SearchPlace> {
 
   void getSuggestion(String input) async {
     String kplacesApiKey = "AIzaSyAWO3hxU9IfAC3y2geMwP4f7nRMdUX0kNk";
-    String type = '(regions)';
+    // String type = '(regions)';
     String baseURL =
         'https://maps.googleapis.com/maps/api/place/autocomplete/json';
     var request = Uri.parse(

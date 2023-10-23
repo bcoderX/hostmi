@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hostmi/api/providers/hostmi_provider.dart';
 import 'package:hostmi/core/app_export.dart';
 import 'package:hostmi/ui/screens/add_new_property_screens/add_new_property_select_amenities_screen/add_new_property_select_amenities_screen.dart';
@@ -11,25 +14,38 @@ import 'package:hostmi/widgets/custom_drop_down.dart';
 import 'package:hostmi/widgets/custom_text_form_field.dart';
 import 'package:provider/provider.dart';
 
-class AddPropertyAddressScreen extends StatelessWidget {
+class AddPropertyAddressScreen extends StatefulWidget {
+  const AddPropertyAddressScreen({super.key});
+
+  @override
+  State<AddPropertyAddressScreen> createState() =>
+      _AddPropertyAddressScreenState();
+}
+
+class _AddPropertyAddressScreenState extends State<AddPropertyAddressScreen> {
   TextEditingController sectorController = TextEditingController();
 
   TextEditingController quarterController = TextEditingController();
+
   TextEditingController cityController = TextEditingController();
+
   TextEditingController countryController = TextEditingController();
+
   TextEditingController addressController = TextEditingController();
+
   TextEditingController longitudeController = TextEditingController();
+
   TextEditingController latitudeController = TextEditingController();
+  String selectedCountry = "854";
 
-  List<String> dropdownItemList = ["Item One", "Item Two", "Item Three"];
-  final SizedBox _spacer = const SizedBox(
-    height: 15,
-  );
-
-  AddPropertyAddressScreen({super.key});
+  LatLng? _center;
+  final SizedBox _spacer = const SizedBox(height: 15);
 
   @override
   Widget build(BuildContext context) {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<HostmiProvider>().getCountries();
+    });
     return SafeArea(
       child: Scaffold(
         backgroundColor: ColorConstant.gray50,
@@ -107,7 +123,7 @@ class AddPropertyAddressScreen extends StatelessWidget {
                     CustomTextFormField(
                       focusNode: FocusNode(),
                       controller: sectorController,
-                      hintText: "1",
+                      hintText: "0",
                       margin: getMargin(
                         top: 13,
                       ),
@@ -160,7 +176,11 @@ class AddPropertyAddressScreen extends StatelessWidget {
                       ),
                     ),
                     CustomDropDown(
-                        value: "854",
+                        value: context
+                            .read<HostmiProvider>()
+                            .houseForm
+                            .country
+                            .toString(),
                         focusNode: FocusNode(),
                         icon: Container(
                             margin: getMargin(left: 30, right: 16),
@@ -181,7 +201,9 @@ class AddPropertyAddressScreen extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                               ));
                         }).toList(),
-                        onChanged: (value) {}),
+                        onChanged: (value) {
+                          selectedCountry = value;
+                        }),
                     _spacer,
                     const SizedBox(
                       width: double.infinity,
@@ -195,13 +217,13 @@ class AddPropertyAddressScreen extends StatelessWidget {
                       ),
                     ),
                     CustomTextFormField(
-                        focusNode: FocusNode(),
-                        controller: addressController,
-                        hintText:
-                            "Rue 9.12, secteur 9, Koudougou, Burkina Faso",
-                        margin: getMargin(top: 12, bottom: 5),
-                        textInputAction: TextInputAction.done,
-                        textInputType: TextInputType.number),
+                      focusNode: FocusNode(),
+                      controller: addressController,
+                      hintText: "Rue 9.12, secteur 9, Koudougou, Burkina Faso",
+                      margin: getMargin(top: 12, bottom: 5),
+                      textInputAction: TextInputAction.done,
+                      textInputType: TextInputType.number,
+                    ),
                     _spacer,
                     Container(
                       width: double.infinity,
@@ -222,7 +244,9 @@ class AddPropertyAddressScreen extends StatelessWidget {
                             ),
                           ),
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              _checkPermission(context);
+                            },
                             child: const Text("Position Actuelle"),
                           )
                         ],
@@ -242,7 +266,7 @@ class AddPropertyAddressScreen extends StatelessWidget {
                     ),
                     CustomTextFormField(
                         focusNode: FocusNode(),
-                        controller: latitudeController,
+                        controller: longitudeController,
                         hintText: "0",
                         margin: getMargin(top: 12, bottom: 5),
                         textInputAction: TextInputAction.done,
@@ -283,12 +307,82 @@ class AddPropertyAddressScreen extends StatelessWidget {
   }
 
   onTapNext(BuildContext context) {
+    context.read<HostmiProvider>().houseForm.sector =
+        int.tryParse(sectorController.text.trim()) ?? 0;
+    context.read<HostmiProvider>().houseForm.quarter =
+        quarterController.text.trim();
+    context.read<HostmiProvider>().houseForm.city = cityController.text.trim();
+    context.read<HostmiProvider>().houseForm.country =
+        int.tryParse(selectedCountry) ?? 854;
+    context.read<HostmiProvider>().houseForm.fullAddress =
+        addressController.text.trim();
+    context.read<HostmiProvider>().houseForm.sector =
+        int.tryParse(sectorController.text.trim()) ?? 0;
+    context.read<HostmiProvider>().houseForm.longitude =
+        double.tryParse(longitudeController.text.trim()) ?? 0;
+    context.read<HostmiProvider>().houseForm.latitude =
+        double.tryParse(latitudeController.text.trim()) ?? 0;
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return const AddNewPropertySelectAmenitiesScreen();
     }));
   }
 
-  onTapArrowleft5(BuildContext context) {
+  void _checkPermission(BuildContext context) async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse) {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.bestForNavigation);
+      setState(() {
+        latitudeController.text = position.latitude.toString();
+        longitudeController.text = position.longitude.toString();
+      });
+    } else {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.always ||
+          permission == LocationPermission.whileInUse) {
+        try {
+          Position position = await Geolocator.getCurrentPosition(
+              desiredAccuracy: LocationAccuracy.bestForNavigation);
+          latitudeController.text = position.latitude.toString();
+          longitudeController.text = position.longitude.toString();
+        } catch (e) {
+          print(e);
+        }
+      } else {
+        reAskPermission();
+      }
+    }
+  }
+
+  reAskPermission() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Demande d'accès"),
+            content: const Text(
+                "Veuillez cliquer sur autoriser pour choisir la position actuelles"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Annuler"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _checkPermission(context);
+                },
+                child: const Text("D'accord"),
+              ),
+            ],
+          );
+        });
+  }
+
+  onTapCurrentPositin(BuildContext context) {
     Navigator.pop(context);
   }
 }

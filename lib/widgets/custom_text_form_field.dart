@@ -187,11 +187,11 @@ class CustomTextFormField extends StatelessWidget {
           borderRadius: _setOutlineBorderRadius(),
           borderSide: BorderSide.none,
         );
-      case TextFormFieldVariant.OutlineBlue500:
+      case TextFormFieldVariant.OutlineRed:
         return OutlineInputBorder(
           borderRadius: _setOutlineBorderRadius(),
           borderSide: BorderSide(
-            color: ColorConstant.brown500,
+            color: ColorConstant.pink,
             width: 1,
           ),
         );
@@ -213,7 +213,7 @@ class CustomTextFormField extends StatelessWidget {
         return ColorConstant.blueGray5001;
       case TextFormFieldVariant.OutlineBluegray40014:
         return ColorConstant.whiteA700;
-      case TextFormFieldVariant.OutlineBlue500:
+      case TextFormFieldVariant.OutlineRed:
         return ColorConstant.whiteA700;
       default:
         return ColorConstant.blueGray50;
@@ -228,7 +228,7 @@ class CustomTextFormField extends StatelessWidget {
         return true;
       case TextFormFieldVariant.OutlineBluegray40014:
         return true;
-      case TextFormFieldVariant.OutlineBlue500:
+      case TextFormFieldVariant.OutlineRed:
         return true;
       case TextFormFieldVariant.None:
         return false;
@@ -280,7 +280,7 @@ enum TextFormFieldVariant {
   OutlineGray300,
   FillBluegray5001,
   OutlineBluegray40014,
-  OutlineBlue500,
+  OutlineRed,
 }
 
 enum TextFormFieldFontStyle {

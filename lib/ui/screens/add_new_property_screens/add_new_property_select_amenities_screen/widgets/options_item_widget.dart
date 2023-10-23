@@ -10,7 +10,7 @@ class OptionsItemWidget extends StatelessWidget {
     this.onPressed,
   });
 
-  final Map<String, dynamic> amenity;
+  final Map<dynamic, dynamic> amenity;
   final List<int> selected;
   final void Function()? onPressed;
 

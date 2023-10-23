@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hostmi/ui/screens/filter_page.dart';
-import 'package:hostmi/ui/screens/home_screen/map_search_delegate.dart';
-import 'package:hostmi/ui/screens/home_screen/map_welcome.dart';
+// import 'package:hostmi/ui/screens/home_screen/map_search_delegate.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:hostmi/ui/widgets/filter_button.dart';
 import 'package:hostmi/ui/widgets/rounded_text_field.dart';
@@ -21,8 +20,6 @@ class _MapPageState extends State<MapPage> {
   final MapController _mapController = MapController();
   final List<LatLng> _points = [];
   final bool _isDrawable = false;
-  final CitySearchDelegate _delegate =
-      CitySearchDelegate(["Koudougou", "Bobo Dioulasso", "Ouagadougou"]);
   double _zoom = 9.2;
   @override
   Widget build(BuildContext context) {

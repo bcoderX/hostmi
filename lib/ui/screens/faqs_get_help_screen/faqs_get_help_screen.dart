@@ -4,9 +4,6 @@ import 'package:hostmi/utils/app_color.dart';
 import '../faqs_get_help_screen/widgets/questions_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:hostmi/core/app_export.dart';
-import 'package:hostmi/widgets/app_bar/appbar_iconbutton_1.dart';
-import 'package:hostmi/widgets/app_bar/appbar_subtitle.dart';
-import 'package:hostmi/widgets/app_bar/custom_app_bar.dart';
 import 'package:hostmi/widgets/custom_search_view.dart';
 
 // ignore_for_file: must_be_immutable

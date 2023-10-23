@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:hostmi/core/app_export.dart';
 
 class CustomButton extends StatelessWidget {
-  CustomButton(
-      {this.shape,
+  const CustomButton(
+      {super.key,
+      this.shape,
       this.padding,
       this.variant,
       this.fontStyle,
@@ -16,29 +17,29 @@ class CustomButton extends StatelessWidget {
       this.prefixWidget,
       this.suffixWidget});
 
-  ButtonShape? shape;
+  final ButtonShape? shape;
 
-  ButtonPadding? padding;
+  final ButtonPadding? padding;
 
-  ButtonVariant? variant;
+  final ButtonVariant? variant;
 
-  ButtonFontStyle? fontStyle;
+  final ButtonFontStyle? fontStyle;
 
-  Alignment? alignment;
+  final Alignment? alignment;
 
-  EdgeInsetsGeometry? margin;
+  final EdgeInsetsGeometry? margin;
 
-  VoidCallback? onTap;
+  final VoidCallback? onTap;
 
-  double? width;
+  final double? width;
 
-  double? height;
+  final double? height;
 
-  String? text;
+  final String? text;
 
-  Widget? prefixWidget;
+  final Widget? prefixWidget;
 
-  Widget? suffixWidget;
+  final Widget? suffixWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -66,13 +67,13 @@ class CustomButton extends StatelessWidget {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          prefixWidget ?? SizedBox(),
+          prefixWidget ?? const SizedBox(),
           Text(
             text ?? "",
             textAlign: TextAlign.center,
             style: _setFontStyle(),
           ),
-          suffixWidget ?? SizedBox(),
+          suffixWidget ?? const SizedBox(),
         ],
       );
     } else {
@@ -563,6 +564,7 @@ enum ButtonShape {
   RoundedBorder16,
   CircleBorder13,
 }
+
 enum ButtonPadding {
   PaddingAll16,
   PaddingAll13,
@@ -573,6 +575,7 @@ enum ButtonPadding {
   PaddingT10,
   PaddingT9,
 }
+
 enum ButtonVariant {
   FillBlue500,
   OutlineBluegray500,
@@ -588,6 +591,7 @@ enum ButtonVariant {
   FillBluegray50,
   OutlineBlue500_3,
 }
+
 enum ButtonFontStyle {
   ManropeBold16WhiteA700_1,
   ManropeBold16Bluegray50,

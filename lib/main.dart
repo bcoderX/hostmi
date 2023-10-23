@@ -73,7 +73,8 @@ class HostMi extends StatelessWidget {
         // is not restarted.
         splashColor: AppColor.primary,
         scaffoldBackgroundColor: AppColor.grey,
-        primarySwatch: const MaterialColor(0xFF872E01, color),
+        primarySwatch: Colors.red,
+        // primarySwatch: const MaterialColor(0xFF872E01, color),
         fontFamily: 'Roboto',
         primaryTextTheme: const TextTheme(
           titleLarge: TextStyle(

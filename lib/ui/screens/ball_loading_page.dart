@@ -1,6 +1,8 @@
-import 'dart:async';
+// import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:hostmi/utils/app_color.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:rive/rive.dart';
 
 class BallLoadingPage extends StatefulWidget {
@@ -10,7 +12,6 @@ class BallLoadingPage extends StatefulWidget {
 }
 
 class _BallLoadingPageState extends State<BallLoadingPage> {
-
   // @override
   // void initState() {
   //   Timer(const Duration(seconds: 3), () {
@@ -23,8 +24,14 @@ class _BallLoadingPageState extends State<BallLoadingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: SizedBox(
-      width: 150,
-        child: RiveAnimation.asset("assets/rive/loading.riv"))));
+    return Scaffold(
+        body: Center(
+            child: SizedBox(
+      width: 25,
+      child: LoadingAnimationWidget.staggeredDotsWave(
+        color: AppColor.primary,
+        size: 25,
+      ), /* RiveAnimation.asset("assets/rive/loading.riv") */
+    )));
   }
 }

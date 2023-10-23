@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:go_router/go_router.dart';
+import 'package:hostmi/ui/alerts/error_dialog.dart';
 import 'package:hostmi/ui/screens/ball_loading_page.dart';
 import 'package:hostmi/ui/screens/login_phone_number_screen.dart';
 import 'package:hostmi/ui/screens/main_screen.dart';
@@ -59,13 +60,18 @@ class _LoginPageState extends State<LoginPage> {
           //_passwordController.clear();
         }
       } on AuthException catch (error) {
-        print(error);
-        SnackBar(
-          content: Text(error.message),
-          backgroundColor: Theme.of(context).colorScheme.error,
-        );
+        if (error.statusCode == '400') {
+          _loginErrorDialog(
+            title: "Problème de connexion",
+            content: "Email ou mot de passe incorrect.",
+          );
+        }
       } catch (error) {
         print(error);
+        _loginErrorDialog(
+          title: "Problème de connexion",
+          content: "Vérifiez votre connexion internet et réessayer.",
+        );
         SnackBar(
           content: const Text("Une erreur s'est produite. Veuillez réessayer"),
           backgroundColor: Theme.of(context).colorScheme.error,
@@ -78,6 +84,14 @@ class _LoginPageState extends State<LoginPage> {
         }
       }
     }
+  }
+
+  _loginErrorDialog({required String title, required String content}) {
+    showErrorDialog(
+      title: title,
+      content: content,
+      context: context,
+    );
   }
 
   @override
@@ -131,7 +145,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: Column(
                       children: [
                         _spacer,
-                         SquareTextField(
+                        SquareTextField(
                           prefixIcon: const Icon(
                             Icons.email,
                             color: AppColor.primary,
@@ -164,7 +178,7 @@ class _LoginPageState extends State<LoginPage> {
                               child: Text(
                                 _isLoading
                                     ? 'Chargement...'
-                                    :AppLocalizations.of(context)!.login,
+                                    : AppLocalizations.of(context)!.login,
                                 style: const TextStyle(
                                   fontSize: AppTextSize.heading18,
                                   color: AppColor.white,

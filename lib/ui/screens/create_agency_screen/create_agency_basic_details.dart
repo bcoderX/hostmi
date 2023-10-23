@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hostmi/api/hostmi_local_database/hostmi_local_database.dart';
 import 'package:hostmi/api/providers/hostmi_provider.dart';
 import 'package:hostmi/routes.dart';
-import 'package:hostmi/ui/screens/gears_loading_page.dart';
-import 'package:hostmi/ui/screens/agency_screen/agency_screen.dart';
-import 'package:hostmi/ui/screens/success_screen.dart';
 import 'package:hostmi/ui/widgets/labeled_field.dart';
 import 'package:hostmi/utils/app_color.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -30,6 +27,14 @@ class _CreateAgencyBasicDetailsState extends State<CreateAgencyBasicDetails> {
   final TextEditingController _descriptionController = TextEditingController();
 
   @override
+  void initState() {
+    _nameController.text = context.read<HostmiProvider>().agencyName;
+    _descriptionController.text =
+        context.read<HostmiProvider>().agencyDescription;
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _nameController.dispose();
     _descriptionController.dispose();
@@ -38,9 +43,10 @@ class _CreateAgencyBasicDetailsState extends State<CreateAgencyBasicDetails> {
 
   @override
   Widget build(BuildContext context) {
-    _nameController.text = context.read<HostmiProvider>().agencyName;
-    _descriptionController.text =
-        context.read<HostmiProvider>().agencyDescription;
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<HostmiProvider>().getCountries();
+    });
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColor.grey,
@@ -110,7 +116,10 @@ class _CreateAgencyBasicDetailsState extends State<CreateAgencyBasicDetails> {
                       .map((country) {
                     return DropdownMenuItem<String>(
                         value: country["id"].toString(),
-                        child: Text(country["fr"].toString()));
+                        child: Text(
+                          country["fr"].toString(),
+                          overflow: TextOverflow.ellipsis,
+                        ));
                   }).toList(),
                   onChanged: (String? value) {
                     List<dynamic> countries =

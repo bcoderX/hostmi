@@ -7,14 +7,11 @@ import 'package:hostmi/api/supabase/agencies/create_agency.dart';
 import 'package:hostmi/api/supabase/supabase_client.dart';
 import 'package:hostmi/routes.dart';
 import 'package:hostmi/ui/screens/gears_loading_page.dart';
-import 'package:hostmi/ui/screens/agency_screen/agency_screen.dart';
-import 'package:hostmi/ui/screens/success_screen.dart';
 import 'package:hostmi/ui/widgets/labeled_field.dart';
 import 'package:hostmi/utils/app_color.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
-import '../../../api/hostmi_local_database/hostmi_local_database.dart';
 import '../../widgets/labeled_dropdown.dart';
 
 class ReviewAgencyDetails extends StatefulWidget {

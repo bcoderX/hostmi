@@ -1,7 +1,12 @@
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:hostmi/api/providers/hostmi_provider.dart';
+import 'package:hostmi/ui/screens/add_new_property_screens/add_property_pictures/add_property_pictures.dart';
 import 'package:hostmi/ui/widgets/default_app_button.dart';
 import 'package:hostmi/utils/app_color.dart';
+import 'package:hostmi/widgets/custom_drop_down.dart';
 import 'package:hostmi/widgets/custom_text_form_field.dart';
+import 'package:provider/provider.dart';
 
 import '../add_new_property_select_amenities_screen/widgets/options_item_widget.dart';
 import 'package:flutter/material.dart';
@@ -19,48 +24,34 @@ class AddNewPropertySelectAmenitiesScreen extends StatefulWidget {
 
 class _AddNewPropertySelectAmenitiesScreenState
     extends State<AddNewPropertySelectAmenitiesScreen> {
-  final List<int> selected = [];
-
-  final List<Map<String, dynamic>> _amenities = [
-    {
-      "id": 1,
-      "en": "Current",
-      "fr": "Courant",
-    },
-    {
-      "id": 2,
-      "en": "Water common counter",
-      "fr": "Eau compteur commun",
-    },
-    {
-      "id": 3,
-      "en": "Water individual counter",
-      "fr": "Eau compteur individuel",
-    },
-    {
-      "id": 4,
-      "en": "Boring Water",
-      "fr": "Eau forage",
-    },
-    {
-      "id": 5,
-      "en": "Current",
-      "fr": "Courant",
-    },
-    {
-      "id": 6,
-      "en": "Kitchen",
-      "fr": "Cuisine",
-    },
-    {
-      "id": 7,
-      "en": "Trees",
-      "fr": "Arbres",
-    },
-  ];
+  final SizedBox _spacer = const SizedBox(height: 25);
+  List<int> selectedFeatures = [];
+  String selectedGender = "3";
+  String selectedJob = "4";
+  String selectedMaritalStatus = "3";
 
   @override
+  void initState() {
+    selectedFeatures = context.read<HostmiProvider>().houseForm.features ?? [];
+    selectedGender = context.read<HostmiProvider>().houseForm.gender.toString();
+    selectedJob =
+        context.read<HostmiProvider>().houseForm.occupation.toString();
+    selectedMaritalStatus =
+        context.read<HostmiProvider>().houseForm.maritalStatus.toString();
+    descriptionController.text =
+        context.read<HostmiProvider>().houseForm.description ?? "";
+    super.initState();
+  }
+
+  TextEditingController descriptionController = TextEditingController();
+  @override
   Widget build(BuildContext context) {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<HostmiProvider>().getHouseFeatures();
+      context.read<HostmiProvider>().getGenders();
+      context.read<HostmiProvider>().getJobs();
+      context.read<HostmiProvider>().getMaritalStatus();
+    });
     return SafeArea(
       child: Scaffold(
         backgroundColor: ColorConstant.gray50,
@@ -87,7 +78,7 @@ class _AddNewPropertySelectAmenitiesScreenState
                       children: [
                         Padding(
                             padding: getPadding(top: 6, bottom: 6),
-                            child: Text("Caractéristiques",
+                            child: Text("Caractéristiques et clients cibles",
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.left,
                                 style: AppStyle.txtManropeSemiBold14Gray900)),
@@ -132,7 +123,8 @@ class _AddNewPropertySelectAmenitiesScreenState
                       ])),
                   Padding(
                       padding: getPadding(top: 24),
-                      child: Text("Choisir les caractéristiques",
+                      child: Text(
+                          "Choisir les caractéristiques (${selectedFeatures.length})",
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.left,
                           style: AppStyle.txtManropeBold18.copyWith(
@@ -142,45 +134,195 @@ class _AddNewPropertySelectAmenitiesScreenState
                     child: Wrap(
                       runSpacing: getVerticalSize(5),
                       spacing: getHorizontalSize(5),
-                      children: List<Widget>.generate(
-                        _amenities.length,
-                        (index) => OptionsItemWidget(
-                          amenity: _amenities[index],
-                          selected: selected,
-                          onPressed: () => onSelected(_amenities[index]["id"]),
-                        ),
-                      ),
+                      children: context
+                          .watch<HostmiProvider>()
+                          .houseFeaturesList
+                          .map((feature) => OptionsItemWidget(
+                                amenity: feature,
+                                selected: selectedFeatures,
+                                onPressed: () => onSelected(feature["id"]),
+                              ))
+                          .toList(),
                     ),
                   ),
                   Padding(
                       padding: getPadding(top: 24),
-                      child: Text("Description (Facultatif)",
+                      child: Text("Clients cibles",
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.left,
                           style: AppStyle.txtManropeBold18.copyWith(
                               letterSpacing: getHorizontalSize(0.2)))),
+                  _spacer,
+                  const SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      "Sexe",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                        color: AppColor.listItemGrey,
+                      ),
+                    ),
+                  ),
+                  CustomDropDown(
+                      value: context
+                          .read<HostmiProvider>()
+                          .houseForm
+                          .gender
+                          .toString(),
+                      //focusNode: FocusNode(),
+                      icon: Container(
+                          margin: getMargin(left: 30, right: 16),
+                          child: CustomImageView(
+                              svgPath: ImageConstant.imgArrowdownGray900)),
+                      hintText: "Choisir le sexe",
+                      margin: getMargin(top: 12),
+                      variant: DropDownVariant.FillBluegray50,
+                      fontStyle: DropDownFontStyle.ManropeMedium14Bluegray500,
+                      items: context
+                          .watch<HostmiProvider>()
+                          .gendersList
+                          .map((gender) {
+                        return DropdownMenuItem<String>(
+                            value: gender["id"].toString(),
+                            child: Text(
+                              gender["fr"].toString(),
+                              overflow: TextOverflow.ellipsis,
+                            ));
+                      }).toList(),
+                      onChanged: (value) {
+                        selectedGender = value;
+                      }),
+                  _spacer,
+                  const SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      "Occupations",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                        color: AppColor.listItemGrey,
+                      ),
+                    ),
+                  ),
+                  CustomDropDown(
+                      value: context
+                          .read<HostmiProvider>()
+                          .houseForm
+                          .occupation
+                          .toString(),
+                      //focusNode: FocusNode(),
+                      icon: Container(
+                          margin: getMargin(left: 30, right: 16),
+                          child: CustomImageView(
+                              svgPath: ImageConstant.imgArrowdownGray900)),
+                      hintText: "Choisir un travail",
+                      margin: getMargin(top: 12),
+                      variant: DropDownVariant.FillBluegray50,
+                      fontStyle: DropDownFontStyle.ManropeMedium14Bluegray500,
+                      items:
+                          context.watch<HostmiProvider>().jobsList.map((job) {
+                        return DropdownMenuItem<String>(
+                            value: job["id"].toString(),
+                            child: Text(
+                              job["fr"].toString(),
+                              overflow: TextOverflow.ellipsis,
+                            ));
+                      }).toList(),
+                      onChanged: (value) {
+                        selectedJob = value;
+                      }),
+                  _spacer,
+                  const SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      "Situation matrimoniale",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                        color: AppColor.listItemGrey,
+                      ),
+                    ),
+                  ),
+                  CustomDropDown(
+                      value: context
+                          .read<HostmiProvider>()
+                          .houseForm
+                          .maritalStatus
+                          .toString(),
+                      //focusNode: FocusNode(),
+                      icon: Container(
+                          margin: getMargin(left: 30, right: 16),
+                          child: CustomImageView(
+                              svgPath: ImageConstant.imgArrowdownGray900)),
+                      hintText: "Choisir la situation matrimoniale",
+                      margin: getMargin(top: 12),
+                      variant: DropDownVariant.FillBluegray50,
+                      fontStyle: DropDownFontStyle.ManropeMedium14Bluegray500,
+                      items: context
+                          .watch<HostmiProvider>()
+                          .maritalStatusList
+                          .map((country) {
+                        return DropdownMenuItem<String>(
+                            value: country["id"].toString(),
+                            child: Text(
+                              country["fr"].toString(),
+                              overflow: TextOverflow.ellipsis,
+                            ));
+                      }).toList(),
+                      onChanged: (value) {
+                        selectedMaritalStatus = value;
+                      }),
+                  _spacer,
+                  Padding(
+                    padding: getPadding(top: 24),
+                    child: Text(
+                      "Description (Facultatif)",
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.left,
+                      style: AppStyle.txtManropeBold18.copyWith(
+                        letterSpacing: getHorizontalSize(0.2),
+                      ),
+                    ),
+                  ),
                   CustomTextFormField(
-                    focusNode: FocusNode(),
-                    controller: TextEditingController(),
+                    //focusNode: FocusNode(),
+                    controller: descriptionController,
                     hintText: "Faites une petite description de la maison",
                     margin: getMargin(top: 12),
                     textInputType: TextInputType.text,
                     maxLines: 6,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: DefaultAppButton(
+                      text: "Suivant",
+                      onPressed: () {
+                        onTapNext(context);
+                      },
+                    ),
                   ),
                 ],
               ),
             ),
           ),
         ),
-        bottomNavigationBar: const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: DefaultAppButton(text: "Enregistrer"),
-        ),
       ),
     );
   }
 
   onTapNext(BuildContext context) {
+    context.read<HostmiProvider>().houseForm.features = selectedFeatures;
+    context.read<HostmiProvider>().houseForm.gender =
+        int.tryParse(selectedGender) ?? 3;
+    context.read<HostmiProvider>().houseForm.occupation =
+        int.tryParse(selectedJob) ?? 4;
+    context.read<HostmiProvider>().houseForm.maritalStatus =
+        int.tryParse(selectedMaritalStatus) ?? 3;
+    context.read<HostmiProvider>().houseForm.description =
+        descriptionController.text.trim();
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => const AddPropertyPictures()));
     //Navigator.pushNamed(context, AppRoutes.addNewPropertyDetailsScreen);
   }
 
@@ -190,10 +332,10 @@ class _AddNewPropertySelectAmenitiesScreenState
 
   onSelected(int index) {
     setState(() {
-      if (selected.contains(index)) {
-        selected.remove(index);
+      if (selectedFeatures.contains(index)) {
+        selectedFeatures.remove(index);
       } else {
-        selected.add(index);
+        selectedFeatures.add(index);
       }
     });
   }

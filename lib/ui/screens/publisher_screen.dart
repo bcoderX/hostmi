@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hostmi/api/supabase/agencies/managers/select_manager_agency.dart';
 import 'package:hostmi/api/supabase/supabase_client.dart';
+import 'package:hostmi/routes.dart';
 import 'package:hostmi/ui/screens/agency_screen/agency_screen.dart';
 import 'package:hostmi/ui/screens/ball_loading_page.dart';
 import 'package:hostmi/ui/screens/create_agency_screen/no_agency.dart';
+import 'package:hostmi/ui/widgets/default_app_button.dart';
 import 'package:hostmi/utils/app_color.dart';
+import 'package:go_router/go_router.dart';
 
 class PublisherPage extends StatefulWidget {
   const PublisherPage({Key? key}) : super(key: key);
@@ -24,6 +27,30 @@ class _PublisherPageState extends State<PublisherPage> {
         systemNavigationBarColor: Colors.grey,
       ),
     );
+
+    if (supabase.auth.currentUser == null) {
+      return Center(
+        child: InkWell(
+          onTap: () {
+            context.go(keyLoginRoute);
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text("Vous devez vous connecter pour continuer"),
+              TextButton(
+                child: const Text("Cliquer ici pour se connecter"),
+                onPressed: () {
+                  context.go(keyLoginRoute);
+                },
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return FutureBuilder<List<Map<String, dynamic>>>(
         future: selectAgency(supabase.auth.currentUser!.id),
         builder: (context, snapshot) {

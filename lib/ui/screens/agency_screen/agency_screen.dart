@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hostmi/api/models/agency_model.dart';
-import 'package:hostmi/api/models/house_model.dart';
-import 'package:hostmi/ui/screens/add_house1.dart';
-import 'package:hostmi/ui/screens/add_new_property_screens/select_property_category.dart';
+import 'package:hostmi/ui/screens/add_new_property_screens/add_property_basic_details.dart';
 import 'package:hostmi/ui/screens/add_new_property_screens/add_new_property_select_amenities_screen/add_new_property_select_amenities_screen.dart';
 import 'package:hostmi/ui/screens/agency_screen/tabs/agency_posts.dart';
 import 'package:hostmi/ui/screens/agency_screen/tabs/contacts.dart';
 import 'package:hostmi/ui/screens/agency_screen/tabs/manage.dart';
-import 'package:hostmi/ui/widgets/house_card.dart';
 import 'package:hostmi/ui/widgets/landloard_action_button.dart';
 import 'package:hostmi/utils/app_color.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -79,7 +76,7 @@ class _LandlordPageState extends State<LandlordPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                        height: 200,
+                        height: 150,
                         decoration: BoxDecoration(
                           color: AppColor.grey,
                           image: DecorationImage(
@@ -101,19 +98,25 @@ class _LandlordPageState extends State<LandlordPage> {
                     child: Align(
                       alignment: Alignment.bottomRight,
                       child: Container(
-                        height: 200,
-                        width: 200,
+                        height: 125,
+                        width: 125,
                         margin: const EdgeInsets.only(
                           right: 25,
                         ),
                         decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: NetworkImage(agency.profileImageUrl!),
+                          image: null,
+                          /* DecorationImage(
+                            image:  NetworkImage(agency.profileImageUrl!),
                             fit: BoxFit.cover,
-                          ),
+                          ), */
                           //borderRadius: BorderRadius.circular(100.0),
                           border: Border.all(color: AppColor.grey, width: 5.0),
-                          color: AppColor.iconBorderGrey,
+                          color: AppColor.primary,
+                        ),
+                        child: const Icon(
+                          Icons.house,
+                          color: Colors.white,
+                          size: 50,
                         ),
                       ),
                     ),

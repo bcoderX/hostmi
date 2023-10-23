@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:hostmi/ui/screens/add_house3.dart';
 import 'package:hostmi/ui/widgets/image_form_field.dart';
@@ -22,8 +23,10 @@ class _AddHouse2State extends State<AddHouse2> {
   List<String> fields = [];
 
   final SizedBox _spacer = const SizedBox(height: 25.0);
+
   @override
   Widget build(BuildContext context) {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {});
     fields = [
       AppLocalizations.of(context)!.facePicture,
       AppLocalizations.of(context)!.mainRoom,

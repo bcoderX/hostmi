@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:hostmi/core/app_export.dart';
 //import 'package:hostmi/presentation/home_page/home_page.dart';
 //import 'package:hostmi/presentation/home_search_page/home_search_page.dart';
-import 'package:hostmi/ui/screens/message_screen/message_screen.dart';
-import 'package:hostmi/ui/screens/profile_screen/profile_screen.dart';
 import 'package:hostmi/widgets/app_bar/appbar_iconbutton_3.dart';
 import 'package:hostmi/widgets/app_bar/appbar_image.dart';
 import 'package:hostmi/widgets/app_bar/appbar_subtitle_2.dart';

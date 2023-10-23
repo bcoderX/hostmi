@@ -99,7 +99,8 @@ class _AddAgencyPicturesState extends State<AddAgencyPictures> {
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 image: croppedImages[0] == null
-                                    ? const AssetImage("assets/images/3.jpg")
+                                    ? const AssetImage(
+                                        "assets/images/image_not_found.png")
                                     : FileImage(croppedImages[0]!)
                                         as ImageProvider,
                                 fit: BoxFit.cover,
@@ -212,7 +213,8 @@ class _AddAgencyPicturesState extends State<AddAgencyPictures> {
                               borderRadius: BorderRadius.circular(100),
                               image: DecorationImage(
                                 image: croppedImages[1] == null
-                                    ? const AssetImage("assets/images/3.jpg")
+                                    ? const AssetImage(
+                                        "assets/images/image_not_found.png")
                                     : FileImage(croppedImages[1]!)
                                         as ImageProvider,
                                 fit: BoxFit.cover,

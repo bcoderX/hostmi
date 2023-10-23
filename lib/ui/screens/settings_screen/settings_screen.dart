@@ -44,7 +44,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Container(
+                          /* Container(
                             width: double.infinity,
                             height: 150,
                             margin: getMargin(bottom: 20),
@@ -131,7 +131,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 )
                               ],
                             ),
-                          ),
+                          ), */
                           Text("Application menu",
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.left,

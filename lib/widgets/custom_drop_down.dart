@@ -2,24 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:hostmi/core/app_export.dart';
 
 class CustomDropDown extends StatelessWidget {
-  CustomDropDown(
-      {super.key,
-      this.shape,
-      this.padding,
-      this.variant,
-      this.fontStyle,
-      this.alignment,
-      this.width,
-      this.margin,
-      this.focusNode,
-      this.icon,
-      this.hintText,
-      this.value,
-      this.prefix,
-      this.prefixConstraints,
-      this.items,
-      this.onChanged,
-      this.validator});
+  CustomDropDown({
+    super.key,
+    this.shape,
+    this.padding,
+    this.variant,
+    this.fontStyle,
+    this.alignment,
+    this.width,
+    this.margin,
+    this.focusNode,
+    this.icon,
+    this.hintText,
+    this.value,
+    this.prefix,
+    this.prefixConstraints,
+    this.items,
+    this.onChanged,
+    this.validator,
+  });
 
   DropDownShape? shape;
 
@@ -67,6 +68,7 @@ class CustomDropDown extends StatelessWidget {
       width: width ?? double.maxFinite,
       margin: margin,
       child: DropdownButtonFormField<String>(
+        isExpanded: true,
         value: value ?? "",
         focusNode: focusNode,
         icon: icon,

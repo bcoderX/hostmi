@@ -4,17 +4,8 @@ import 'package:hostmi/widgets/app_bar/appbar_iconbutton_1.dart';
 import 'package:hostmi/widgets/app_bar/appbar_subtitle.dart';
 import 'package:hostmi/widgets/app_bar/custom_app_bar.dart';
 import 'package:hostmi/widgets/custom_button.dart';
-import 'package:hostmi/widgets/custom_drop_down.dart';
 import 'package:hostmi/widgets/custom_text_form_field.dart';
-// ignore_for_file: must_be_immutable
 
-// ignore_for_file: must_be_immutable
-
-// ignore_for_file: must_be_immutable
-
-// ignore_for_file: must_be_immutable
-
-// ignore_for_file: must_be_immutable
 class AddNewPropertyAddressScreen extends StatelessWidget {
   TextEditingController propertyaddressTwoController = TextEditingController();
 

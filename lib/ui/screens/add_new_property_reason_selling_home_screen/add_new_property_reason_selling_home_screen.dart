@@ -5,17 +5,7 @@ import 'package:hostmi/widgets/app_bar/appbar_subtitle.dart';
 import 'package:hostmi/widgets/app_bar/custom_app_bar.dart';
 import 'package:hostmi/widgets/custom_button.dart';
 import 'package:hostmi/widgets/custom_checkbox.dart';
-// ignore_for_file: must_be_immutable
 
-// ignore_for_file: must_be_immutable
-
-// ignore_for_file: must_be_immutable
-
-// ignore_for_file: must_be_immutable
-
-// ignore_for_file: must_be_immutable
-
-// ignore_for_file: must_be_immutable
 class AddNewPropertyReasonSellingHomeScreen extends StatelessWidget {
   bool isCheckbox = false;
 
@@ -28,6 +18,8 @@ class AddNewPropertyReasonSellingHomeScreen extends StatelessWidget {
   bool isCheckbox4 = false;
 
   bool isCheckbox5 = false;
+
+  AddNewPropertyReasonSellingHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -160,7 +152,7 @@ class AddNewPropertyReasonSellingHomeScreen extends StatelessWidget {
                           onChange: (value) {
                             isCheckbox4 = value;
                           }),
-                      Container(
+                      SizedBox(
                           width: double.maxFinite,
                           child: Container(
                               width: getHorizontalSize(327),
