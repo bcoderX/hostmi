@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hostmi/api/supabase/agencies/managers/select_manager_agency.dart';
+import 'package:hostmi/api/hostmi_local_database/hostmi_local_database.dart';
+import 'package:hostmi/api/models/agency_model.dart';
 import 'package:hostmi/api/supabase/supabase_client.dart';
 import 'package:hostmi/routes.dart';
-import 'package:hostmi/ui/screens/agency_screen/agency_screen.dart';
+import 'package:hostmi/ui/screens/agency_screen/agency_manager_screen.dart';
 import 'package:hostmi/ui/screens/ball_loading_page.dart';
 import 'package:hostmi/ui/screens/create_agency_screen/no_agency.dart';
-import 'package:hostmi/ui/widgets/default_app_button.dart';
 import 'package:hostmi/utils/app_color.dart';
 import 'package:go_router/go_router.dart';
 
@@ -51,16 +51,15 @@ class _PublisherPageState extends State<PublisherPage> {
       );
     }
 
-    return FutureBuilder<List<Map<String, dynamic>>>(
-        future: selectAgency(supabase.auth.currentUser!.id),
+    return FutureBuilder<AgencyModel?>(
+        future: getAgencyDetails(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const BallLoadingPage();
           } else if (snapshot.hasData) {
-            if (snapshot.data!.isNotEmpty) {
-              final List<Map<String, dynamic>> data = snapshot.data ?? [];
-              return LandlordPage(
-                agency: data,
+            if (snapshot.data != null) {
+              return AgencyManagerScreen(
+                agency: snapshot.data!,
               );
             }
           }

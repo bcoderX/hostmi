@@ -52,7 +52,7 @@ class ColorConstant {
 
   static Color blueGray400 = fromHex('#8b8fa7');
 
-  static Color brown500 = Colors.red;
+  static Color brown500 = Colors.deepOrangeAccent;
   static Color pink = Colors.pink;
   // static Color brown500 = fromHex('#872E01');
 

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:hostmi/api/providers/hostmi_provider.dart';
 import 'package:hostmi/api/providers/locale_provider.dart';
 import 'package:hostmi/core/utils/color_constant.dart';
 import 'package:hostmi/core/utils/size_utils.dart';
@@ -10,6 +11,7 @@ import 'package:hostmi/theme/app_style.dart';
 import 'package:hostmi/ui/alerts/error_dialog.dart';
 import 'package:hostmi/ui/screens/add_new_property_screens/add_property_address.dart';
 import 'package:hostmi/ui/screens/add_new_property_screens/add_property_pictures/widgets/local_image_preview.dart';
+import 'package:hostmi/ui/screens/add_new_property_screens/preview_and_save.dart';
 import 'package:hostmi/ui/widgets/default_app_button.dart';
 import 'package:hostmi/ui/widgets/labeled_field.dart';
 import 'package:hostmi/ui/widgets/landloard_action_button.dart';
@@ -35,6 +37,7 @@ class _AddPropertyPicturesState extends State<AddPropertyPictures> {
   final SizedBox _spacer = const SizedBox(height: 25);
   List<File?> images = [];
   List<File?> croppedImages = [];
+  List<String> descriptions = [];
   int size = 0;
   int loaded = 0;
   bool isLoaading = false;
@@ -207,6 +210,9 @@ class _AddPropertyPicturesState extends State<AddPropertyPictures> {
                                       (BuildContext context, int index) {
                                     return LocalImagePreview(
                                       index: index,
+                                      onEditDescription: (String value) {
+                                        descriptions[index] = value;
+                                      },
                                       onAddNewImage:
                                           index == croppedImages.length - 1 &&
                                                   croppedImages.length < 10
@@ -214,6 +220,7 @@ class _AddPropertyPicturesState extends State<AddPropertyPictures> {
                                                   setState(() {
                                                     images.add(null);
                                                     croppedImages.add(null);
+                                                    descriptions.add("");
                                                   });
                                                   _pageController.animateToPage(
                                                     index + 1,
@@ -272,8 +279,25 @@ class _AddPropertyPicturesState extends State<AddPropertyPictures> {
                     _spacer,
                     croppedImages.isEmpty
                         ? const SizedBox()
-                        : const DefaultAppButton(
-                            text: "Enregistrer",
+                        : DefaultAppButton(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    context
+                                        .read<HostmiProvider>()
+                                        .houseForm
+                                        .images = croppedImages;
+                                    context
+                                        .read<HostmiProvider>()
+                                        .houseForm
+                                        .imagesDescriptions = descriptions;
+                                    return const PreviewAndSave();
+                                  },
+                                ),
+                              );
+                            },
+                            text: "Prévusialiser et enregistrer",
                           ),
                     const SizedBox(
                       height: 10,
@@ -330,6 +354,7 @@ class _AddPropertyPicturesState extends State<AddPropertyPictures> {
           isLoaading = false;
           images = [...files];
           croppedImages = [...files];
+          descriptions = List.generate(images.length, (index) => "");
         });
       } on PlatformException {}
     } else {
@@ -352,11 +377,11 @@ class _AddPropertyPicturesState extends State<AddPropertyPictures> {
 
     final lastIndex = filePath.lastIndexOf('.');
     final splitted = filePath.substring(0, (lastIndex));
-    final outPath = "${splitted}_out.png";
+    final outPath = "${splitted}_out.jpg";
     var result = await FlutterImageCompress.compressAndGetFile(
       file.absolute.path,
       outPath,
-      format: CompressFormat.png,
+      format: CompressFormat.jpeg,
       quality: 50,
     );
 

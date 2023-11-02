@@ -1,16 +1,17 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hostmi/core/app_export.dart';
 import 'package:hostmi/widgets/custom_icon_button.dart';
 
 // ignore: must_be_immutable
 class SliderarrowleftItemWidget extends StatelessWidget {
-  SliderarrowleftItemWidget();
-
+  const SliderarrowleftItemWidget({super.key, required this.imageUrl});
+  final String imageUrl;
   @override
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.center,
-      child: Container(
+      child: SizedBox(
         height: getSize(
           343,
         ),
@@ -18,14 +19,21 @@ class SliderarrowleftItemWidget extends StatelessWidget {
         child: Stack(
           alignment: Alignment.topCenter,
           children: [
-            CustomImageView(
-              imagePath: ImageConstant.imgImage343x3431,
-              height: getSize(
-                343,
-              ),
+            CachedNetworkImage(
+              imageUrl: imageUrl,
+              height: getSize(343),
               width: double.infinity,
               alignment: Alignment.center,
+              fit: BoxFit.cover,
             ),
+            // CustomImageView(
+            //   imagePath: ImageConstant.imgImage343x3431,
+            //   height: getSize(
+            //     343,
+            //   ),
+            //   width: double.infinity,
+            //   alignment: Alignment.center,
+            // ),
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
@@ -39,7 +47,6 @@ class SliderarrowleftItemWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-
                     Padding(
                       padding: getPadding(
                         bottom: 1,

@@ -18,6 +18,7 @@ class LocalImagePreview extends StatelessWidget {
     this.onRightClick,
     this.canAdd = false,
     this.onAddNewImage,
+    this.onEditDescription,
   });
   final bool canAdd;
   final int index;
@@ -29,6 +30,7 @@ class LocalImagePreview extends StatelessWidget {
   final void Function()? onBackClick;
   final void Function()? onRightClick;
   final void Function()? onAddNewImage;
+  final void Function(String value)? onEditDescription;
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +147,8 @@ class LocalImagePreview extends StatelessWidget {
             ],
           ),
         ),
-        const SquareTextField(
+        SquareTextField(
+          onChanged: onEditDescription,
           errorText: "Une erreur s'est produite",
           placeholder: "Ajouter un titre ou une description",
           isFullyBordered: true,

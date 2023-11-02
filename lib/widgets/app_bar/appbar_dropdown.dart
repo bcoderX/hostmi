@@ -23,7 +23,7 @@ class AppbarDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: margin ?? EdgeInsets.zero,
-      child: CustomDropDown(
+      child: CustomDropDown<String>(
         width: getHorizontalSize(
           149,
         ),

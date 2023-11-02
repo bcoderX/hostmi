@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hostmi/api/supabase/supabase_client.dart';
 import 'package:hostmi/core/app_export.dart';
 import 'package:hostmi/ui/screens/edit_profile_screen/edit_profile_screen.dart';
 import 'package:hostmi/utils/app_color.dart';
@@ -32,7 +33,7 @@ class ProfilePage extends StatelessWidget {
                   width: getSize(70),
                   child: Stack(alignment: Alignment.bottomRight, children: [
                     CustomImageView(
-                        imagePath: ImageConstant.imgRectangle36170x70,
+                        imagePath: ImageConstant.imageNotFound,
                         height: getSize(70),
                         width: getSize(70),
                         radius: BorderRadius.circular(getHorizontalSize(35)),
@@ -52,14 +53,15 @@ class ProfilePage extends StatelessWidget {
                   ])),
               Padding(
                   padding: getPadding(top: 8),
-                  child: Text("Cameron Williamson",
+                  child: Text("---",
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.left,
                       style: AppStyle.txtManropeBold18
                           .copyWith(letterSpacing: getHorizontalSize(0.2)))),
               Padding(
                   padding: getPadding(top: 4),
-                  child: Text("hello@gmail.com",
+                  child: Text(
+                      "${supabase.auth.currentUser!.email ?? supabase.auth.currentUser!.phone}",
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.left,
                       style: AppStyle.txtManropeMedium14Bluegray500)),
@@ -88,8 +90,11 @@ class ProfilePage extends StatelessWidget {
                                 variant: IconButtonVariant.FillBluegray50,
                                 shape: IconButtonShape.RoundedBorder10,
                                 padding: IconButtonPadding.PaddingAll12,
-                                child: CustomImageView(
-                                    svgPath: ImageConstant.imgInstagram)),
+                                child: const Icon(
+                                  Icons.remove_red_eye,
+                                  color: AppColor.primary,
+                                  size: 15,
+                                )),
                             Padding(
                                 padding:
                                     getPadding(left: 16, top: 12, bottom: 7),
@@ -120,8 +125,11 @@ class ProfilePage extends StatelessWidget {
                                 variant: IconButtonVariant.FillBluegray50,
                                 shape: IconButtonShape.RoundedBorder10,
                                 padding: IconButtonPadding.PaddingAll12,
-                                child: CustomImageView(
-                                    svgPath: ImageConstant.imgLocation40x40)),
+                                child: const Icon(
+                                  Icons.favorite_border,
+                                  color: AppColor.primary,
+                                  size: 15,
+                                )),
                             Padding(
                                 padding:
                                     getPadding(left: 16, top: 12, bottom: 7),
@@ -152,8 +160,11 @@ class ProfilePage extends StatelessWidget {
                                 variant: IconButtonVariant.FillBluegray50,
                                 shape: IconButtonShape.RoundedBorder10,
                                 padding: IconButtonPadding.PaddingAll12,
-                                child: CustomImageView(
-                                    svgPath: ImageConstant.imgFile)),
+                                child: const Icon(
+                                  Icons.calendar_month,
+                                  color: AppColor.primary,
+                                  size: 15,
+                                )),
                             Padding(
                                 padding:
                                     getPadding(left: 16, top: 10, bottom: 9),
@@ -169,42 +180,6 @@ class ProfilePage extends StatelessWidget {
                                 width: getSize(20),
                                 margin: getMargin(top: 10, bottom: 10))
                           ]))),
-              Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                      padding: getPadding(top: 32),
-                      child: Text("General",
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.left,
-                          style: AppStyle.txtManropeExtraBold14Bluegray500
-                              .copyWith(
-                                  letterSpacing: getHorizontalSize(0.2))))),
-              Padding(
-                  padding: getPadding(top: 16),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CustomIconButton(
-                            height: 40,
-                            width: 40,
-                            variant: IconButtonVariant.FillBluegray50,
-                            shape: IconButtonShape.RoundedBorder10,
-                            padding: IconButtonPadding.PaddingAll12,
-                            child: CustomImageView(
-                                svgPath: ImageConstant.imgMenu1)),
-                        Padding(
-                            padding: getPadding(left: 16, top: 12, bottom: 7),
-                            child: Text("Rent my home",
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.left,
-                                style: AppStyle.txtManropeSemiBold14Gray900)),
-                        const Spacer(),
-                        CustomImageView(
-                            svgPath: ImageConstant.imgArrowrightBlueGray500,
-                            height: getSize(20),
-                            width: getSize(20),
-                            margin: getMargin(top: 10, bottom: 10))
-                      ])),
               GestureDetector(
                   onTap: () {
                     onTapMylistings(context);
@@ -220,8 +195,11 @@ class ProfilePage extends StatelessWidget {
                                 variant: IconButtonVariant.FillBluegray50,
                                 shape: IconButtonShape.RoundedBorder10,
                                 padding: IconButtonPadding.PaddingAll12,
-                                child: CustomImageView(
-                                    svgPath: ImageConstant.imgHome44x44)),
+                                child: const Icon(
+                                  Icons.house_siding,
+                                  color: AppColor.primary,
+                                  size: 15,
+                                )),
                             Padding(
                                 padding:
                                     getPadding(left: 16, top: 12, bottom: 7),
@@ -237,38 +215,6 @@ class ProfilePage extends StatelessWidget {
                                 width: getSize(20),
                                 margin: getMargin(top: 10, bottom: 10))
                           ]))),
-              GestureDetector(
-                  onTap: () {
-                    onTapSettings(context);
-                  },
-                  child: Padding(
-                      padding: getPadding(top: 16, bottom: 5),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CustomIconButton(
-                                height: 40,
-                                width: 40,
-                                variant: IconButtonVariant.FillBluegray50,
-                                shape: IconButtonShape.RoundedBorder10,
-                                padding: IconButtonPadding.PaddingAll12,
-                                child: CustomImageView(
-                                    svgPath: ImageConstant.imgSettings1)),
-                            Padding(
-                                padding:
-                                    getPadding(left: 16, top: 12, bottom: 7),
-                                child: Text("Settings",
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.left,
-                                    style:
-                                        AppStyle.txtManropeSemiBold14Gray900)),
-                            const Spacer(),
-                            CustomImageView(
-                                svgPath: ImageConstant.imgArrowrightBlueGray500,
-                                height: getSize(20),
-                                width: getSize(20),
-                                margin: getMargin(top: 10, bottom: 10))
-                          ])))
             ])));
   }
 

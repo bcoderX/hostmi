@@ -36,7 +36,7 @@ class FaqsGetHelpScreen extends StatelessWidget {
                   CustomSearchView(
                       focusNode: FocusNode(),
                       controller: serchController,
-                      hintText: "Search questions...",
+                      hintText: "Chercher des questions...",
                       padding: SearchViewPadding.PaddingT17,
                       prefix: Container(
                           margin: getMargin(
@@ -56,7 +56,7 @@ class FaqsGetHelpScreen extends StatelessWidget {
                                   color: Colors.grey.shade600)))),
                   Padding(
                       padding: getPadding(top: 26),
-                      child: Text("Frequently Asked",
+                      child: Text("Questions fréquemment posées",
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.left,
                           style: AppStyle.txtManropeBold18.copyWith(
@@ -72,7 +72,7 @@ class FaqsGetHelpScreen extends StatelessWidget {
                   Padding(
                       padding: getPadding(top: 23, bottom: 5),
                       child: Row(children: [
-                        Text("Show all",
+                        Text("Voir plus",
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.left,
                             style: AppStyle.txtManropeBold14Blue500.copyWith(

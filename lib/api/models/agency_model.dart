@@ -5,7 +5,7 @@ part 'agency_model.g.dart';
 @HiveType(typeId: 3)
 class AgencyModel {
   @HiveField(0)
-  final int? id;
+  final String? id;
   @HiveField(1)
   final DateTime? createdAt;
   @HiveField(2)

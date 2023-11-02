@@ -9,9 +9,9 @@ Size size = WidgetsBinding.instance.window.physicalSize /
 // Caution! If you think these are static values and are used to build a static UI,  you mustn’t.
 // These are the Viewport values of your Figma Design.
 // These are used in the code as a reference to create your UI Responsively.
-const num FIGMA_DESIGN_WIDTH = 375;
-const num FIGMA_DESIGN_HEIGHT = 812;
-const num FIGMA_DESIGN_STATUS_BAR = 44;
+const num HOSTMI_DESIGN_WIDTH = 375;
+const num HOSTMI_DESIGN_HEIGHT = 812;
+const num HOSTMI_DESIGN_STATUS_BAR = 44;
 
 ///This method is used to get device viewport width.
 get width {
@@ -21,8 +21,8 @@ get width {
 ///This method is used to get device viewport height.
 get height {
   num statusBar =
-      MediaQueryData.fromWindow(WidgetsBinding.instance.window).viewPadding.top;
-  num bottomBar = MediaQueryData.fromWindow(WidgetsBinding.instance.window)
+      MediaQueryData.fromView(WidgetsBinding.instance.window).viewPadding.top;
+  num bottomBar = MediaQueryData.fromView(WidgetsBinding.instance.window)
       .viewPadding
       .bottom;
   num screenHeight = size.height - statusBar - bottomBar;
@@ -31,12 +31,12 @@ get height {
 
 ///This method is used to set padding/margin (for the left and Right side) & width of the screen or widget according to the Viewport width.
 double getHorizontalSize(double px) {
-  return ((px * width) / FIGMA_DESIGN_WIDTH);
+  return ((px * width) / HOSTMI_DESIGN_WIDTH);
 }
 
 ///This method is used to set padding/margin (for the top and bottom side) & height of the screen or widget according to the Viewport height.
 double getVerticalSize(double px) {
-  return ((px * height) / (FIGMA_DESIGN_HEIGHT - FIGMA_DESIGN_STATUS_BAR));
+  return ((px * height) / (HOSTMI_DESIGN_HEIGHT - HOSTMI_DESIGN_STATUS_BAR));
 }
 
 ///This method is used to set smallest px in image height and width

@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:hostmi/api/models/currency.dart';
+import 'package:hostmi/api/models/house_category.dart';
+import 'package:hostmi/api/models/house_type.dart';
+import 'package:hostmi/api/models/price_type.dart';
 import 'package:hostmi/api/providers/hostmi_provider.dart';
 import 'package:hostmi/api/providers/locale_provider.dart';
 import 'package:hostmi/core/utils/color_constant.dart';
@@ -24,22 +28,33 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-class SetPropertyBasicDetails extends StatefulWidget {
-  const SetPropertyBasicDetails({super.key});
+class AddNewPropertyBasicDetails extends StatefulWidget {
+  const AddNewPropertyBasicDetails({super.key});
 
   @override
-  State<SetPropertyBasicDetails> createState() =>
-      _SetPropertyBasicDetailsState();
+  State<AddNewPropertyBasicDetails> createState() =>
+      _AddNewPropertyBasicDetailsState();
 }
 
-class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
+class _AddNewPropertyBasicDetailsState
+    extends State<AddNewPropertyBasicDetails> {
   final SizedBox _spacer = const SizedBox(height: 25);
   File? mainImage;
   File? mainCroppedImage;
-  String selectedHouseType = "1";
-  String selectedHouseCategory = "1";
-  String selectedPriceType = "1";
-  String selectedCurrency = "159";
+  HouseType selectedHouseType = const HouseType(
+    id: 1,
+    en: "Simple house",
+    fr: "Maison simple",
+  );
+  HouseCategory selectedHouseCategory =
+      const HouseCategory(id: 1, en: "Unique house", fr: "Cours unique");
+  PriceType selectedPriceType = const PriceType(
+    id: 1,
+    en: "/month",
+    fr: "/mois",
+  );
+  Currency selectedCurrency =
+      const Currency(id: 159, currency: "XOF", en: "CFA Franc BCEAO", fr: "");
   TextEditingController numberOfBeds = TextEditingController();
   TextEditingController numberOfBaths = TextEditingController();
   TextEditingController price = TextEditingController();
@@ -137,23 +152,26 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
                             onTap: () async {
                               pickImage();
                             },
-                            child: Container(
-                              width: double.infinity,
-                              height: 200,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: mainCroppedImage == null
-                                      ? const AssetImage(
-                                          "assets/images/image_not_found.png")
-                                      : FileImage(mainCroppedImage!)
-                                          as ImageProvider,
-                                  fit: BoxFit.cover,
+                            child: AspectRatio(
+                              aspectRatio: 400 / 350,
+                              child: Container(
+                                width: getHorizontalSize(400),
+                                height: getVerticalSize(350),
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: mainCroppedImage == null
+                                        ? const AssetImage(
+                                            "assets/images/image_not_found.png")
+                                        : FileImage(mainCroppedImage!)
+                                            as ImageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                              ),
-                              child: const Icon(
-                                Icons.camera_alt,
-                                color: AppColor.grey,
-                                size: 45,
+                                child: const Icon(
+                                  Icons.camera_alt,
+                                  color: AppColor.grey,
+                                  size: 45,
+                                ),
                               ),
                             ),
                           ),
@@ -211,12 +229,8 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
                     ),
                   ),
                 ),
-                CustomDropDown(
-                    value: context
-                        .read<HostmiProvider>()
-                        .houseForm
-                        .houseType
-                        .toString(),
+                CustomDropDown<HouseType>(
+                    value: context.read<HostmiProvider>().houseForm.houseType,
                     focusNode: FocusNode(),
                     icon: Container(
                         margin: getMargin(left: 30, right: 16),
@@ -230,8 +244,8 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
                         .watch<HostmiProvider>()
                         .houseTypesList
                         .map((houseType) {
-                      return DropdownMenuItem<String>(
-                          value: houseType["id"].toString(),
+                      return DropdownMenuItem<HouseType>(
+                          value: HouseType.fromMap(data: houseType),
                           child: Text(
                             houseType["fr"].toString(),
                             overflow: TextOverflow.ellipsis,
@@ -255,11 +269,8 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
                   height: 10,
                 ),
                 CustomDropDown(
-                    value: context
-                        .read<HostmiProvider>()
-                        .houseForm
-                        .houseCategory
-                        .toString(),
+                    value:
+                        context.read<HostmiProvider>().houseForm.houseCategory,
                     focusNode: FocusNode(),
                     icon: Container(
                         margin: getMargin(left: 30, right: 16),
@@ -273,15 +284,15 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
                         .watch<HostmiProvider>()
                         .houseCategoriesList
                         .map((category) {
-                      return DropdownMenuItem<String>(
-                          value: category["id"].toString(),
+                      return DropdownMenuItem<HouseCategory>(
+                          value: HouseCategory.fromMap(data: category),
                           child: Text(
                             category["fr"].toString(),
                             overflow: TextOverflow.ellipsis,
                           ));
                     }).toList(),
-                    onChanged: (value) {
-                      selectedHouseCategory = value;
+                    onChanged: (HouseCategory? value) {
+                      selectedHouseCategory = value!;
                     }),
                 _spacer,
                 Container(
@@ -306,6 +317,7 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
                   controller: numberOfBeds,
                   hintText: "0",
                   margin: getMargin(top: 13),
+                  textInputType: TextInputType.number,
                 ),
                 _spacer,
                 const SizedBox(
@@ -324,6 +336,7 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
                   controller: numberOfBaths,
                   hintText: "0",
                   margin: getMargin(top: 13),
+                  textInputType: TextInputType.number,
                 ),
                 _spacer,
                 Container(
@@ -344,19 +357,15 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
                       ),
                     ),
                     Expanded(
-                        child: DropdownButtonFormField<String>(
-                      value: context
-                          .read<HostmiProvider>()
-                          .houseForm
-                          .priceType
-                          .toString(),
+                        child: DropdownButtonFormField<PriceType>(
+                      value: context.read<HostmiProvider>().houseForm.priceType,
                       padding: const EdgeInsets.symmetric(vertical: 15.0),
                       items: context
                           .watch<HostmiProvider>()
                           .priceTypesList
                           .map((priceType) {
-                        return DropdownMenuItem<String>(
-                            value: priceType["id"].toString(),
+                        return DropdownMenuItem<PriceType>(
+                            value: PriceType.fromMap(data: priceType),
                             child: Text(
                               priceType["fr"].toString(),
                               overflow: TextOverflow.ellipsis,
@@ -374,6 +383,7 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
                   controller: price,
                   hintText: "0",
                   margin: getMargin(top: 13),
+                  textInputType: TextInputType.number,
                 ),
                 _spacer,
                 const SizedBox(
@@ -389,12 +399,8 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
                 const SizedBox(
                   height: 10,
                 ),
-                CustomDropDown(
-                    value: context
-                        .read<HostmiProvider>()
-                        .houseForm
-                        .currency
-                        .toString(),
+                CustomDropDown<Currency>(
+                    value: context.read<HostmiProvider>().houseForm.currency,
                     //focusNode: FocusNode(),
                     icon: Container(
                         margin: getMargin(left: 30, right: 16),
@@ -408,8 +414,8 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
                         .watch<HostmiProvider>()
                         .currenciesList
                         .map((currency) {
-                      return DropdownMenuItem<String>(
-                          value: currency["id"].toString(),
+                      return DropdownMenuItem<Currency>(
+                          value: Currency.fromMap(data: currency),
                           child: Text(
                             "${currency["currency"] + ' - ' + currency["en"]}",
                             overflow: TextOverflow.ellipsis,
@@ -429,22 +435,21 @@ class _SetPropertyBasicDetailsState extends State<SetPropertyBasicDetails> {
                           context.read<HostmiProvider>().houseForm.mainImage =
                               mainCroppedImage;
                           context.read<HostmiProvider>().houseForm.houseType =
-                              int.tryParse(selectedHouseType) ?? 1;
+                              selectedHouseType;
                           context
-                                  .read<HostmiProvider>()
-                                  .houseForm
-                                  .houseCategory =
-                              int.tryParse(selectedHouseCategory) ?? 1;
+                              .read<HostmiProvider>()
+                              .houseForm
+                              .houseCategory = selectedHouseCategory;
                           context.read<HostmiProvider>().houseForm.currency =
-                              int.tryParse(selectedCurrency) ?? 159;
+                              selectedCurrency;
                           context.read<HostmiProvider>().houseForm.beds =
                               int.tryParse(numberOfBeds.text.trim()) ?? 0;
                           context.read<HostmiProvider>().houseForm.bathrooms =
                               int.tryParse(numberOfBaths.text.trim()) ?? 0;
                           context.read<HostmiProvider>().houseForm.priceType =
-                              int.tryParse(selectedPriceType) ?? 1;
+                              selectedPriceType;
                           context.read<HostmiProvider>().houseForm.price =
-                              int.tryParse(price.text.trim()) ?? 0;
+                              double.tryParse(price.text.trim()) ?? 0;
                           return const AddPropertyAddressScreen();
                         },
                       ),

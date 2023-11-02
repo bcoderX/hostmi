@@ -1,16 +1,17 @@
 import 'package:hostmi/api/supabase/supabase_client.dart';
 
-Future<List<Map<String, dynamic>>> selectAgency(String userId) async {
+Future<List<Map<String, dynamic>>> selectAgencyByID(String id) async {
   try {
     final list = await supabase
-        .from("agency_managers")
+        .from("agencies")
         .select<List<Map<String, dynamic>>>(
-          "user_id, agencies(*)",
-        );
+          "*",
+        )
+        .eq("id", id);
     // print(list);
     return list;
   } catch (e) {
-    //print(e);
+    // print(e);
     return [];
   }
 }

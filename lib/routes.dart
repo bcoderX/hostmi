@@ -131,7 +131,7 @@ class HostMiRouter {
                 routes: [
                   GoRoute(
                     path: 'details',
-                    builder: (context, state) => const ProductDetailsScreen(),
+                    builder: (context, state) => const ProductDetailsScreen(houseId: '',),
                   ),
                 ],
               ),

@@ -39,16 +39,16 @@ void main() async {
 
 class HostMi extends StatelessWidget {
   static const Map<int, Color> color = {
-    50: Color.fromRGBO(135, 46, 1, 0.1),
-    100: Color.fromRGBO(135, 46, 1, 0.2),
-    200: Color.fromRGBO(135, 46, 1, 0.3),
-    300: Color.fromRGBO(135, 46, 1, 0.4),
-    400: Color.fromRGBO(135, 46, 1, 0.5),
-    500: Color.fromRGBO(135, 46, 1, 0.6),
-    600: Color.fromRGBO(135, 46, 1, 0.7),
-    700: Color.fromRGBO(135, 46, 1, 0.8),
-    800: Color.fromRGBO(135, 46, 1, 0.9),
-    900: Color.fromRGBO(135, 46, 1, 1.0),
+    50: Color.fromRGBO(255, 110, 64, 0.1),
+    100: Color.fromRGBO(255, 110, 64, 0.2),
+    200: Color.fromRGBO(255, 110, 64, 0.3),
+    300: Color.fromRGBO(255, 110, 64, 0.4),
+    400: Color.fromRGBO(255, 110, 64, 0.5),
+    500: Color.fromRGBO(255, 110, 64, 0.6),
+    600: Color.fromRGBO(255, 110, 64, 0.7),
+    700: Color.fromRGBO(255, 110, 64, 0.8),
+    800: Color.fromRGBO(255, 110, 64, 0.9),
+    900: Color.fromRGBO(255, 110, 64, 1.0),
   };
   const HostMi({Key? key}) : super(key: key);
 
@@ -73,14 +73,14 @@ class HostMi extends StatelessWidget {
         // is not restarted.
         splashColor: AppColor.primary,
         scaffoldBackgroundColor: AppColor.grey,
-        primarySwatch: Colors.red,
+        primarySwatch: const MaterialColor(0xFFFF6E40, color),
         // primarySwatch: const MaterialColor(0xFF872E01, color),
-        fontFamily: 'Roboto',
+        fontFamily: 'Manrope',
         primaryTextTheme: const TextTheme(
           titleLarge: TextStyle(
             color: AppColor.primary,
             fontSize: 30,
-            fontFamily: 'Roboto',
+            fontFamily: 'Manrope',
           ),
         ),
         bottomAppBarTheme: const BottomAppBarTheme(color: AppColor.grey),

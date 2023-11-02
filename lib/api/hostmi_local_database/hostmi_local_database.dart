@@ -49,7 +49,7 @@ void setMaritalStatus(List<Map<String, dynamic>> maritalStatus) =>
 void setCurrencies(List<Map<String, dynamic>> currencies) =>
     setData(keyCurrencies, currencies);
 
-void setAgencyDetails(AgencyModel? agency) => setData(keyAgencyDetails, agency);
+void setAgencyDetails(AgencyModel agency) => setData(keyAgencyDetails, agency);
 
 //Getters
 Role getRole() => getData(keyRole) ?? Role.UNKNOWN;
@@ -59,7 +59,7 @@ Future<AgencyModel?> getAgencyDetails() async {
   if (agencyModel == null) {
     final result = await selectAgency(supabase.auth.currentUser!.id);
     if (result.isNotEmpty) {
-      agencyModel = AgencyModel.fromMap(result[0]["agencies"][0]);
+      agencyModel = AgencyModel.fromMap(result[0]["agencies"]);
       setAgencyDetails(agencyModel);
       //print(result);
     }

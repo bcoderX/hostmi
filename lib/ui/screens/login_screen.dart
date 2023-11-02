@@ -14,11 +14,13 @@ import 'package:hostmi/utils/app_color.dart';
 import 'package:hostmi/utils/app_text_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../api/constants/roles.dart';
 import '../../api/hostmi_local_database/hostmi_local_database.dart';
 import '../../api/supabase/supabase_client.dart';
+import '../../core/utils/size_utils.dart';
 import '../../routes.dart';
 
 class LoginPage extends StatefulWidget {
@@ -123,7 +125,30 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return _isLoading ?
+    Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            LoadingAnimationWidget.threeArchedCircle(
+              color: AppColor.primary,
+              size: getSize(50),
+            ),
+            const SizedBox(
+              height: 50,
+            ),
+            Text(
+              "Connexion en cours\nVeuillez patienter...",
+              textAlign: TextAlign.center,
+            ),
+        ]
+        ),
+      ),
+    )
+        :
+      Scaffold(
       backgroundColor: AppColor.white,
       body: Scrollbar(
         child: SingleChildScrollView(

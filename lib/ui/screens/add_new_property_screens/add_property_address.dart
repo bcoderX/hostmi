@@ -3,6 +3,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hostmi/api/models/country_model.dart';
 import 'package:hostmi/api/providers/hostmi_provider.dart';
 import 'package:hostmi/core/app_export.dart';
 import 'package:hostmi/ui/screens/add_new_property_screens/add_new_property_select_amenities_screen/add_new_property_select_amenities_screen.dart';
@@ -36,7 +37,9 @@ class _AddPropertyAddressScreenState extends State<AddPropertyAddressScreen> {
   TextEditingController longitudeController = TextEditingController();
 
   TextEditingController latitudeController = TextEditingController();
-  String selectedCountry = "854";
+  Country selectedCountry = Country(id:  854,
+    en: "Burkina Faso",
+    fr: "Burkina Faso",);
 
   LatLng? _center;
   final SizedBox _spacer = const SizedBox(height: 15);
@@ -121,12 +124,11 @@ class _AddPropertyAddressScreenState extends State<AddPropertyAddressScreen> {
                       ),
                     ),
                     CustomTextFormField(
-                      focusNode: FocusNode(),
+                      //focusNode: FocusNode(),
                       controller: sectorController,
                       hintText: "0",
-                      margin: getMargin(
-                        top: 13,
-                      ),
+                      margin: getMargin(top: 13),
+                      textInputType: TextInputType.number,
                     ),
                     _spacer,
                     const SizedBox(
@@ -141,7 +143,7 @@ class _AddPropertyAddressScreenState extends State<AddPropertyAddressScreen> {
                       ),
                     ),
                     CustomTextFormField(
-                      focusNode: FocusNode(),
+                      //focusNode: FocusNode(),
                       controller: quarterController,
                       hintText: "Nom du quartier",
                       margin: getMargin(top: 12),
@@ -159,7 +161,7 @@ class _AddPropertyAddressScreenState extends State<AddPropertyAddressScreen> {
                       ),
                     ),
                     CustomTextFormField(
-                        focusNode: FocusNode(),
+                        //focusNode: FocusNode(),
                         controller: cityController,
                         hintText: "Nom de la ville",
                         margin: getMargin(top: 12)),
@@ -175,13 +177,12 @@ class _AddPropertyAddressScreenState extends State<AddPropertyAddressScreen> {
                         ),
                       ),
                     ),
-                    CustomDropDown(
+                    CustomDropDown<Country>(
                         value: context
                             .read<HostmiProvider>()
                             .houseForm
-                            .country
-                            .toString(),
-                        focusNode: FocusNode(),
+                            .country,
+                        //focusNode: FocusNode(),
                         icon: Container(
                             margin: getMargin(left: 30, right: 16),
                             child: CustomImageView(
@@ -194,8 +195,8 @@ class _AddPropertyAddressScreenState extends State<AddPropertyAddressScreen> {
                             .watch<HostmiProvider>()
                             .countriesList
                             .map((country) {
-                          return DropdownMenuItem<String>(
-                              value: country["id"].toString(),
+                          return DropdownMenuItem<Country>(
+                              value: Country.fromMap(country) ,
                               child: Text(
                                 country["fr"].toString(),
                                 overflow: TextOverflow.ellipsis,
@@ -217,12 +218,12 @@ class _AddPropertyAddressScreenState extends State<AddPropertyAddressScreen> {
                       ),
                     ),
                     CustomTextFormField(
-                      focusNode: FocusNode(),
+                      //focusNode: FocusNode(),
                       controller: addressController,
                       hintText: "Rue 9.12, secteur 9, Koudougou, Burkina Faso",
                       margin: getMargin(top: 12, bottom: 5),
                       textInputAction: TextInputAction.done,
-                      textInputType: TextInputType.number,
+                      textInputType: TextInputType.streetAddress,
                     ),
                     _spacer,
                     Container(
@@ -265,7 +266,7 @@ class _AddPropertyAddressScreenState extends State<AddPropertyAddressScreen> {
                       ),
                     ),
                     CustomTextFormField(
-                        focusNode: FocusNode(),
+                        //focusNode: FocusNode(),
                         controller: longitudeController,
                         hintText: "0",
                         margin: getMargin(top: 12, bottom: 5),
@@ -284,7 +285,7 @@ class _AddPropertyAddressScreenState extends State<AddPropertyAddressScreen> {
                       ),
                     ),
                     CustomTextFormField(
-                      focusNode: FocusNode(),
+                      //focusNode: FocusNode(),
                       controller: latitudeController,
                       hintText: "0",
                       margin: getMargin(top: 12, bottom: 5),
@@ -312,8 +313,7 @@ class _AddPropertyAddressScreenState extends State<AddPropertyAddressScreen> {
     context.read<HostmiProvider>().houseForm.quarter =
         quarterController.text.trim();
     context.read<HostmiProvider>().houseForm.city = cityController.text.trim();
-    context.read<HostmiProvider>().houseForm.country =
-        int.tryParse(selectedCountry) ?? 854;
+    context.read<HostmiProvider>().houseForm.country =selectedCountry;
     context.read<HostmiProvider>().houseForm.fullAddress =
         addressController.text.trim();
     context.read<HostmiProvider>().houseForm.sector =

@@ -132,7 +132,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ],
                             ),
                           ), */
-                          Text("Application menu",
+                          Text("Menu de l'application",
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.left,
                               style: AppStyle.txtManropeExtraBold14Bluegray500
@@ -146,7 +146,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   children: [
                                     Padding(
                                         padding: getPadding(top: 2, bottom: 1),
-                                        child: Text("Notification",
+                                        child: Text("Notifications",
                                             overflow: TextOverflow.ellipsis,
                                             textAlign: TextAlign.left,
                                             style: AppStyle
@@ -173,7 +173,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   children: [
                                     Padding(
                                         padding: getPadding(top: 2, bottom: 1),
-                                        child: Text("Dark Mode",
+                                        child: Text("Mode nuit",
                                             overflow: TextOverflow.ellipsis,
                                             textAlign: TextAlign.left,
                                             style: AppStyle
@@ -202,7 +202,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 child: Row(children: [
                                   Padding(
                                       padding: getPadding(top: 3),
-                                      child: Text("Language",
+                                      child: Text("Langue",
                                           overflow: TextOverflow.ellipsis,
                                           textAlign: TextAlign.left,
                                           style: AppStyle
@@ -239,7 +239,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               child: Row(children: [
                                 Padding(
                                     padding: getPadding(top: 2),
-                                    child: Text("Country",
+                                    child: Text("Pays",
                                         overflow: TextOverflow.ellipsis,
                                         textAlign: TextAlign.left,
                                         style: AppStyle
@@ -308,7 +308,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text("Terms of use",
+                                    Text("Condiditions d'utilistion",
                                         overflow: TextOverflow.ellipsis,
                                         textAlign: TextAlign.left,
                                         style: AppStyle
@@ -333,7 +333,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   children: [
                                     Padding(
                                         padding: getPadding(top: 2),
-                                        child: Text("Privacy Policy",
+                                        child: Text(
+                                            "Politiques de confidentialité",
                                             overflow: TextOverflow.ellipsis,
                                             textAlign: TextAlign.left,
                                             style: AppStyle
@@ -359,7 +360,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   children: [
                                     Padding(
                                         padding: getPadding(top: 1),
-                                        child: Text("About",
+                                        child: Text("A propos",
                                             overflow: TextOverflow.ellipsis,
                                             textAlign: TextAlign.left,
                                             style: AppStyle

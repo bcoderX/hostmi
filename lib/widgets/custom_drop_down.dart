@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hostmi/core/app_export.dart';
 
-class CustomDropDown extends StatelessWidget {
+class CustomDropDown<T> extends StatelessWidget {
   CustomDropDown({
     super.key,
     this.shape,
@@ -41,17 +41,17 @@ class CustomDropDown extends StatelessWidget {
   Widget? icon;
 
   String? hintText;
-  String? value;
+  T? value;
 
   Widget? prefix;
 
   BoxConstraints? prefixConstraints;
 
-  List<DropdownMenuItem<String>>? items;
+  List<DropdownMenuItem<T>>? items;
 
-  Function(String)? onChanged;
+  Function(T)? onChanged;
 
-  FormFieldValidator<String>? validator;
+  FormFieldValidator<T>? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -67,16 +67,16 @@ class CustomDropDown extends StatelessWidget {
     return Container(
       width: width ?? double.maxFinite,
       margin: margin,
-      child: DropdownButtonFormField<String>(
+      child: DropdownButtonFormField<T>(
         isExpanded: true,
-        value: value ?? "",
+        value: value ?? null,
         focusNode: focusNode,
         icon: icon,
         style: _setFontStyle(),
         decoration: _buildDecoration(),
         items: items,
         onChanged: (value) {
-          onChanged!(value.toString());
+          onChanged!(value as T);
         },
         validator: validator,
       ),

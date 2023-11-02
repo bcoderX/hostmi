@@ -17,7 +17,7 @@ class AgencyModelAdapter extends TypeAdapter<AgencyModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return AgencyModel(
-      id: fields[0] as int?,
+      id: fields[0] as String?,
       createdAt: fields[1] as DateTime?,
       updatedAt: fields[2] as DateTime?,
       countryId: fields[3] as int?,

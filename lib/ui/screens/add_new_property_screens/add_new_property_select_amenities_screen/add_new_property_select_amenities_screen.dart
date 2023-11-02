@@ -1,5 +1,7 @@
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:hostmi/api/models/job.dart';
+import 'package:hostmi/api/models/marital_status.dart';
 import 'package:hostmi/api/providers/hostmi_provider.dart';
 import 'package:hostmi/ui/screens/add_new_property_screens/add_property_pictures/add_property_pictures.dart';
 import 'package:hostmi/ui/widgets/default_app_button.dart';
@@ -8,6 +10,7 @@ import 'package:hostmi/widgets/custom_drop_down.dart';
 import 'package:hostmi/widgets/custom_text_form_field.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../api/models/gender.dart';
 import '../add_new_property_select_amenities_screen/widgets/options_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:hostmi/core/app_export.dart';
@@ -26,18 +29,24 @@ class _AddNewPropertySelectAmenitiesScreenState
     extends State<AddNewPropertySelectAmenitiesScreen> {
   final SizedBox _spacer = const SizedBox(height: 25);
   List<int> selectedFeatures = [];
-  String selectedGender = "3";
-  String selectedJob = "4";
-  String selectedMaritalStatus = "3";
+  Gender selectedGender = Gender(id: 3,
+    en: "Any",
+    fr: "N'importe lequel",);
+  Job selectedJob = Job(id: 4,
+    en: "Any",
+    fr: "N'importe lequel");
+  MaritalStatus selectedMaritalStatus = MaritalStatus(id: 3,
+    en: "Any",
+    fr: "N'importe lequel",);
 
   @override
   void initState() {
     selectedFeatures = context.read<HostmiProvider>().houseForm.features ?? [];
-    selectedGender = context.read<HostmiProvider>().houseForm.gender.toString();
+    selectedGender = context.read<HostmiProvider>().houseForm.gender!;
     selectedJob =
-        context.read<HostmiProvider>().houseForm.occupation.toString();
+        context.read<HostmiProvider>().houseForm.occupation!;
     selectedMaritalStatus =
-        context.read<HostmiProvider>().houseForm.maritalStatus.toString();
+        context.read<HostmiProvider>().houseForm.maritalStatus!;
     descriptionController.text =
         context.read<HostmiProvider>().houseForm.description ?? "";
     super.initState();
@@ -164,12 +173,11 @@ class _AddNewPropertySelectAmenitiesScreenState
                       ),
                     ),
                   ),
-                  CustomDropDown(
+                  CustomDropDown<Gender>(
                       value: context
                           .read<HostmiProvider>()
                           .houseForm
-                          .gender
-                          .toString(),
+                          .gender,
                       //focusNode: FocusNode(),
                       icon: Container(
                           margin: getMargin(left: 30, right: 16),
@@ -183,8 +191,8 @@ class _AddNewPropertySelectAmenitiesScreenState
                           .watch<HostmiProvider>()
                           .gendersList
                           .map((gender) {
-                        return DropdownMenuItem<String>(
-                            value: gender["id"].toString(),
+                        return DropdownMenuItem<Gender>(
+                            value: Gender.fromMap(data: gender),
                             child: Text(
                               gender["fr"].toString(),
                               overflow: TextOverflow.ellipsis,
@@ -205,12 +213,11 @@ class _AddNewPropertySelectAmenitiesScreenState
                       ),
                     ),
                   ),
-                  CustomDropDown(
+                  CustomDropDown<Job>(
                       value: context
                           .read<HostmiProvider>()
                           .houseForm
-                          .occupation
-                          .toString(),
+                          .occupation,
                       //focusNode: FocusNode(),
                       icon: Container(
                           margin: getMargin(left: 30, right: 16),
@@ -222,8 +229,8 @@ class _AddNewPropertySelectAmenitiesScreenState
                       fontStyle: DropDownFontStyle.ManropeMedium14Bluegray500,
                       items:
                           context.watch<HostmiProvider>().jobsList.map((job) {
-                        return DropdownMenuItem<String>(
-                            value: job["id"].toString(),
+                        return DropdownMenuItem<Job>(
+                            value: Job.fromMap(data: job),
                             child: Text(
                               job["fr"].toString(),
                               overflow: TextOverflow.ellipsis,
@@ -244,12 +251,11 @@ class _AddNewPropertySelectAmenitiesScreenState
                       ),
                     ),
                   ),
-                  CustomDropDown(
+                  CustomDropDown<MaritalStatus>(
                       value: context
                           .read<HostmiProvider>()
                           .houseForm
-                          .maritalStatus
-                          .toString(),
+                          .maritalStatus,
                       //focusNode: FocusNode(),
                       icon: Container(
                           margin: getMargin(left: 30, right: 16),
@@ -262,11 +268,11 @@ class _AddNewPropertySelectAmenitiesScreenState
                       items: context
                           .watch<HostmiProvider>()
                           .maritalStatusList
-                          .map((country) {
-                        return DropdownMenuItem<String>(
-                            value: country["id"].toString(),
+                          .map((status) {
+                        return DropdownMenuItem<MaritalStatus>(
+                            value: MaritalStatus.fromMap(data: status) ,
                             child: Text(
-                              country["fr"].toString(),
+                              status["fr"].toString(),
                               overflow: TextOverflow.ellipsis,
                             ));
                       }).toList(),
@@ -313,12 +319,9 @@ class _AddNewPropertySelectAmenitiesScreenState
 
   onTapNext(BuildContext context) {
     context.read<HostmiProvider>().houseForm.features = selectedFeatures;
-    context.read<HostmiProvider>().houseForm.gender =
-        int.tryParse(selectedGender) ?? 3;
-    context.read<HostmiProvider>().houseForm.occupation =
-        int.tryParse(selectedJob) ?? 4;
-    context.read<HostmiProvider>().houseForm.maritalStatus =
-        int.tryParse(selectedMaritalStatus) ?? 3;
+    context.read<HostmiProvider>().houseForm.gender =selectedGender;
+    context.read<HostmiProvider>().houseForm.occupation =selectedJob;
+    context.read<HostmiProvider>().houseForm.maritalStatus = selectedMaritalStatus;
     context.read<HostmiProvider>().houseForm.description =
         descriptionController.text.trim();
     Navigator.of(context).push(

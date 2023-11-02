@@ -1,7 +1,15 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:hostmi/api/models/country_model.dart';
+import 'package:hostmi/api/models/currency.dart';
+import 'package:hostmi/api/models/gender.dart';
+import 'package:hostmi/api/models/house_category.dart';
 import 'package:hostmi/api/models/house_model.dart';
+import 'package:hostmi/api/models/house_type.dart';
+import 'package:hostmi/api/models/job.dart';
+import 'package:hostmi/api/models/marital_status.dart';
+import 'package:hostmi/api/models/price_type.dart';
 import 'package:hostmi/api/supabase/utils/load_curencies.dart';
 import 'package:hostmi/api/supabase/utils/load_genders.dart';
 import 'package:hostmi/api/supabase/utils/load_house_categories.dart';
@@ -97,15 +105,21 @@ class HostmiProvider with ChangeNotifier {
   HouseModel _houseForm = HouseModel(
     beds: 0,
     bathrooms: 0,
-    country: 854,
-    priceType: 1,
-    houseType: 1,
-    houseCategory: 1,
+    country: Country(id: 854),
+    priceType: const PriceType(
+      id: 1,
+      en: "/month",
+      fr: "/mois",
+    ),
+    houseType: const HouseType(id: 1, en: "Simple house", fr: "Maison simple"),
+    houseCategory:
+        const HouseCategory(id: 1, en: "Unique house", fr: "Cours unique"),
     price: 0,
-    currency: 159,
-    gender: 3,
-    occupation: 4,
-    maritalStatus: 3,
+    currency:
+        const Currency(id: 159, currency: "XOF", en: "CFA Franc BCEAO", fr: ""),
+    gender: const Gender(id: 3),
+    occupation: const Job(id: 4),
+    maritalStatus: const MaritalStatus(id: 3),
   );
 
 //Create agency getters'
@@ -388,108 +402,32 @@ class HostmiProvider with ChangeNotifier {
     _houseForm = houseForm;
   }
 
-  void setHouseMainImage(File? image) {
-    _houseForm.mainImage = image;
-    notifyListeners();
+  void reSetHouseForm() {
+    _houseForm = HouseModel(
+      beds: 0,
+      bathrooms: 0,
+      country: Country(id: 854),
+      priceType: const PriceType(id: 1),
+      houseType: const HouseType(id: 1),
+      houseCategory: const HouseCategory(id: 1),
+      price: 0,
+      currency: const Currency(id: 159),
+      gender: const Gender(id: 3),
+      occupation: const Job(id: 4),
+      maritalStatus: const MaritalStatus(id: 3),
+    );
   }
 
-  void setHouseType(int houseType) {
-    _houseForm.houseType = houseType;
+  Future<bool> checkInternetStatus() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        _isOnline = true;
+      }
+    } on SocketException catch (_) {
+      _isOnline = false;
+    }
     notifyListeners();
-  }
-
-  void setHouseCategory(int houseCategory) {
-    _houseForm.houseCategory = houseCategory;
-    notifyListeners();
-  }
-
-  void setNumberOfBeds(int n) {
-    _houseForm.beds = n;
-    notifyListeners();
-  }
-
-  void setNumberOfBaths(int n) {
-    _houseForm.bathrooms = n;
-    notifyListeners();
-  }
-
-  void setPriceType(int n) {
-    _houseForm.bathrooms = n;
-    notifyListeners();
-  }
-
-  void setPrice(int price) {
-    _houseForm.price = price;
-    notifyListeners();
-  }
-
-  void setSector(int sector) {
-    _houseForm.sector = sector;
-    notifyListeners();
-  }
-
-  void setQuarter(int quarter) {
-    _houseForm.quarter = quarter as String?;
-    notifyListeners();
-  }
-
-  void setCity(int city) {
-    _houseForm.city = city as String?;
-    notifyListeners();
-  }
-
-  void setCountry(int country) {
-    _houseForm.country = country;
-    notifyListeners();
-  }
-
-  void setFullAddress(String address) {
-    _houseForm.fullAddress = address;
-    notifyListeners();
-  }
-
-  void setLongitude(double longitude) {
-    _houseForm.longitude = longitude;
-    notifyListeners();
-  }
-
-  void setLatitudes(double latitude) {
-    _houseForm.latitude = latitude;
-    notifyListeners();
-  }
-
-  void setFeatures(List<int>? features) {
-    _houseForm.features = features;
-    notifyListeners();
-  }
-
-  void setDescription(String description) {
-    _houseForm.description = description;
-    notifyListeners();
-  }
-
-  void setImages(List<File?> images) {
-    _houseForm.images = images;
-    notifyListeners();
-  }
-
-  void setImagesDescriptionss(List<String>? imagesDescriptions) {
-    _houseForm.imagesDescriptions = imagesDescriptions;
-    notifyListeners();
-  }
-
-  void setGender(int gender) {
-    _houseForm.gender = gender;
-    notifyListeners();
-  }
-
-  void setOccupation(int occupation) {
-    _houseForm.occupation = occupation;
-    notifyListeners();
-  }
-
-  void setProviderMaritalStatus(int maritalStatus) {
-    _houseForm.maritalStatus = maritalStatus;
-    notifyListeners();
+    return _isOnline;
   }
 }

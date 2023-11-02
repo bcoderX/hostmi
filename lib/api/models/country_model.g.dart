@@ -17,10 +17,10 @@ class CountryAdapter extends TypeAdapter<Country> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Country(
-      id: fields[0] as String,
-      alpha2: fields[1] as String,
-      en: fields[2] as String,
-      fr: fields[3] as String,
+      id: fields[0] as int,
+      alpha2: fields[1] as String?,
+      en: fields[2] as String?,
+      fr: fields[3] as String?,
     );
   }
 

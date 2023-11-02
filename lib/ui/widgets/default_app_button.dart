@@ -24,6 +24,7 @@ class DefaultAppButton extends StatelessWidget {
           onPressed: onPressed,
           child: Text(
             text,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: textColor ?? AppColor.grey,
             ),
