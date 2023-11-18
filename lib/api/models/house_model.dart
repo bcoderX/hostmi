@@ -61,7 +61,7 @@ class HouseModel {
   String? fullAddress;
   double? longitude;
   double? latitude;
-  List<int>? features;
+  List<dynamic>? features;
   String? description;
   List<File?>? images;
   List<dynamic>? imagesUrl;
@@ -82,7 +82,7 @@ class HouseModel {
       .format(price);
 
   factory HouseModel.fromMap(Map<String, dynamic> data) {
-    // print(data);
+    // print(data["features"][0].runtimeType);
     return HouseModel(
       id: data["id"],
       createdAt: DateTime.parse(data["created_at"]),
@@ -105,6 +105,7 @@ class HouseModel {
       latitude: double.tryParse(data["latitude"].toString()),
       description: data["description"],
       imagesUrl: data["houses_pictures"],
+      features: data["features"],
       agencyId: data["agency_id"],
     );
   }

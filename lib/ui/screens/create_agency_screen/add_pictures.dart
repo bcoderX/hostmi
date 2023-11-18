@@ -38,9 +38,9 @@ class _AddAgencyPicturesState extends State<AddAgencyPictures> {
           backgroundColor: AppColor.grey,
           foregroundColor: AppColor.black,
           elevation: 0.0,
-          systemOverlayStyle: const SystemUiOverlayStyle(
-            statusBarIconBrightness: Brightness.dark,
-          ),
+          // systemOverlayStyle: const SystemUiOverlayStyle(
+          //   statusBarIconBrightness: Brightness.dark,
+          // ),
           automaticallyImplyLeading: false,
           title: const Text(
             "Ajouter les images de l'agence",

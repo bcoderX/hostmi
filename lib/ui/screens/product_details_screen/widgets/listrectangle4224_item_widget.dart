@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:hostmi/api/models/review_model.dart';
 import 'package:hostmi/core/app_export.dart';
 
 // ignore: must_be_immutable
 class Listrectangle4224ItemWidget extends StatelessWidget {
-  Listrectangle4224ItemWidget();
+  const Listrectangle4224ItemWidget({super.key, required this.review});
+  final ReviewModel review;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +45,7 @@ class Listrectangle4224ItemWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    "",
+                    review.fullName,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.left,
                     style: AppStyle.txtManropeBold12.copyWith(
@@ -56,7 +59,7 @@ class Listrectangle4224ItemWidget extends StatelessWidget {
                       top: 5,
                     ),
                     child: Text(
-                      "",
+                      review.comment!,
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.left,
                       style: AppStyle.txtManrope12Gray900.copyWith(
@@ -70,82 +73,23 @@ class Listrectangle4224ItemWidget extends StatelessWidget {
                     padding: getPadding(
                       top: 3,
                     ),
-                    child: Row(
-                      children: [
-                        CustomImageView(
-                          svgPath: ImageConstant.imgStar,
-                          height: getSize(
-                            16,
-                          ),
-                          width: getSize(
-                            16,
-                          ),
-                        ),
-                        CustomImageView(
-                          svgPath: ImageConstant.imgStar,
-                          height: getSize(
-                            16,
-                          ),
-                          width: getSize(
-                            16,
-                          ),
-                          margin: getMargin(
-                            left: 4,
-                          ),
-                        ),
-                        CustomImageView(
-                          svgPath: ImageConstant.imgStar,
-                          height: getSize(
-                            16,
-                          ),
-                          width: getSize(
-                            16,
-                          ),
-                          margin: getMargin(
-                            left: 4,
-                          ),
-                        ),
-                        CustomImageView(
-                          svgPath: ImageConstant.imgStar,
-                          height: getSize(
-                            16,
-                          ),
-                          width: getSize(
-                            16,
-                          ),
-                          margin: getMargin(
-                            left: 4,
-                          ),
-                        ),
-                        CustomImageView(
-                          svgPath: ImageConstant.imgStar16x16,
-                          height: getSize(
-                            16,
-                          ),
-                          width: getSize(
-                            16,
-                          ),
-                          margin: getMargin(
-                            left: 4,
-                          ),
-                        ),
-                        Padding(
-                          padding: getPadding(
-                            left: 12,
-                            bottom: 1,
-                          ),
-                          child: Text(
-                            "",
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.left,
-                            style: AppStyle.txtManrope10.copyWith(
-                              letterSpacing: getHorizontalSize(
-                                0.4,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                    child: RatingBar.builder(
+                      initialRating: review.stars!,
+                      minRating: 1,
+                      direction: Axis.horizontal,
+                      allowHalfRating: true,
+                      itemSize: getSize(16),
+                      itemCount: 5,
+                      ignoreGestures: true,
+                      itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      itemBuilder: (context, _) => const Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                      ),
+                      onRatingUpdate: (rating) {
+                        // _rate = rating;
+                        // print(rating);
+                      },
                     ),
                   ),
                 ],

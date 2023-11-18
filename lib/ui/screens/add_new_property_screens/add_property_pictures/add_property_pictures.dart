@@ -63,9 +63,9 @@ class _AddPropertyPicturesState extends State<AddPropertyPictures> {
         backgroundColor: AppColor.grey,
         foregroundColor: AppColor.black,
         elevation: 0.0,
-        systemOverlayStyle: const SystemUiOverlayStyle(
-            statusBarColor: AppColor.grey,
-            statusBarIconBrightness: Brightness.dark),
+        // systemOverlayStyle: const SystemUiOverlayStyle(
+        //     statusBarColor: AppColor.grey,
+        //     statusBarIconBrightness: Brightness.dark),
         title: Text(AppLocalizations.of(context)!.addHouse),
         actions: const [TextButton(onPressed: null, child: Text("Sauter"))],
       ),

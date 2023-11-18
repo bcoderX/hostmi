@@ -23,13 +23,13 @@ class _FilterPageState extends State<FilterPage> {
         title: Text(AppLocalizations.of(context)!.filter),
         actions: [
           Padding(
-            padding: EdgeInsets.all(4.0),
+            padding: const EdgeInsets.all(4.0),
             child: CircleAvatar(
               backgroundColor: AppColor.primary,
               radius: 28,
               child: Text(
                 AppLocalizations.of(context)!.filter,
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
               ),
             ),
           )
@@ -48,39 +48,39 @@ class _FilterPageState extends State<FilterPage> {
                 SquareTextField(
                   errorText: "error",
                   placeholder: AppLocalizations.of(context)!.chooseTown,
-                  prefixIcon: Icon(Icons.search),
+                  prefixIcon: const Icon(Icons.search),
                 ),
                 Container(
                   width: double.infinity,
                   height: 10.0,
                   color: Colors.grey[200],
                 ),
-                Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 7.0, vertical: 15.0),
-                  child: RangeField(
-                    rangeValues: RangeValues(5000.0, 100000.0),
-                    title: AppLocalizations.of(context)!.price,
-                  ),
-                ),
-                Padding(
+                // Padding(
+                //   padding:
+                //       EdgeInsets.symmetric(horizontal: 7.0, vertical: 15.0),
+                //   child: RangeField(
+                //     rangeValues: RangeValues(5000.0, 100000.0),
+                //     title: AppLocalizations.of(context)!.price,
+                //   ),
+                // ),
+                const Padding(
                   padding:
                       EdgeInsets.symmetric(horizontal: 7.0, vertical: 15.0),
                   child: Row(
                     children: [
-                      Expanded(
-                          child: RangeField(
-                        rangeValues: RangeValues(0.0, 100.0),
-                        title: AppLocalizations.of(context)!.bedroom,
-                      )),
+                      // Expanded(
+                      //     child: RangeField(
+                      //   rangeValues: RangeValues(0.0, 100.0),
+                      //   title: AppLocalizations.of(context)!.bedroom,
+                      // )),
                       SizedBox(
                         width: 25,
                       ),
-                      Expanded(
-                          child: RangeField(
-                        rangeValues: RangeValues(0.0, 100.0),
-                        title: AppLocalizations.of(context)!.bathRoom,
-                      )),
+                      //   Expanded(
+                      //       child: RangeField(
+                      //     rangeValues: RangeValues(0.0, 100.0),
+                      //     title: AppLocalizations.of(context)!.bathRoom,
+                      //   )),
                     ],
                   ),
                 ),
@@ -92,7 +92,7 @@ class _FilterPageState extends State<FilterPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 18.0),
                   child: GridView.count(
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     crossAxisCount: 2,
                     childAspectRatio: 4.0,
@@ -104,7 +104,7 @@ class _FilterPageState extends State<FilterPage> {
                         onChanged: (bool? value) {},
                         title: Text(
                           AppLocalizations.of(context)!.commonHouse,
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         value: false,
                       ),
@@ -113,7 +113,7 @@ class _FilterPageState extends State<FilterPage> {
                         onChanged: (bool? value) {},
                         title: Text(
                           AppLocalizations.of(context)!.virtualTour,
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         value: false,
                       ),
@@ -122,14 +122,14 @@ class _FilterPageState extends State<FilterPage> {
                         onChanged: (bool? value) {},
                         title: Text(
                           AppLocalizations.of(context)!.availableNow,
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         value: false,
                       ),
                       CheckboxListTile(
                         activeColor: Colors.indigo,
                         onChanged: (bool? value) {},
-                        title: Text(
+                        title: const Text(
                           "R+",
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
@@ -154,11 +154,11 @@ class _FilterPageState extends State<FilterPage> {
                       children: [
                         Text(
                           AppLocalizations.of(context)!.moreFilter,
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               color: AppColor.placeholderGrey),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 10.0,
                         ),
                         Icon(

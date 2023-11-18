@@ -28,9 +28,9 @@ class CreateAgencyAdvancedDetails extends StatelessWidget {
         backgroundColor: AppColor.grey,
         foregroundColor: AppColor.black,
         elevation: 0.0,
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarIconBrightness: Brightness.dark,
-        ),
+        // systemOverlayStyle: const SystemUiOverlayStyle(
+        //   statusBarIconBrightness: Brightness.dark,
+        // ),
         title: const Text(
           "Créer une agence",
           style: TextStyle(

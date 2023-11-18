@@ -40,4 +40,25 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+
+    <!--Providing visibility to URL launcher for API Lebel 30 and above-->
+    <queries>
+        <!--Checking support for SMS-->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="sms" />
+        </intent>
+
+        <!--Checking support for call-->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="tel" />
+        </intent>
+
+        <!--Checking support for Link-->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
 </manifest>

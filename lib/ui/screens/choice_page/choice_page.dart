@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hostmi/api/hostmi_local_database/hostmi_local_database.dart';
 import 'package:hostmi/core/app_export.dart';
@@ -18,6 +19,18 @@ class ChoicePage extends StatefulWidget {
 
 class _ChoicePageState extends State<ChoicePage> {
   final SizedBox _spacer = const SizedBox(height: 20);
+  @override
+  void initState() {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        // systemNavigationBarColor: Colors.grey,
+      ),
+    );
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

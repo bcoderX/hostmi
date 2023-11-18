@@ -3,18 +3,11 @@
 import 'package:country_pickers/country.dart';
 import 'package:country_pickers/utils/utils.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hostmi/api/providers/hostmi_provider.dart';
 import 'package:hostmi/core/utils/color_constant.dart';
-import 'package:hostmi/ui/screens/ball_loading_page.dart';
-import 'package:hostmi/ui/screens/login_screen.dart';
-import 'package:hostmi/ui/screens/main_screen.dart';
-import 'package:hostmi/ui/screens/verify_phone_number_screen/verify_phone_number_screen.dart';
-import 'package:hostmi/ui/widgets/square_field.dart';
 import 'package:hostmi/utils/app_color.dart';
 import 'package:hostmi/utils/app_text_size.dart';
 import 'package:flutter/material.dart';
 import 'package:hostmi/widgets/custom_phone_number.dart';
-import 'package:provider/provider.dart';
 
 class LoginPhoneNumberPage extends StatefulWidget {
   const LoginPhoneNumberPage({Key? key}) : super(key: key);

@@ -1,8 +1,8 @@
 import 'package:hive/hive.dart';
 import 'package:hostmi/api/models/agency_model.dart';
 import 'package:hostmi/api/supabase/agencies/managers/select_manager_agency.dart';
-// import 'package:hostmi/api/supabase/load_countries.dart';
 import 'package:hostmi/api/supabase/supabase_client.dart';
+import 'package:hostmi/api/utils/check_internet_status.dart';
 
 import '../constants/roles.dart';
 
@@ -54,15 +54,18 @@ void setAgencyDetails(AgencyModel agency) => setData(keyAgencyDetails, agency);
 //Getters
 Role getRole() => getData(keyRole) ?? Role.UNKNOWN;
 
-Future<AgencyModel?> getAgencyDetails() async {
-  AgencyModel? agencyModel = getData(keyAgencyDetails);
-  if (agencyModel == null) {
+Future<List<AgencyModel?>> getAgencyDetails() async {
+  bool isOnline = await checkInternetStatus();
+  AgencyModel? agencyModel = isOnline ? null : getData(keyAgencyDetails);
+  if (agencyModel == null && isOnline) {
     final result = await selectAgency(supabase.auth.currentUser!.id);
     if (result.isNotEmpty) {
       agencyModel = AgencyModel.fromMap(result[0]["agencies"]);
       setAgencyDetails(agencyModel);
       //print(result);
+    } else {
+      return [];
     }
   }
-  return agencyModel;
+  return [agencyModel];
 }

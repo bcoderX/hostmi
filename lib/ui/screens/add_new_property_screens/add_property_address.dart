@@ -37,9 +37,11 @@ class _AddPropertyAddressScreenState extends State<AddPropertyAddressScreen> {
   TextEditingController longitudeController = TextEditingController();
 
   TextEditingController latitudeController = TextEditingController();
-  Country selectedCountry = Country(id:  854,
+  Country selectedCountry = Country(
+    id: 854,
     en: "Burkina Faso",
-    fr: "Burkina Faso",);
+    fr: "Burkina Faso",
+  );
 
   LatLng? _center;
   final SizedBox _spacer = const SizedBox(height: 15);
@@ -49,258 +51,252 @@ class _AddPropertyAddressScreenState extends State<AddPropertyAddressScreen> {
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<HostmiProvider>().getCountries();
     });
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: ColorConstant.gray50,
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          backgroundColor: AppColor.grey,
-          foregroundColor: AppColor.black,
-          elevation: 0.0,
-          systemOverlayStyle: const SystemUiOverlayStyle(
-              statusBarColor: AppColor.grey,
-              statusBarIconBrightness: Brightness.dark),
-          title: Text(AppLocalizations.of(context)!.addHouse),
-          actions: const [],
-        ),
-        body: Scrollbar(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                              padding: getPadding(top: 7, bottom: 5),
-                              child: Text("Addresse",
-                                  overflow: TextOverflow.ellipsis,
-                                  textAlign: TextAlign.left,
-                                  style: AppStyle.txtManropeSemiBold14Gray900)),
-                          CustomButton(
-                              height: getVerticalSize(33),
-                              width: getHorizontalSize(76),
-                              text: "02 / 04",
-                              fontStyle:
-                                  ButtonFontStyle.ManropeSemiBold14WhiteA700_1)
-                        ]),
-                    Padding(
-                        padding: getPadding(top: 16),
-                        child: Container(
-                            height: getVerticalSize(6),
-                            width: getHorizontalSize(327),
-                            decoration: BoxDecoration(
-                                color: ColorConstant.blueGray50,
-                                borderRadius: BorderRadius.circular(
-                                    getHorizontalSize(3))),
-                            child: ClipRRect(
-                                borderRadius:
-                                    BorderRadius.circular(getHorizontalSize(3)),
-                                child: LinearProgressIndicator(
-                                    value: 0.5,
-                                    backgroundColor: ColorConstant.blueGray50,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        ColorConstant.brown500))))),
-                    Padding(
-                        padding: getPadding(top: 26),
-                        child: Text("L'addresse de la propriété",
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.left,
-                            style: AppStyle.txtManropeBold18.copyWith(
-                                letterSpacing: getHorizontalSize(0.2)))),
-                    _spacer,
-                    const SizedBox(
-                      width: double.infinity,
-                      child: Text(
-                        "Secteur",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
-                          color: AppColor.listItemGrey,
-                        ),
-                      ),
-                    ),
-                    CustomTextFormField(
-                      //focusNode: FocusNode(),
-                      controller: sectorController,
-                      hintText: "0",
-                      margin: getMargin(top: 13),
-                      textInputType: TextInputType.number,
-                    ),
-                    _spacer,
-                    const SizedBox(
-                      width: double.infinity,
-                      child: Text(
-                        "Quartier",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
-                          color: AppColor.listItemGrey,
-                        ),
-                      ),
-                    ),
-                    CustomTextFormField(
-                      //focusNode: FocusNode(),
-                      controller: quarterController,
-                      hintText: "Nom du quartier",
-                      margin: getMargin(top: 12),
-                    ),
-                    _spacer,
-                    const SizedBox(
-                      width: double.infinity,
-                      child: Text(
-                        "Ville",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
-                          color: AppColor.listItemGrey,
-                        ),
-                      ),
-                    ),
-                    CustomTextFormField(
-                        //focusNode: FocusNode(),
-                        controller: cityController,
-                        hintText: "Nom de la ville",
-                        margin: getMargin(top: 12)),
-                    _spacer,
-                    const SizedBox(
-                      width: double.infinity,
-                      child: Text(
-                        "Pays",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
-                          color: AppColor.listItemGrey,
-                        ),
-                      ),
-                    ),
-                    CustomDropDown<Country>(
-                        value: context
-                            .read<HostmiProvider>()
-                            .houseForm
-                            .country,
-                        //focusNode: FocusNode(),
-                        icon: Container(
-                            margin: getMargin(left: 30, right: 16),
-                            child: CustomImageView(
-                                svgPath: ImageConstant.imgArrowdownGray900)),
-                        hintText: "Choisir un pays",
-                        margin: getMargin(top: 12),
-                        variant: DropDownVariant.FillBluegray50,
-                        fontStyle: DropDownFontStyle.ManropeMedium14Bluegray500,
-                        items: context
-                            .watch<HostmiProvider>()
-                            .countriesList
-                            .map((country) {
-                          return DropdownMenuItem<Country>(
-                              value: Country.fromMap(country) ,
-                              child: Text(
-                                country["fr"].toString(),
+    return Scaffold(
+      backgroundColor: ColorConstant.gray50,
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        backgroundColor: AppColor.grey,
+        foregroundColor: AppColor.black,
+        elevation: 0.0,
+        // systemOverlayStyle: const SystemUiOverlayStyle(
+        //     statusBarColor: AppColor.grey,
+        //     statusBarIconBrightness: Brightness.dark),
+        title: Text(AppLocalizations.of(context)!.addHouse),
+        actions: const [],
+      ),
+      body: Scrollbar(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                            padding: getPadding(top: 7, bottom: 5),
+                            child: Text("Addresse",
                                 overflow: TextOverflow.ellipsis,
-                              ));
-                        }).toList(),
-                        onChanged: (value) {
-                          selectedCountry = value;
-                        }),
-                    _spacer,
-                    const SizedBox(
-                      width: double.infinity,
-                      child: Text(
-                        "Addresse complète",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
-                          color: AppColor.listItemGrey,
-                        ),
+                                textAlign: TextAlign.left,
+                                style: AppStyle.txtManropeSemiBold14Gray900)),
+                        CustomButton(
+                            height: getVerticalSize(33),
+                            width: getHorizontalSize(76),
+                            text: "02 / 04",
+                            fontStyle:
+                                ButtonFontStyle.ManropeSemiBold14WhiteA700_1)
+                      ]),
+                  Padding(
+                      padding: getPadding(top: 16),
+                      child: Container(
+                          height: getVerticalSize(6),
+                          width: getHorizontalSize(327),
+                          decoration: BoxDecoration(
+                              color: ColorConstant.blueGray50,
+                              borderRadius:
+                                  BorderRadius.circular(getHorizontalSize(3))),
+                          child: ClipRRect(
+                              borderRadius:
+                                  BorderRadius.circular(getHorizontalSize(3)),
+                              child: LinearProgressIndicator(
+                                  value: 0.5,
+                                  backgroundColor: ColorConstant.blueGray50,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      ColorConstant.brown500))))),
+                  Padding(
+                      padding: getPadding(top: 26),
+                      child: Text("L'addresse de la propriété",
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.left,
+                          style: AppStyle.txtManropeBold18.copyWith(
+                              letterSpacing: getHorizontalSize(0.2)))),
+                  _spacer,
+                  const SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      "Secteur",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                        color: AppColor.listItemGrey,
                       ),
                     ),
-                    CustomTextFormField(
-                      //focusNode: FocusNode(),
-                      controller: addressController,
-                      hintText: "Rue 9.12, secteur 9, Koudougou, Burkina Faso",
-                      margin: getMargin(top: 12, bottom: 5),
-                      textInputAction: TextInputAction.done,
-                      textInputType: TextInputType.streetAddress,
+                  ),
+                  CustomTextFormField(
+                    //focusNode: FocusNode(),
+                    controller: sectorController,
+                    hintText: "0",
+                    margin: getMargin(top: 13),
+                    textInputType: TextInputType.number,
+                  ),
+                  _spacer,
+                  const SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      "Quartier",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                        color: AppColor.listItemGrey,
+                      ),
                     ),
-                    _spacer,
-                    Container(
-                      width: double.infinity,
-                      height: 40,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 4.5, horizontal: 5.0),
-                      color: Colors.grey[200],
-                      child: Row(
-                        children: [
-                          const Expanded(
+                  ),
+                  CustomTextFormField(
+                    controller: quarterController,
+                    hintText: "Nom du quartier",
+                    margin: getMargin(top: 12),
+                  ),
+                  _spacer,
+                  const SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      "Ville",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                        color: AppColor.listItemGrey,
+                      ),
+                    ),
+                  ),
+                  CustomTextFormField(
+                      //focusNode: FocusNode(),
+                      controller: cityController,
+                      hintText: "Nom de la ville",
+                      margin: getMargin(top: 12)),
+                  _spacer,
+                  const SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      "Pays",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                        color: AppColor.listItemGrey,
+                      ),
+                    ),
+                  ),
+                  CustomDropDown<Country>(
+                      value: context.read<HostmiProvider>().houseForm.country,
+                      //focusNode: FocusNode(),
+                      icon: Container(
+                          margin: getMargin(left: 30, right: 16),
+                          child: CustomImageView(
+                              svgPath: ImageConstant.imgArrowdownGray900)),
+                      hintText: "Choisir un pays",
+                      margin: getMargin(top: 12),
+                      variant: DropDownVariant.FillBluegray50,
+                      fontStyle: DropDownFontStyle.ManropeMedium14Bluegray500,
+                      items: context
+                          .watch<HostmiProvider>()
+                          .countriesList
+                          .map((country) {
+                        return DropdownMenuItem<Country>(
+                            value: Country.fromMap(country),
                             child: Text(
-                              "Coordonnées GPS",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16.0,
-                                color: AppColor.listItemGrey,
-                              ),
+                              country["fr"].toString(),
+                              overflow: TextOverflow.ellipsis,
+                            ));
+                      }).toList(),
+                      onChanged: (value) {
+                        selectedCountry = value;
+                      }),
+                  _spacer,
+                  const SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      "Addresse complète",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                        color: AppColor.listItemGrey,
+                      ),
+                    ),
+                  ),
+                  CustomTextFormField(
+                    //focusNode: FocusNode(),
+                    controller: addressController,
+                    hintText: "Rue 9.12, secteur 9, Koudougou, Burkina Faso",
+                    margin: getMargin(top: 12, bottom: 5),
+                    textInputAction: TextInputAction.done,
+                    textInputType: TextInputType.streetAddress,
+                  ),
+                  _spacer,
+                  Container(
+                    width: double.infinity,
+                    height: 40,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 4.5, horizontal: 5.0),
+                    color: Colors.grey[200],
+                    child: Row(
+                      children: [
+                        const Expanded(
+                          child: Text(
+                            "Coordonnées GPS",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.0,
+                              color: AppColor.listItemGrey,
                             ),
                           ),
-                          TextButton(
-                            onPressed: () {
-                              _checkPermission(context);
-                            },
-                            child: const Text("Position Actuelle"),
-                          )
-                        ],
-                      ),
-                    ),
-                    _spacer,
-                    const SizedBox(
-                      width: double.infinity,
-                      child: Text(
-                        "Longitude",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
-                          color: AppColor.listItemGrey,
                         ),
+                        TextButton(
+                          onPressed: () {
+                            _checkPermission(context);
+                          },
+                          child: const Text("Position Actuelle"),
+                        )
+                      ],
+                    ),
+                  ),
+                  _spacer,
+                  const SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      "Longitude",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                        color: AppColor.listItemGrey,
                       ),
                     ),
-                    CustomTextFormField(
-                        //focusNode: FocusNode(),
-                        controller: longitudeController,
-                        hintText: "0",
-                        margin: getMargin(top: 12, bottom: 5),
-                        textInputAction: TextInputAction.done,
-                        textInputType: TextInputType.number),
-                    _spacer,
-                    const SizedBox(
-                      width: double.infinity,
-                      child: Text(
-                        "Latitude",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
-                          color: AppColor.listItemGrey,
-                        ),
-                      ),
-                    ),
-                    CustomTextFormField(
+                  ),
+                  CustomTextFormField(
                       //focusNode: FocusNode(),
-                      controller: latitudeController,
+                      controller: longitudeController,
                       hintText: "0",
                       margin: getMargin(top: 12, bottom: 5),
                       textInputAction: TextInputAction.done,
-                      textInputType: TextInputType.number,
+                      textInputType: TextInputType.number),
+                  _spacer,
+                  const SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      "Latitude",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                        color: AppColor.listItemGrey,
+                      ),
                     ),
-                    _spacer,
-                    DefaultAppButton(
-                      text: "Suivant",
-                      onPressed: () {
-                        onTapNext(context);
-                      },
-                    )
-                  ]),
-            ),
+                  ),
+                  CustomTextFormField(
+                    //focusNode: FocusNode(),
+                    controller: latitudeController,
+                    hintText: "0",
+                    margin: getMargin(top: 12, bottom: 5),
+                    textInputAction: TextInputAction.done,
+                    textInputType: TextInputType.number,
+                  ),
+                  _spacer,
+                  DefaultAppButton(
+                    text: "Suivant",
+                    onPressed: () {
+                      onTapNext(context);
+                    },
+                  )
+                ]),
           ),
         ),
       ),
@@ -313,7 +309,7 @@ class _AddPropertyAddressScreenState extends State<AddPropertyAddressScreen> {
     context.read<HostmiProvider>().houseForm.quarter =
         quarterController.text.trim();
     context.read<HostmiProvider>().houseForm.city = cityController.text.trim();
-    context.read<HostmiProvider>().houseForm.country =selectedCountry;
+    context.read<HostmiProvider>().houseForm.country = selectedCountry;
     context.read<HostmiProvider>().houseForm.fullAddress =
         addressController.text.trim();
     context.read<HostmiProvider>().houseForm.sector =

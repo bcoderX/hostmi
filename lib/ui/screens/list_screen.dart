@@ -7,6 +7,7 @@ import 'package:hostmi/api/supabase/houses/select_houses.dart';
 import 'package:hostmi/core/app_export.dart';
 import 'package:hostmi/ui/screens/ball_loading_page.dart';
 import 'package:hostmi/ui/screens/filter_page.dart';
+import 'package:hostmi/ui/screens/filter_screen/filter_screen.dart';
 import 'package:hostmi/ui/widgets/filter_button.dart';
 import 'package:hostmi/ui/widgets/house_card.dart';
 import 'package:hostmi/ui/widgets/landloard_action_button.dart';
@@ -30,6 +31,7 @@ class _ListPageState extends State<ListPage> {
   int page = 1;
   late Future<List<HouseModel>> _future;
   final ScrollController _controller = ScrollController();
+  bool _isRefreshing = false;
 
   @override
   void initState() {
@@ -65,320 +67,323 @@ class _ListPageState extends State<ListPage> {
     });
 
     return Scaffold(
-        backgroundColor: AppColor.grey,
-        body: SafeArea(
-          child: Stack(
-            children: [
-              FutureBuilder<List<HouseModel>>(
-                  future: _future,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState != ConnectionState.done) {
-                      return const BallLoadingPage();
-                    }
+      backgroundColor: AppColor.grey,
+      body: Stack(
+        children: [
+          RefreshIndicator(
+            onRefresh: () async {
+              setState(() {
+                _isRefreshing = true;
+              });
+              _future = getHouseList(page, _selectedIndex);
+              await Future.delayed(const Duration(seconds: 2));
+              setState(() {
+                _isRefreshing = false;
+              });
+            },
+            child: FutureBuilder<List<HouseModel>>(
+                future: _future,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    return const BallLoadingPage();
+                  }
 
-                    if (snapshot.hasError) {
-                      return Center(
-                          child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text("Error: ${snapshot.error}"),
-                          IconButton(
-                              onPressed: () {
-                                _future = getHouseList(page, _selectedIndex);
-                              },
-                              icon: const Icon(
-                                Icons.replay_circle_filled_rounded,
-                                size: 40,
-                                color: AppColor.primary,
-                              ))
-                        ],
-                      ));
-                    }
-                    if (!snapshot.hasData) {
-                      return const Center(child: Text("Error"));
-                    }
-                    var data = snapshot.data;
-                    if (data!.isEmpty) {
-                      return Center(
-                          child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                              onPressed: () {
-                                _future = getHouseList(page, _selectedIndex);
-                              },
-                              icon: const Icon(
-                                Icons.hide_image,
-                                size: 40,
-                                color: AppColor.primary,
-                              )),
+                  if (snapshot.hasError) {
+                    return Center(
+                        child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Text("Error: ${snapshot.error}"),
+                        _isRefreshing
+                            ? const RefreshProgressIndicator()
+                            : const SizedBox(),
+                        const Icon(
+                          Icons.replay_circle_filled_rounded,
+                          size: 40,
+                          color: AppColor.primary,
+                        )
+                      ],
+                    ));
+                  }
+                  if (!snapshot.hasData) {
+                    return const Center(
+                        child: Text("Une erreur s'est produite recharger"));
+                  }
+                  var data = snapshot.data;
+                  if (data!.isEmpty) {
+                    return Center(
+                        child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _isRefreshing
+                            ? const RefreshProgressIndicator()
+                            : const SizedBox(),
+                        IconButton(
+                            onPressed: () {
+                              // _future = getHouseList(page, _selectedIndex);
+                            },
+                            icon: const Icon(
+                              Icons.hide_image,
+                              size: 40,
+                              color: AppColor.primary,
+                            )),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Text("Aucun résultat.")
+                      ],
+                    ));
+                  }
+
+                  return Scrollbar(
+                      controller: _controller,
+                      child: SingleChildScrollView(
+                        child: Column(children: [
                           const SizedBox(
-                            height: 10,
+                            height: 120,
                           ),
-                          const Text("Aucun résultat.")
-                        ],
-                      ));
-                    }
-
-                    return Scrollbar(
-                        controller: _controller,
-                        child: SingleChildScrollView(
-                          child: Column(children: [
-                            const SizedBox(
-                              height: 120,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0,
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const SizedBox(
-                                    height: 60.0,
-                                  ),
-                                  _spacer,
-                                  // Text(
-                                  //   AppLocalizations.of(context)!.listMotivationalWord,
-                                  //   textAlign: TextAlign.center,
-                                  //   style: const TextStyle(
-                                  //     fontSize: 20,
-                                  //     fontWeight: FontWeight.w400,
-                                  //   ),
-                                  // ),
-                                  SizedBox(
-                                      width: double.infinity,
-                                      child: Column(
-                                          children: data
-                                              .map((house) => HouseCard(
-                                                    house: house,
-                                                  ))
-                                              .toList()))
-                                ],
-                              ),
-                            ),
-                          ]),
-                        ));
-                  }),
-              SizedBox(
-                child: Container(
-                  color: AppColor.grey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        height: 30,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                              AppColor.grey,
-                              AppColor.grey.withOpacity(.3),
-                              AppColor.grey.withOpacity(0),
-                            ])),
-                      ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
                           Padding(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 5.0,
+                              horizontal: 8.0,
                             ),
-                            child: RoundedTextField(
-                              errorText: "Une erreur s'est produite",
-                              placeholder: AppLocalizations.of(context)!
-                                  .searchCityPlaceholder,
-                              prefixIcon: const Icon(Icons.search),
-                              suffixIcon: Align(
-                                  widthFactor: double.minPositive,
-                                  alignment: Alignment.center,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                      right: 25.0,
-                                    ),
-                                    child: RichText(
-                                      text: const TextSpan(
-                                        style: TextStyle(
-                                          color: AppColor.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18.0,
-                                        ),
-                                        children: <TextSpan>[
-                                          TextSpan(text: "Host"),
-                                          TextSpan(
-                                            text: "MI",
-                                            style: TextStyle(
-                                              color: AppColor.primary,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  )),
-                            ),
-                          ),
-                          _spacer,
-                          const SizedBox(
-                            width: double.infinity,
-                            child: Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text(
-                                "Choisir le type de maison",
-                                style: TextStyle(
-                                    color: AppColor.listItemGrey,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                ActionButton(
-                                  padding: getPadding(
-                                    left: 12,
-                                    top: 12,
-                                    right: 12,
-                                    bottom: 12,
-                                  ),
-                                  icon:
-                                      null /* Icon(
-                                      Icons.pages,
-                                      color: _selectedIndex == 0
-                                          ? AppColor.white
-                                          : Colors.grey[800],
-                                      size: 18.0,
-                                    ) */
-                                  ,
-                                  text: "Tout",
-                                  backgroundColor: _selectedIndex == 0
-                                      ? AppColor.primary
-                                      : null,
-                                  foregroundColor: _selectedIndex == 0
-                                      ? AppColor.white
-                                      : null,
-                                  onPressed: () {
-                                    setSelectedIndex(0);
-                                    // Navigator.of(context).push(MaterialPageRoute(
-                                    //     builder: (BuildContext context) {
-                                    //   return const AddHouse1();
-                                    // }));
-                                  },
+                                const SizedBox(
+                                  height: 60.0,
                                 ),
-                                ...context
-                                    .watch<HostmiProvider>()
-                                    .houseTypesList
-                                    .map(
-                                      (houseType) => ActionButton(
-                                        padding: getPadding(
-                                          left: 12,
-                                          top: 12,
-                                          right: 12,
-                                          bottom: 12,
-                                        ),
-                                        icon:
-                                            null /* Icon(
-                                      Icons.pages,
-                                      color: _selectedIndex == 0
-                                          ? AppColor.white
-                                          : Colors.grey[800],
-                                      size: 18.0,
-                                    ) */
-                                        ,
-                                        text: houseType["fr"],
-                                        backgroundColor:
-                                            _selectedIndex == houseType["id"]
-                                                ? AppColor.primary
-                                                : null,
-                                        foregroundColor:
-                                            _selectedIndex == houseType["id"]
-                                                ? AppColor.white
-                                                : null,
-                                        onPressed: () {
-                                          setSelectedIndex(houseType["id"]);
-                                          // Navigator.of(context).push(MaterialPageRoute(
-                                          //     builder: (BuildContext context) {
-                                          //   return const AddHouse1();
-                                          // }));
-                                        },
-                                      ),
-                                    )
-                                    .toList(),
-                                ActionButton(
-                                  padding: getPadding(
-                                    left: 12,
-                                    top: 12,
-                                    right: 12,
-                                    bottom: 12,
-                                  ),
-                                  icon: null,
-                                  /* Icon(
-                                      Icons.pages,
-                                      color: _selectedIndex == 0
-                                          ? AppColor.white
-                                          : Colors.grey[800],
-                                      size: 18.0,
-                                    ) */
-
-                                  text: "Plus de filtres",
-                                  backgroundColor: _selectedIndex == -1
-                                      ? AppColor.primary
-                                      : null,
-                                  foregroundColor: _selectedIndex == -1
-                                      ? AppColor.white
-                                      : null,
-                                  onPressed: () {
-                                    setSelectedIndex(-1);
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (BuildContext context) {
-                                      return const FilterPage();
-                                    }));
-                                  },
-                                ),
+                                _spacer,
+                                _isRefreshing
+                                    ? const RefreshProgressIndicator()
+                                    : const SizedBox(),
+                                // Text(
+                                //   AppLocalizations.of(context)!.listMotivationalWord,
+                                //   textAlign: TextAlign.center,
+                                //   style: const TextStyle(
+                                //     fontSize: 20,
+                                //     fontWeight: FontWeight.w400,
+                                //   ),
+                                // ),
+                                SizedBox(
+                                    width: double.infinity,
+                                    child: Column(
+                                        children: data
+                                            .map((house) => HouseCard(
+                                                  house: house,
+                                                ))
+                                            .toList()))
                               ],
                             ),
                           ),
-                          const SizedBox(height: 5)
-                          /*  Row(
+                        ]),
+                      ));
+                }),
+          ),
+          SizedBox(
+            child: Container(
+              color: AppColor.grey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    height: 30,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                          AppColor.grey,
+                          AppColor.grey.withOpacity(.3),
+                          AppColor.grey.withOpacity(0),
+                        ])),
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 5.0,
+                        ),
+                        child: RoundedTextField(
+                          errorText: "Une erreur s'est produite",
+                          placeholder: AppLocalizations.of(context)!
+                              .searchCityPlaceholder,
+                          prefixIcon: const Icon(Icons.search),
+                          suffixIcon: Align(
+                              widthFactor: double.minPositive,
+                              alignment: Alignment.center,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  right: 25.0,
+                                ),
+                                child: RichText(
+                                  text: const TextSpan(
+                                    style: TextStyle(
+                                      color: AppColor.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18.0,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(text: "Host"),
+                                      TextSpan(
+                                        text: "MI",
+                                        style: TextStyle(
+                                          color: AppColor.primary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )),
+                        ),
+                      ),
+                      _spacer,
+                      const SizedBox(
+                        width: double.infinity,
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            "Choisir le type de maison",
+                            style: TextStyle(
+                                color: AppColor.listItemGrey,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            FilterButton(
-                              onTap: () {
+                            ActionButton(
+                              padding: getPadding(
+                                left: 12,
+                                top: 12,
+                                right: 12,
+                                bottom: 12,
+                              ),
+                              icon:
+                                  null /* Icon(
+                                    Icons.pages,
+                                    color: _selectedIndex == 0
+                                        ? AppColor.white
+                                        : Colors.grey[800],
+                                    size: 18.0,
+                                  ) */
+                              ,
+                              text: "Tout",
+                              backgroundColor:
+                                  _selectedIndex == 0 ? AppColor.primary : null,
+                              foregroundColor:
+                                  _selectedIndex == 0 ? AppColor.white : null,
+                              onPressed: () {
+                                setSelectedIndex(0);
+                                // Navigator.of(context).push(MaterialPageRoute(
+                                //     builder: (BuildContext context) {
+                                //   return const AddHouse1();
+                                // }));
+                              },
+                            ),
+                            ...context
+                                .watch<HostmiProvider>()
+                                .houseTypesList
+                                .map(
+                                  (houseType) => ActionButton(
+                                    padding: getPadding(
+                                      left: 12,
+                                      top: 12,
+                                      right: 12,
+                                      bottom: 12,
+                                    ),
+                                    icon:
+                                        null /* Icon(
+                                    Icons.pages,
+                                    color: _selectedIndex == 0
+                                        ? AppColor.white
+                                        : Colors.grey[800],
+                                    size: 18.0,
+                                  ) */
+                                    ,
+                                    text: houseType["fr"],
+                                    backgroundColor:
+                                        _selectedIndex == houseType["id"]
+                                            ? AppColor.primary
+                                            : null,
+                                    foregroundColor:
+                                        _selectedIndex == houseType["id"]
+                                            ? AppColor.white
+                                            : null,
+                                    onPressed: () {
+                                      setSelectedIndex(houseType["id"]);
+                                      // Navigator.of(context).push(MaterialPageRoute(
+                                      //     builder: (BuildContext context) {
+                                      //   return const AddHouse1();
+                                      // }));
+                                    },
+                                  ),
+                                )
+                                .toList(),
+                            ActionButton(
+                              padding: getPadding(
+                                left: 12,
+                                top: 12,
+                                right: 12,
+                                bottom: 12,
+                              ),
+                              icon: null,
+                              /* Icon(
+                                    Icons.pages,
+                                    color: _selectedIndex == 0
+                                        ? AppColor.white
+                                        : Colors.grey[800],
+                                    size: 18.0,
+                                  ) */
+
+                              text: "Plus de filtres",
+                              backgroundColor: _selectedIndex == -1
+                                  ? AppColor.primary
+                                  : null,
+                              foregroundColor:
+                                  _selectedIndex == -1 ? AppColor.white : null,
+                              onPressed: () {
+                                setSelectedIndex(-1);
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (BuildContext context) {
-                                  return const FilterPage();
+                                  return const FilterScreen();
                                 }));
                               },
                             ),
                           ],
                         ),
-                      */
+                      ),
+                      const SizedBox(height: 5)
+                      /*  Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          FilterButton(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                return const FilterPage();
+                              }));
+                            },
+                          ),
                         ],
                       ),
+                    */
                     ],
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            _future = getHouseList(page, _selectedIndex);
-          },
-          tooltip: "Trier",
-          child: const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [Text("Trier")],
-          ),
-        ));
+        ],
+      ),
+    );
   }
 
   Future<List<HouseModel>> getHouseList(int page, int type) async {

@@ -18,10 +18,6 @@ class NoAgency extends StatelessWidget {
           const Text(
             "Pour publier votre propriété, vous devez créer une agence.",
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-            ),
           ),
           const SizedBox(
             height: 25.0,

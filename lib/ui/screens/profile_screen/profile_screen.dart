@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hostmi/api/supabase/supabase_client.dart';
 import 'package:hostmi/core/app_export.dart';
+import 'package:hostmi/routes.dart';
 import 'package:hostmi/ui/screens/edit_profile_screen/edit_profile_screen.dart';
 import 'package:hostmi/utils/app_color.dart';
 import 'package:hostmi/widgets/custom_icon_button.dart';
@@ -11,6 +13,40 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (supabase.auth.currentUser == null) {
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text("Vous devez vous connecter pour continuer."),
+              TextButton(
+                child: const Text("Cliquer ici pour se connecter"),
+                onPressed: () {
+                  context.go(keyLoginRoute);
+                },
+              ),
+              const SizedBox(
+                height: 25,
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.black87,
+                  backgroundColor: Colors.grey[200],
+                ),
+                child: const Text(
+                  "Retour",
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     return Scaffold(
         backgroundColor: ColorConstant.gray50,
         appBar: AppBar(

@@ -1,16 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hostmi/api/models/house_model.dart';
-import 'package:hostmi/api/providers/hostmi_provider.dart';
+import 'package:hostmi/api/supabase/houses/insert_new_view.dart';
 import 'package:hostmi/api/supabase/supabase_client.dart';
+import 'package:hostmi/api/utils/check_internet_status.dart';
 import 'package:hostmi/core/app_export.dart';
-import 'package:hostmi/ui/screens/house_details.dart';
+import 'package:hostmi/ui/alerts/error_dialog.dart';
 import 'package:hostmi/ui/screens/login_screen.dart';
 import 'package:hostmi/ui/screens/product_details_screen/product_details_screen.dart';
 import 'package:hostmi/utils/app_color.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter/scheduler.dart';
 
 class HouseCard extends StatefulWidget {
   const HouseCard({Key? key, required this.house}) : super(key: key);
@@ -21,6 +20,14 @@ class HouseCard extends StatefulWidget {
 }
 
 class _HouseCardState extends State<HouseCard> {
+  late Future<int> _viewCountFuture;
+
+  @override
+  void initState() {
+    _viewCountFuture = getViewCount(widget.house.id!);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -34,7 +41,6 @@ class _HouseCardState extends State<HouseCard> {
                 "${widget.house.houseType!.fr} - ".toUpperCase(),
                 style: const TextStyle(
                   fontSize: 18,
-                  fontFamily: 'Roboto',
                   fontWeight: FontWeight.bold,
                   color: AppColor.primary,
                 ),
@@ -54,13 +60,46 @@ class _HouseCardState extends State<HouseCard> {
           color: AppColor.white,
           child: Stack(children: [
             GestureDetector(
-              onTap: () {
+              onTap: () async {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (BuildContext context) {
                   return ProductDetailsScreen(
                     houseId: widget.house.id!,
                   );
                 }));
+                bool isLoggedIn = supabase.auth.currentUser != null;
+                bool isConnected = await checkInternetStatus();
+                if (isConnected) {
+                  if (isLoggedIn) {
+                    bool isAlreadyAdded = await selectViewsWithUser(
+                      userId: supabase.auth.currentUser!.id,
+                      houseId: widget.house.id!,
+                    );
+                    if (isAlreadyAdded) {
+                      await supabase.rpc("increment_user_house_view", params: {
+                        "user_id": supabase.auth.currentUser!.id,
+                        "house_id": widget.house.id!
+                      });
+                    } else {
+                      await insertNewView(
+                        userId: supabase.auth.currentUser!.id,
+                        houseId: widget.house.id!,
+                      );
+                    }
+                  } else {
+                    bool isAlreadyAdded = await selectViewsWithNullUser(
+                        houseId: widget.house.id!);
+                    if (isAlreadyAdded) {
+                      await supabase.rpc("increment_house_view",
+                          params: {"house_id": widget.house.id!});
+                    } else {
+                      await insertNewView(
+                        userId: "",
+                        houseId: widget.house.id!,
+                      );
+                    }
+                  }
+                }
               },
               child: ConstrainedBox(
                 constraints: BoxConstraints(
@@ -86,7 +125,6 @@ class _HouseCardState extends State<HouseCard> {
                             .from("agencies")
                             .getPublicUrl(widget.house.mainImageUrl!
                                 .replaceFirst(RegExp(r"agencies/"), "")),
-                        // "https://rwwurjrdtxmszqpwpocx.supabase.co/storage/v1/object/public/agencies/cover_placeholder.png",
                         imageBuilder: (context, imageProvider) => AspectRatio(
                           aspectRatio: 400 / 350,
                           child: Container(
@@ -103,11 +141,12 @@ class _HouseCardState extends State<HouseCard> {
                           ),
                         ),
                         placeholder: (context, url) => const Center(
-                            child: SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: CircularProgressIndicator(),
-                        )),
+                          child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
                         errorWidget: (context, url, error) =>
                             const Icon(Icons.error),
                       ),
@@ -134,7 +173,7 @@ class _HouseCardState extends State<HouseCard> {
                               "${widget.house.formattedPrice} ${widget.house.priceType!.fr}",
                               style: const TextStyle(
                                 fontSize: 18,
-                                fontFamily: 'Roboto',
+                                fontFamily: 'Manrope',
                                 fontWeight: FontWeight.bold,
                                 color: AppColor.black,
                               ),
@@ -203,7 +242,7 @@ class _HouseCardState extends State<HouseCard> {
                       ),
                       Text(
                         widget.house.fullAddress!.isEmpty
-                            ? "Secteur ${widget.house.sector}, ${widget.house.city}, ${widget.house.country!.fr}"
+                            ? "${widget.house.sector == 0 ? "" : "Secteur ${widget.house.sector},"} ${widget.house.city}, ${widget.house.country!.fr}"
                             : widget.house.fullAddress!,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
@@ -222,20 +261,21 @@ class _HouseCardState extends State<HouseCard> {
                               ),
                             ),
                           ),
-                          // TextButton(
-                          //   onPressed: () {},
-                          //   child: Text(
-                          //     AppLocalizations.of(context)!.virtualTour,
-                          //     style: const TextStyle(
-                          //       color: AppColor.primary,
-                          //       fontSize: 14.0,
-                          //     ),
-                          //   ),
-                          // ),
                           const Expanded(child: SizedBox()),
                           const Icon(Icons.remove_red_eye),
                           const SizedBox(width: 5),
-                          const Text("0")
+                          FutureBuilder(
+                            future: _viewCountFuture,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) {
+                                debugPrint(snapshot.error.toString());
+                              }
+                              if (snapshot.hasData) {
+                                return Text("${snapshot.data}");
+                              }
+                              return const Text("--");
+                            },
+                          )
                         ],
                       ),
                     ],
@@ -253,5 +293,12 @@ class _HouseCardState extends State<HouseCard> {
         SizedBox(height: getVerticalSize(10)),
       ],
     );
+  }
+
+  Future<int> getViewCount(String houseId) async {
+    final viewCount =
+        await supabase.rpc("get_house_views", params: {"house_id": houseId});
+    debugPrint(viewCount.toString());
+    return viewCount;
   }
 }

@@ -1,4 +1,4 @@
-class PriceType{
+class PriceType {
   final DateTime? createdAt;
   final String? en;
   final String? fr;
@@ -11,18 +11,19 @@ class PriceType{
     this.id,
   });
 
-  factory PriceType.fromMap({required Map<dynamic, dynamic> data}){
+  factory PriceType.fromMap({required Map<dynamic, dynamic> data}) {
     return PriceType(
         createdAt: data["created_at"],
         en: data["en"],
         fr: data["fr"],
-        id:  data["id"]
-    );
+        id: int.tryParse(data["id"].toString()));
   }
 
   @override
   bool operator ==(Object other) {
-    return other is PriceType && other.runtimeType == runtimeType && other.id == id;
+    return other is PriceType &&
+        other.runtimeType == runtimeType &&
+        other.id == id;
   }
 
   @override

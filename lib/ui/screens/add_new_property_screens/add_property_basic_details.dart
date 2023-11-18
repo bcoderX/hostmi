@@ -9,7 +9,6 @@ import 'package:hostmi/api/models/house_category.dart';
 import 'package:hostmi/api/models/house_type.dart';
 import 'package:hostmi/api/models/price_type.dart';
 import 'package:hostmi/api/providers/hostmi_provider.dart';
-import 'package:hostmi/api/providers/locale_provider.dart';
 import 'package:hostmi/core/utils/color_constant.dart';
 import 'package:hostmi/core/utils/image_constant.dart';
 import 'package:hostmi/core/utils/size_utils.dart';
@@ -22,7 +21,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hostmi/widgets/custom_button.dart';
 import 'package:hostmi/widgets/custom_drop_down.dart';
 import 'package:hostmi/widgets/custom_image_view.dart';
-import 'package:hostmi/widgets/custom_radio_button.dart';
 import 'package:hostmi/widgets/custom_text_form_field.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -72,9 +70,9 @@ class _AddNewPropertyBasicDetailsState
         backgroundColor: AppColor.grey,
         foregroundColor: AppColor.black,
         elevation: 0.0,
-        systemOverlayStyle: const SystemUiOverlayStyle(
-            statusBarColor: AppColor.grey,
-            statusBarIconBrightness: Brightness.dark),
+        // systemOverlayStyle: const SystemUiOverlayStyle(
+        //     statusBarColor: AppColor.grey,
+        //     statusBarIconBrightness: Brightness.dark),
         title: Text(AppLocalizations.of(context)!.addHouse),
       ),
       body: Scrollbar(
@@ -313,7 +311,6 @@ class _AddNewPropertyBasicDetailsState
                   ),
                 ),
                 CustomTextFormField(
-                  //focusNode: FocusNode(),
                   controller: numberOfBeds,
                   hintText: "0",
                   margin: getMargin(top: 13),

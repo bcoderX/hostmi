@@ -19,7 +19,7 @@ class Currency {
         currency: data["currency"],
         en: data["en"],
         fr: data["fr"],
-        id: data["id"]);
+        id: int.tryParse(data["id"].toString()));
   }
 
   @override

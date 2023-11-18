@@ -35,13 +35,12 @@ class RoundedTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      shadowColor: AppColor.placeholderGrey,
-      elevation: 2,
+      elevation: 1.0,
       borderRadius: BorderRadius.circular(5.0),
       child: TextFormField(
         showCursor: showCursor,
         readOnly: isReadOnly,
-        obscuringCharacter: "*",
+        obscuringCharacter: ".",
         obscureText: isPassword,
         controller: controller,
         decoration: InputDecoration(

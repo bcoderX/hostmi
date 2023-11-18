@@ -1,4 +1,7 @@
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hostmi/api/supabase/supabase_client.dart';
+import 'package:hostmi/routes.dart';
 import 'package:hostmi/ui/screens/chat_page.dart';
 import 'package:hostmi/utils/app_color.dart';
 import '../message_screen/widgets/message_item_widget.dart';
@@ -11,6 +14,32 @@ class MessagePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (supabase.auth.currentUser == null) {
+      return Center(
+        child: InkWell(
+          onTap: () {
+            context.go(keyLoginRoute);
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                "Vous devez vous connecter pour envoyer et recevoir des messages",
+                textAlign: TextAlign.center,
+              ),
+              TextButton(
+                child: const Text("Cliquer ici pour se connecter"),
+                onPressed: () {
+                  context.go(keyLoginRoute);
+                },
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: ColorConstant.gray50,

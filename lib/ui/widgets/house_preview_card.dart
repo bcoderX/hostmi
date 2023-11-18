@@ -45,7 +45,7 @@ class _HousePreviewCardState extends State<HousePreviewCard> {
                     .toUpperCase(),
                 style: const TextStyle(
                   fontSize: 18,
-                  fontFamily: 'Roboto',
+                  fontFamily: 'Manrope',
                   fontWeight: FontWeight.bold,
                   color: AppColor.primary,
                 ),
@@ -99,13 +99,16 @@ class _HousePreviewCardState extends State<HousePreviewCard> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "${house.price} ${context.watch<HostmiProvider>().houseForm.currency?.currency ?? '--'} ${context.watch<HostmiProvider>().houseForm.priceType?.fr ?? '--'}",
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.bold,
-                              color: AppColor.black,
+                          Expanded(
+                            child: Text(
+                              "${house.price} ${context.watch<HostmiProvider>().houseForm.currency?.currency ?? '--'} ${context.watch<HostmiProvider>().houseForm.priceType?.fr ?? '--'}",
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontFamily: 'Manrope',
+                                fontWeight: FontWeight.bold,
+                                color: AppColor.black,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           Row(

@@ -5,7 +5,7 @@ Future<List<Map<String, dynamic>>> loadHouseCategories() async {
     final list = await supabase
         .from("house_categories")
         .select<List<Map<String, dynamic>>>("id, en, fr");
-    print(list);
+    // print(list);
     return list;
   } catch (e) {
     print(e);

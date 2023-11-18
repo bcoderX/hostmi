@@ -170,7 +170,7 @@ class ScaffoldWithNestedNavigation extends StatelessWidget {
   }
 }
 
-class ScaffoldWithNavigationBar extends StatelessWidget {
+class ScaffoldWithNavigationBar extends StatefulWidget {
   const ScaffoldWithNavigationBar({
     super.key,
     required this.body,
@@ -180,42 +180,114 @@ class ScaffoldWithNavigationBar extends StatelessWidget {
   final Widget body;
   final int selectedIndex;
   final ValueChanged<int> onDestinationSelected;
+
+  @override
+  State<ScaffoldWithNavigationBar> createState() =>
+      _ScaffoldWithNavigationBarState();
+}
+
+class _ScaffoldWithNavigationBarState extends State<ScaffoldWithNavigationBar> {
+  bool _isShown = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: body,
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: selectedIndex,
-        destinations: [
-          NavigationDestination(
-              icon: Icon(Icons.map, color: AppColor.primary.withOpacity(0.6)),
-              selectedIcon: const Icon(Icons.map, color: AppColor.primary),
-              label: AppLocalizations.of(context)!.mapTabText),
-          NavigationDestination(
-              icon: Icon(Icons.view_list,
-                  color: AppColor.primary.withOpacity(0.6)),
-              selectedIcon:
-                  const Icon(Icons.view_list, color: AppColor.primary),
-              label: AppLocalizations.of(context)!.listTabText),
-          NavigationDestination(
-              icon: Icon(Icons.message_rounded,
-                  color: AppColor.primary.withOpacity(0.6)),
-              selectedIcon:
-                  const Icon(Icons.message_rounded, color: AppColor.primary),
-              label: AppLocalizations.of(context)!.messageTabText),
-          NavigationDestination(
-              icon: Icon(Icons.add_home,
-                  color: AppColor.primary.withOpacity(0.6)),
-              selectedIcon: const Icon(Icons.add_home, color: AppColor.primary),
-              label: AppLocalizations.of(context)!.publishTabText),
-          NavigationDestination(
-              icon: Icon(Icons.dashboard,
-                  color: AppColor.primary.withOpacity(0.6)),
-              selectedIcon:
-                  const Icon(Icons.dashboard, color: AppColor.primary),
-              label: AppLocalizations.of(context)!.menuTabText),
-        ],
-        onDestinationSelected: onDestinationSelected,
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 500),
+        transitionBuilder: (child, animation) {
+          return RotationTransition(
+            turns: Tween<double>(begin: 1.0, end: 0.0).animate(animation),
+            child: ScaleTransition(
+              scale: animation,
+              child: child,
+            ),
+          );
+        },
+        child: widget.body,
+      ),
+      extendBody: !_isShown,
+      floatingActionButton: InkWell(
+        onTap: () {
+          setState(
+            () {
+              _isShown = !_isShown;
+            },
+          );
+        },
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+              color: AppColor.primary.withOpacity(.6),
+              borderRadius: BorderRadius.circular(5.0)),
+          child: AnimatedSwitcher(
+            duration: const Duration(
+              milliseconds: 500,
+            ),
+            transitionBuilder: (child, animation) {
+              return RotationTransition(
+                turns: child.key == const ValueKey("icon1")
+                    ? Tween<double>(begin: 1, end: 0).animate(animation)
+                    : Tween<double>(begin: 0, end: 1).animate(animation),
+                child: ScaleTransition(
+                  scale: animation,
+                  child: child,
+                ),
+              );
+            },
+            child: _isShown
+                ? const Icon(
+                    Icons.close,
+                    color: AppColor.white,
+                    key: ValueKey("icon1"),
+                  )
+                : const Icon(
+                    Icons.dashboard,
+                    color: AppColor.white,
+                  ),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniStartFloat,
+      bottomNavigationBar: Opacity(
+        opacity: _isShown ? 1.0 : 0.0,
+        child: IgnorePointer(
+          ignoring: !_isShown,
+          child: NavigationBar(
+            backgroundColor: AppColor.grey,
+            elevation: 3.0,
+            selectedIndex: widget.selectedIndex,
+            destinations: [
+              NavigationDestination(
+                  icon:
+                      Icon(Icons.map, color: AppColor.primary.withOpacity(0.6)),
+                  selectedIcon: const Icon(Icons.map, color: AppColor.primary),
+                  label: AppLocalizations.of(context)!.mapTabText),
+              NavigationDestination(
+                  icon: Icon(Icons.view_list,
+                      color: AppColor.primary.withOpacity(0.6)),
+                  selectedIcon:
+                      const Icon(Icons.view_list, color: AppColor.primary),
+                  label: AppLocalizations.of(context)!.listTabText),
+              NavigationDestination(
+                  icon: Icon(Icons.message_rounded,
+                      color: AppColor.primary.withOpacity(0.6)),
+                  selectedIcon: const Icon(Icons.message_rounded,
+                      color: AppColor.primary),
+                  label: AppLocalizations.of(context)!.messageTabText),
+              NavigationDestination(
+                  icon: Icon(Icons.add_home,
+                      color: AppColor.primary.withOpacity(0.6)),
+                  selectedIcon:
+                      const Icon(Icons.add_home, color: AppColor.primary),
+                  label: AppLocalizations.of(context)!.publishTabText),
+              NavigationDestination(
+                  icon: Icon(Icons.menu,
+                      color: AppColor.primary.withOpacity(0.6)),
+                  selectedIcon: const Icon(Icons.menu, color: AppColor.primary),
+                  label: AppLocalizations.of(context)!.menuTabText),
+            ],
+            onDestinationSelected: widget.onDestinationSelected,
+          ),
+        ),
       ),
     );
   }

@@ -106,7 +106,7 @@ class AppStyle {
     fontSize: getFontSize(
       20,
     ),
-    fontFamily: 'Roboto',
+    fontFamily: 'Manrope',
     fontWeight: FontWeight.w400,
   );
 

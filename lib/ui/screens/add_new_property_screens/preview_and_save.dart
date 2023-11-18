@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:hostmi/api/hostmi_local_database/hostmi_local_database.dart';
 import 'package:hostmi/api/models/agency_model.dart';
 import 'package:hostmi/api/providers/hostmi_provider.dart';
@@ -9,13 +8,11 @@ import 'package:hostmi/api/supabase/houses/add_picture.dart';
 import 'package:hostmi/api/supabase/houses/insert_house.dart';
 import 'package:hostmi/api/supabase/supabase_client.dart';
 import 'package:hostmi/core/app_export.dart';
-import 'package:hostmi/core/utils/color_constant.dart';
 import 'package:hostmi/ui/alerts/error_dialog.dart';
 import 'package:hostmi/ui/screens/add_new_property_screens/add_property_basic_details.dart';
-import 'package:hostmi/ui/screens/agency_screen/agency_screen.dart';
 import 'package:hostmi/ui/screens/publisher_screen.dart';
 import 'package:hostmi/ui/widgets/default_app_button.dart';
-import 'package:hostmi/ui/widgets/house_Preview_card.dart';
+import 'package:hostmi/ui/widgets/house_preview_card.dart';
 import 'package:hostmi/utils/app_color.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
@@ -187,9 +184,9 @@ class _PreviewAndSaveState extends State<PreviewAndSave> {
                   backgroundColor: AppColor.grey,
                   foregroundColor: AppColor.black,
                   elevation: 0.0,
-                  systemOverlayStyle: const SystemUiOverlayStyle(
-                      statusBarColor: AppColor.grey,
-                      statusBarIconBrightness: Brightness.dark),
+                  // systemOverlayStyle: const SystemUiOverlayStyle(
+                  //     statusBarColor: AppColor.grey,
+                  //     statusBarIconBrightness: Brightness.dark),
                   title: const Text("Prévisualiser et enregistrer"),
                   actions: const [
                     IconButton(onPressed: null, icon: Icon(Icons.save))
@@ -241,7 +238,8 @@ class _PreviewAndSaveState extends State<PreviewAndSave> {
   }
 
   uploadFiles({int start = 0}) async {
-    AgencyModel? agency = await getAgencyDetails();
+    List<AgencyModel?> agencyList = await getAgencyDetails();
+    AgencyModel? agency = agencyList[0];
     if (agency != null) {
       setState(() {
         _errorSavingFile = false;

@@ -1,4 +1,4 @@
-class HouseCategory{
+class HouseCategory {
   final DateTime? createdAt;
   final String? en;
   final String? fr;
@@ -11,19 +11,21 @@ class HouseCategory{
     this.id,
   });
 
-  factory HouseCategory.fromMap({required Map<dynamic, dynamic> data}){
+  factory HouseCategory.fromMap({required Map<dynamic, dynamic> data}) {
     return HouseCategory(
         createdAt: data["created_at"],
         en: data["en"],
         fr: data["fr"],
-        id: data["id"]
-    );
+        id: int.tryParse(data["id"].toString()));
   }
 
   @override
   bool operator ==(Object other) {
-    return other is HouseCategory && other.runtimeType == runtimeType && other.id == id;
+    return other is HouseCategory &&
+        other.runtimeType == runtimeType &&
+        other.id == id;
   }
+
   @override
   int get hashCode => id.hashCode;
 }

@@ -7,8 +7,8 @@ import 'package:hostmi/routes.dart';
 import 'package:hostmi/ui/screens/agency_screen/agency_manager_screen.dart';
 import 'package:hostmi/ui/screens/ball_loading_page.dart';
 import 'package:hostmi/ui/screens/create_agency_screen/no_agency.dart';
-import 'package:hostmi/utils/app_color.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hostmi/utils/app_color.dart';
 
 class PublisherPage extends StatefulWidget {
   const PublisherPage({Key? key}) : super(key: key);
@@ -18,13 +18,21 @@ class PublisherPage extends StatefulWidget {
 }
 
 class _PublisherPageState extends State<PublisherPage> {
+  late Future<List<AgencyModel?>> _future;
+
+  @override
+  void initState() {
+    _future = getAgencyDetails();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: AppColor.grey,
+      SystemUiOverlayStyle(
+        statusBarColor: Colors.grey[200],
         statusBarIconBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.grey,
+        // systemNavigationBarColor: Colors.grey,
       ),
     );
 
@@ -51,18 +59,61 @@ class _PublisherPageState extends State<PublisherPage> {
       );
     }
 
-    return FutureBuilder<AgencyModel?>(
-        future: getAgencyDetails(),
+    return FutureBuilder<List<AgencyModel?>>(
+        future: _future,
         builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+                child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text("Une erreur s'est produite. Recharger la page"),
+                  IconButton(
+                      onPressed: () {
+                        _future = getAgencyDetails();
+                      },
+                      icon: const Icon(
+                        Icons.replay_circle_filled_rounded,
+                        size: 40,
+                        color: AppColor.primary,
+                      ))
+                ],
+              ),
+            ));
+          }
           if (!snapshot.hasData) {
             return const BallLoadingPage();
-          } else if (snapshot.hasData) {
-            if (snapshot.data != null) {
+          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+            if (snapshot.data![0] != null) {
               return AgencyManagerScreen(
-                agency: snapshot.data!,
+                agency: snapshot.data![0]!,
               );
+            } else {
+              return Center(
+                  child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                        "Vérifier votre connexion internet et réessayer:"),
+                    IconButton(
+                        onPressed: () {
+                          _future = getAgencyDetails();
+                        },
+                        icon: const Icon(
+                          Icons.replay_circle_filled_rounded,
+                          size: 40,
+                          color: AppColor.primary,
+                        ))
+                  ],
+                ),
+              ));
             }
           }
+
           return const NoAgency();
         });
   }

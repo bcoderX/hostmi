@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hostmi/api/models/country_model.dart';
 import 'package:hostmi/api/models/currency.dart';
+import 'package:hostmi/api/models/filter_model.dart';
 import 'package:hostmi/api/models/gender.dart';
 import 'package:hostmi/api/models/house_category.dart';
 import 'package:hostmi/api/models/house_model.dart';
@@ -120,6 +121,27 @@ class HostmiProvider with ChangeNotifier {
     gender: const Gender(id: 3),
     occupation: const Job(id: 4),
     maritalStatus: const MaritalStatus(id: 3),
+  );
+
+  final FilterModel _filterForm = FilterModel(
+    beds: 0,
+    bathrooms: 0,
+    country: Country(id: 854),
+    priceType: const PriceType(
+      id: 1,
+      en: "/month",
+      fr: "/mois",
+    ),
+    features: [],
+    types: [],
+    categories: [],
+    minPrice: 0,
+    maxPrice: 10000000,
+    currency:
+        const Currency(id: 159, currency: "XOF", en: "CFA Franc BCEAO", fr: ""),
+    // gender: const Gender(id: 3),
+    // occupation: const Job(id: 4),
+    // maritalStatus: const MaritalStatus(id: 3),
   );
 
 //Create agency getters'

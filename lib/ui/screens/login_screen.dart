@@ -1,15 +1,10 @@
 //import 'package:hostmi/ui/pages/main_screen.dart';
 //import 'package:hostmi/ui/pages/register_screen.dart';
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:go_router/go_router.dart';
 import 'package:hostmi/ui/alerts/error_dialog.dart';
-import 'package:hostmi/ui/screens/ball_loading_page.dart';
-import 'package:hostmi/ui/screens/login_phone_number_screen.dart';
-import 'package:hostmi/ui/screens/main_screen.dart';
-import 'package:hostmi/ui/screens/register_screen.dart';
-import 'package:hostmi/ui/widgets/square_field.dart';
+import 'package:hostmi/ui/widgets/rounded_text_field.dart';
 import 'package:hostmi/utils/app_color.dart';
 import 'package:hostmi/utils/app_text_size.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +31,7 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
 
   bool _redirecting = false;
+  bool _isPasswordVisible = false;
 
   final _formState = GlobalKey<FormState>();
 
@@ -73,10 +69,6 @@ class _LoginPageState extends State<LoginPage> {
         _loginErrorDialog(
           title: "Problème de connexion",
           content: "Vérifiez votre connexion internet et réessayer.",
-        );
-        SnackBar(
-          content: const Text("Une erreur s'est produite. Veuillez réessayer"),
-          backgroundColor: Theme.of(context).colorScheme.error,
         );
       } finally {
         if (mounted) {
@@ -125,137 +117,146 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading ?
-    Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            LoadingAnimationWidget.threeArchedCircle(
-              color: AppColor.primary,
-              size: getSize(50),
+    return _isLoading
+        ? Scaffold(
+            body: Center(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    LoadingAnimationWidget.threeArchedCircle(
+                      color: AppColor.primary,
+                      size: getSize(50),
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    const Text(
+                      "Connexion en cours\nVeuillez patienter...",
+                      textAlign: TextAlign.center,
+                    ),
+                  ]),
             ),
-            const SizedBox(
-              height: 50,
-            ),
-            Text(
-              "Connexion en cours\nVeuillez patienter...",
-              textAlign: TextAlign.center,
-            ),
-        ]
-        ),
-      ),
-    )
-        :
-      Scaffold(
-      backgroundColor: AppColor.white,
-      body: Scrollbar(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Image.asset(
-                "assets/images/9.jpg",
-                fit: BoxFit.fitWidth,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Column(children: [
-                  Text(
-                    AppLocalizations.of(context)!.login,
-                    style: Theme.of(context).primaryTextTheme.titleLarge,
-                  ),
-                  Form(
-                    key: _formState,
-                    child: Column(
-                      children: [
-                        _spacer,
-                        SquareTextField(
-                          prefixIcon: const Icon(
-                            Icons.email,
-                            color: AppColor.primary,
-                          ),
-                          placeholder: "example@email.com",
-                          errorText: 'Veuillez saisir votre email',
-                          keyboardType: TextInputType.emailAddress,
-                          controller: _emailController,
+          )
+        : Scaffold(
+            backgroundColor: AppColor.white,
+            body: Scrollbar(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Image.asset(
+                      "assets/images/9.jpg",
+                      fit: BoxFit.fitWidth,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Column(children: [
+                        Text(
+                          AppLocalizations.of(context)!.login,
+                          style: Theme.of(context).primaryTextTheme.titleLarge,
                         ),
-                        _spacer,
-                        SquareTextField(
-                          controller: _passwordController,
-                          prefixIcon: const Icon(
-                            Icons.lock,
-                            color: AppColor.primary,
-                          ),
-                          placeholder: AppLocalizations.of(context)!.password,
-                          errorText: 'veuillez saisir un mot de passe',
-                          keyboardType: TextInputType.text,
-                          isPassword: true,
-                        ),
-                        _spacer,
-                        SizedBox(
-                          width: double.infinity,
-                          child: Material(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: AppColor.primary,
-                            child: MaterialButton(
-                              onPressed: _isLoading ? null : _signIn,
-                              child: Text(
-                                _isLoading
-                                    ? 'Chargement...'
-                                    : AppLocalizations.of(context)!.login,
-                                style: const TextStyle(
-                                  fontSize: AppTextSize.heading18,
-                                  color: AppColor.white,
+                        Form(
+                          key: _formState,
+                          child: Column(
+                            children: [
+                              _spacer,
+                              RoundedTextField(
+                                prefixIcon: const Icon(
+                                  Icons.email,
+                                  color: AppColor.primary,
+                                ),
+                                placeholder: "example@email.com",
+                                errorText: 'Veuillez saisir votre email',
+                                keyboardType: TextInputType.emailAddress,
+                                controller: _emailController,
+                              ),
+                              _spacer,
+                              RoundedTextField(
+                                controller: _passwordController,
+                                prefixIcon: const Icon(
+                                  Icons.lock,
+                                  color: AppColor.primary,
+                                ),
+                                placeholder:
+                                    AppLocalizations.of(context)!.password,
+                                errorText: 'veuillez saisir un mot de passe',
+                                keyboardType: TextInputType.text,
+                                isPassword: !_isPasswordVisible,
+                                suffixIcon: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _isPasswordVisible =
+                                            !_isPasswordVisible;
+                                      });
+                                    },
+                                    icon: const Icon(Icons.remove_red_eye)),
+                              ),
+                              _spacer,
+                              SizedBox(
+                                width: double.infinity,
+                                child: Material(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  color: AppColor.primary,
+                                  child: MaterialButton(
+                                    onPressed: _isLoading ? null : _signIn,
+                                    child: Text(
+                                      _isLoading
+                                          ? 'Chargement...'
+                                          : AppLocalizations.of(context)!.login,
+                                      style: const TextStyle(
+                                        fontSize: AppTextSize.heading18,
+                                        color: AppColor.white,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                              _spacer,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.orUse,
+                                    style: const TextStyle(
+                                        fontSize: AppTextSize.normal12),
+                                  ),
+                                  TextButton(
+                                      onPressed: () {
+                                        context.go("/phone-login");
+                                      },
+                                      child: Text(
+                                          "${AppLocalizations.of(context)!.phoneNumber.toLowerCase()}."))
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!
+                                        .doNotHaveAccount,
+                                    style: const TextStyle(
+                                      fontSize: AppTextSize.normal12,
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      context.go("/register");
+                                    },
+                                    child: Text(
+                                        "${AppLocalizations.of(context)!.createAccount}."),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                        _spacer,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)!.orUse,
-                              style: const TextStyle(
-                                  fontSize: AppTextSize.normal12),
-                            ),
-                            TextButton(
-                                onPressed: () {
-                                  context.go("/phone-login");
-                                },
-                                child: Text(
-                                    "${AppLocalizations.of(context)!.phoneNumber.toLowerCase()}."))
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)!.doNotHaveAccount,
-                              style: const TextStyle(
-                                fontSize: AppTextSize.normal12,
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                context.go("/register");
-                              },
-                              child: Text(
-                                  "${AppLocalizations.of(context)!.createAccount}."),
-                            ),
-                          ],
-                        ),
-                      ],
+                      ]),
                     ),
-                  ),
-                ]),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
   }
 }

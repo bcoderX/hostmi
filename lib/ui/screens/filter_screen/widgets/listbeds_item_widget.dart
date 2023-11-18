@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:hostmi/core/app_export.dart';
+import 'package:hostmi/utils/app_color.dart';
 
 // ignore: must_be_immutable
 class ListbedsItemWidget extends StatelessWidget {
-  ListbedsItemWidget();
+  ListbedsItemWidget(
+      {super.key,
+      required this.label,
+      required this.value,
+      this.onDecrease,
+      this.onIncrease});
+  final String label;
+  final int value;
+  void Function()? onIncrease;
+  void Function()? onDecrease;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +27,7 @@ class ListbedsItemWidget extends StatelessWidget {
               top: 1,
             ),
             child: Text(
-              "",
+              label,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.left,
               style: AppStyle.txtManropeMedium16.copyWith(
@@ -27,23 +37,23 @@ class ListbedsItemWidget extends StatelessWidget {
               ),
             ),
           ),
-          Spacer(),
-          CustomImageView(
-            svgPath: ImageConstant.imgClock24x24,
-            height: getSize(
-              24,
-            ),
-            width: getSize(
-              24,
+          const Spacer(),
+          InkWell(
+            onTap: onDecrease,
+            child: Icon(
+              Icons.remove_circle,
+              color: AppColor.placeholderGrey,
+              size: getSize(30),
             ),
           ),
           Padding(
             padding: getPadding(
               left: 15,
               top: 1,
+              right: 15,
             ),
             child: Text(
-              "",
+              "$value",
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.left,
               style: AppStyle.txtManropeExtraBold16Gray900.copyWith(
@@ -53,16 +63,12 @@ class ListbedsItemWidget extends StatelessWidget {
               ),
             ),
           ),
-          CustomImageView(
-            svgPath: ImageConstant.imgPlus1,
-            height: getSize(
-              24,
-            ),
-            width: getSize(
-              24,
-            ),
-            margin: getMargin(
-              left: 15,
+          InkWell(
+            onTap: onIncrease,
+            child: Icon(
+              Icons.add_circle,
+              color: AppColor.primary,
+              size: getSize(30),
             ),
           ),
         ],
