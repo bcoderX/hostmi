@@ -1,71 +1,88 @@
+import 'package:hostmi/api/models/country_model.dart';
 import 'package:hostmi/api/models/currency.dart';
 import 'package:hostmi/api/models/gender.dart';
+import 'package:hostmi/api/models/house_category.dart';
+import 'package:hostmi/api/models/house_features.dart';
+import 'package:hostmi/api/models/house_type.dart';
 import 'package:hostmi/api/models/job.dart';
 import 'package:hostmi/api/models/marital_status.dart';
 import 'package:hostmi/api/models/price_type.dart';
-
-import 'country_model.dart';
+import 'package:numeral/numeral.dart';
 
 class FilterModel {
   FilterModel({
-    this.gender,
-    this.occupation,
-    this.maritalStatus,
-    this.quarter,
+    required this.genders,
+    required this.occupations,
+    required this.maritalStatus,
     required this.features,
     required this.categories,
     required this.types,
-    this.priceType,
+    required this.quarters,
+    required this.priceType,
     this.isAvailable,
     this.minPrice,
     this.maxPrice,
-    this.beds,
-    this.bathrooms,
-    this.sector,
-    this.city,
-    this.country,
+    required this.beds,
+    required this.bathrooms,
+    required this.sectors,
+    required this.cities,
+    required this.country,
     this.longitude,
     this.latitude,
-    this.currency,
+    required this.currency,
   });
-  PriceType? priceType;
+  PriceType priceType;
   double? minPrice;
   double? maxPrice;
-  Currency? currency;
-  int? beds;
-  int? bathrooms;
-  int? sector;
-  String? quarter;
-  String? city;
-  Country? country;
+  Currency currency;
+  int beds;
+  int bathrooms;
+  List<int> sectors;
+  List<String> quarters;
+  List<String> cities;
+  Country country;
   double? longitude;
   double? latitude;
-  List<int> features;
-  List<int> categories;
-  List<int> types;
-  Gender? gender;
-  Job? occupation;
-  MaritalStatus? maritalStatus;
+  List<HouseFeatures> features;
+  List<HouseCategory> categories;
+  List<HouseType> types;
+  List<Gender> genders;
+  List<Job> occupations;
+  List<MaritalStatus> maritalStatus;
   bool? isAvailable;
 
   factory FilterModel.fromMap(Map<String, dynamic> data) {
     // print(data["features"][0].runtimeType);
     return FilterModel(
-      priceType: PriceType.fromMap(data: data["price_types"]),
+      priceType: data["price_types"],
       minPrice: double.tryParse(data["minPrice"].toString()),
       maxPrice: double.tryParse(data["maxPrice"].toString()),
-      currency: Currency.fromMap(data: data["currencies"]),
+      currency: data["currencies"],
       beds: data["bedrooms"],
       bathrooms: data["bathrooms"],
-      sector: data["sector"],
-      quarter: data["quarter"],
-      city: data["city"],
+      sectors: data["sectors"],
+      quarters: data["quarters"],
+      cities: data["cities"],
       country: data["country"],
       longitude: double.tryParse(data["longitude"].toString()),
       latitude: double.tryParse(data["latitude"].toString()),
       features: data["features"],
       categories: data["categories"],
       types: data["types"],
+      genders: data["genders"],
+      occupations: data["occupations"],
+      maritalStatus: data["maritalStatus"],
     );
   }
+
+  String get shortMinPrice => minPrice!.numeral();
+  String get shortMaxPrice => maxPrice!.numeral();
+
+//Getting the ids to use in the filters query
+  List<int> get featuresIds => features.map((e) => e.id!).toList();
+  List<int> get categoriesIds => categories.map((e) => e.id!).toList();
+  List<int> get typesIds => types.map((e) => e.id).toList();
+  List<int> get gendersIds => genders.map((e) => e.id!).toList();
+  List<int> get occupationsIds => occupations.map((e) => e.id!).toList();
+  List<int> get maritalStatusIds => maritalStatus.map((e) => e.id!).toList();
 }

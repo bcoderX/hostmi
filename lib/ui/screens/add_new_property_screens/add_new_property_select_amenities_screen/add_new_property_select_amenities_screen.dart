@@ -1,8 +1,8 @@
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
 import 'package:hostmi/api/models/job.dart';
 import 'package:hostmi/api/models/marital_status.dart';
 import 'package:hostmi/api/providers/hostmi_provider.dart';
+import 'package:hostmi/api/utils/check_connection_and_do.dart';
 import 'package:hostmi/ui/screens/add_new_property_screens/add_property_pictures/add_property_pictures.dart';
 import 'package:hostmi/ui/widgets/default_app_button.dart';
 import 'package:hostmi/utils/app_color.dart';
@@ -28,6 +28,9 @@ class AddNewPropertySelectAmenitiesScreen extends StatefulWidget {
 class _AddNewPropertySelectAmenitiesScreenState
     extends State<AddNewPropertySelectAmenitiesScreen> {
   final SizedBox _spacer = const SizedBox(height: 25);
+  late final TextEditingController _descriptionController;
+  late final TextEditingController _conditionController;
+  final GlobalKey<FormState> _formState = GlobalKey();
   List<int> selectedFeatures = [];
   Gender selectedGender = const Gender(
     id: 3,
@@ -43,25 +46,28 @@ class _AddNewPropertySelectAmenitiesScreenState
 
   @override
   void initState() {
+    _descriptionController = TextEditingController();
+    _conditionController = TextEditingController();
     selectedFeatures =
         context.read<HostmiProvider>().houseForm.features as List<int>? ?? [];
     selectedGender = context.read<HostmiProvider>().houseForm.gender!;
     selectedJob = context.read<HostmiProvider>().houseForm.occupation!;
     selectedMaritalStatus =
         context.read<HostmiProvider>().houseForm.maritalStatus!;
-    descriptionController.text =
+    _descriptionController.text =
         context.read<HostmiProvider>().houseForm.description ?? "";
     super.initState();
   }
 
-  TextEditingController descriptionController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<HostmiProvider>().getHouseFeatures();
-      context.read<HostmiProvider>().getGenders();
-      context.read<HostmiProvider>().getJobs();
-      context.read<HostmiProvider>().getMaritalStatus();
+      checkConnectionAndDo(() {
+        context.read<HostmiProvider>().getHouseFeatures();
+        context.read<HostmiProvider>().getGenders();
+        context.read<HostmiProvider>().getJobs();
+        context.read<HostmiProvider>().getMaritalStatus();
+      });
     });
     return Scaffold(
       backgroundColor: ColorConstant.gray50,
@@ -69,9 +75,6 @@ class _AddNewPropertySelectAmenitiesScreenState
         backgroundColor: AppColor.grey,
         foregroundColor: AppColor.black,
         elevation: 0.0,
-        // systemOverlayStyle: const SystemUiOverlayStyle(
-        //     statusBarColor: AppColor.grey,
-        //     statusBarIconBrightness: Brightness.dark),
         title: Text(AppLocalizations.of(context)!.addHouse),
         actions: const [],
       ),
@@ -122,8 +125,8 @@ class _AddNewPropertySelectAmenitiesScreenState
                                   borderRadius: BorderRadius.circular(
                                       getHorizontalSize(3))),
                               child: ClipRRect(
-                                borderRadius:
-                                    BorderRadius.circular(getHorizontalSize(3)),
+                                borderRadius: BorderRadius.circular(
+                                    getHorizontalSize(10.0)),
                                 child: LinearProgressIndicator(
                                     value: 0.75,
                                     backgroundColor: ColorConstant.blueGray50,
@@ -285,19 +288,66 @@ class _AddNewPropertySelectAmenitiesScreenState
                 ),
                 CustomTextFormField(
                   //focusNode: FocusNode(),
-                  controller: descriptionController,
+                  controller: _descriptionController,
                   hintText: "Faites une petite description de la maison",
                   margin: getMargin(top: 12),
                   textInputType: TextInputType.text,
                   maxLines: 6,
+                  maxLength: 500,
+                ),
+                Padding(
+                  padding: getPadding(top: 24),
+                  child: Text(
+                    "Conditions d'accès",
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.left,
+                    style: AppStyle.txtManropeBold18.copyWith(
+                      letterSpacing: getHorizontalSize(0.2),
+                    ),
+                  ),
+                ),
+                Form(
+                  key: _formState,
+                  child: CustomTextFormField(
+                    controller: _conditionController,
+                    hintText:
+                        "Quelles conditions on doit remplir pour louer la maison",
+                    margin: getMargin(top: 12),
+                    textInputType: TextInputType.text,
+                    maxLines: 10,
+                    validator: (value) {
+                      if (value!.isEmpty || value.length < 10) {
+                        return "Veuillez saisir correctement les conditions d'accès !";
+                      }
+                      return null;
+                    },
+                    maxLength: 500,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: DefaultAppButton(
-                    text: "Suivant",
-                    onPressed: () {
-                      onTapNext(context);
-                    },
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: DefaultAppButton(
+                          color: Colors.grey[200],
+                          textColor: Colors.grey[600],
+                          text: "Retour",
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 15,),
+                      Expanded(
+                        child: DefaultAppButton(
+                          text: "Suivant",
+                          onPressed: () {
+                            onTapNext(context);
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -309,16 +359,19 @@ class _AddNewPropertySelectAmenitiesScreenState
   }
 
   onTapNext(BuildContext context) {
-    context.read<HostmiProvider>().houseForm.features = selectedFeatures;
-    context.read<HostmiProvider>().houseForm.gender = selectedGender;
-    context.read<HostmiProvider>().houseForm.occupation = selectedJob;
-    context.read<HostmiProvider>().houseForm.maritalStatus =
-        selectedMaritalStatus;
-    context.read<HostmiProvider>().houseForm.description =
-        descriptionController.text.trim();
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => const AddPropertyPictures()));
-    //Navigator.pushNamed(context, AppRoutes.addNewPropertyDetailsScreen);
+    if (_formState.currentState!.validate()) {
+      context.read<HostmiProvider>().houseForm.features = selectedFeatures;
+      context.read<HostmiProvider>().houseForm.gender = selectedGender;
+      context.read<HostmiProvider>().houseForm.occupation = selectedJob;
+      context.read<HostmiProvider>().houseForm.maritalStatus =
+          selectedMaritalStatus;
+      context.read<HostmiProvider>().houseForm.description =
+          _descriptionController.text.trim();
+      context.read<HostmiProvider>().houseForm.conditions =
+          _conditionController.text.trim();
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const AddPropertyPictures()));
+    }
   }
 
   onTapArrowleft12(BuildContext context) {

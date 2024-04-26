@@ -3,7 +3,7 @@ import 'package:hostmi/core/app_export.dart';
 
 // ignore: must_be_immutable
 class ChipviewhomeItemWidget extends StatelessWidget {
-  ChipviewhomeItemWidget();
+  const ChipviewhomeItemWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

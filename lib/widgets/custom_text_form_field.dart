@@ -2,27 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:hostmi/core/app_export.dart';
 
 class CustomTextFormField extends StatelessWidget {
-  CustomTextFormField(
-      {super.key,
-      this.shape,
-      this.padding,
-      this.variant,
-      this.fontStyle,
-      this.alignment,
-      this.width,
-      this.margin,
-      this.controller,
-      this.focusNode,
-      this.isObscureText = false,
-      this.textInputAction = TextInputAction.next,
-      this.textInputType = TextInputType.text,
-      this.maxLines,
-      this.hintText,
-      this.prefix,
-      this.prefixConstraints,
-      this.suffix,
-      this.suffixConstraints,
-      this.validator});
+  CustomTextFormField({
+    super.key,
+    this.shape,
+    this.padding,
+    this.variant,
+    this.fontStyle,
+    this.alignment,
+    this.width,
+    this.margin,
+    this.controller,
+    this.focusNode,
+    this.isObscureText = false,
+    this.textInputAction = TextInputAction.next,
+    this.textInputType = TextInputType.text,
+    this.maxLines = 1,
+    this.maxLength,
+    this.hintText,
+    this.prefix,
+    this.prefixConstraints,
+    this.suffix,
+    this.suffixConstraints,
+    this.validator,
+    this.labelText,
+    this.onChanged,
+    this.readOnly = false,
+  });
 
   TextFormFieldShape? shape;
 
@@ -49,8 +54,10 @@ class CustomTextFormField extends StatelessWidget {
   TextInputType? textInputType;
 
   int? maxLines;
-
+  int? maxLength;
+  bool readOnly;
   String? hintText;
+  String? labelText;
 
   Widget? prefix;
 
@@ -61,6 +68,8 @@ class CustomTextFormField extends StatelessWidget {
   BoxConstraints? suffixConstraints;
 
   FormFieldValidator<String>? validator;
+
+  void Function(String?)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -77,15 +86,18 @@ class CustomTextFormField extends StatelessWidget {
       width: width ?? double.maxFinite,
       margin: margin,
       child: TextFormField(
+        readOnly: readOnly,
         controller: controller,
         focusNode: focusNode,
         style: _setFontStyle(),
         obscureText: isObscureText!,
         textInputAction: textInputAction,
         keyboardType: textInputType,
-        maxLines: maxLines ?? 1,
+        maxLines: maxLines,
         decoration: _buildDecoration(),
         validator: validator,
+        onChanged: onChanged,
+        maxLength: maxLength,
       ),
     );
   }
@@ -95,6 +107,7 @@ class CustomTextFormField extends StatelessWidget {
       hintText: hintText ?? "",
       hintStyle: _setFontStyle(),
       border: _setBorderStyle(),
+      labelText: labelText,
       enabledBorder: _setBorderStyle(),
       focusedBorder: _setBorderStyle(),
       disabledBorder: _setBorderStyle(),

@@ -4,11 +4,11 @@ import 'package:hostmi/widgets/custom_icon_button.dart';
 
 // ignore: must_be_immutable
 class ListimgItemWidget extends StatelessWidget {
-  ListimgItemWidget();
+  const ListimgItemWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: getVerticalSize(
         418,
       ),

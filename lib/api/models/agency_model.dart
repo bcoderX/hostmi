@@ -44,6 +44,8 @@ class AgencyModel {
   final String? profileImageUrl;
   @HiveField(19)
   final String? website;
+  @HiveField(20)
+  final String? whatsapp;
 
   AgencyModel(
       {this.id,
@@ -52,6 +54,7 @@ class AgencyModel {
       this.countryId,
       this.name,
       this.phoneNumber,
+      this.whatsapp,
       this.email,
       this.legalReferences,
       this.cities,
@@ -69,11 +72,12 @@ class AgencyModel {
   factory AgencyModel.fromMap(Map<String, dynamic> data) {
     return AgencyModel(
       id: data["id"],
-      createdAt: DateTime.parse(data["created_at"]),
-      updatedAt: DateTime.parse(data["updated_at"]),
+      createdAt: DateTime.tryParse(data["created_at"] ?? ""),
+      updatedAt: DateTime.tryParse(data["updated_at"] ?? ""),
       countryId: data["country_id"],
       name: data["name"],
       phoneNumber: data["phone_number"],
+      whatsapp: data["whatsapp"],
       email: data["email"],
       legalReferences: data["legal_references"],
       cities: data["cities"],

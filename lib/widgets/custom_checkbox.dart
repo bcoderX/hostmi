@@ -2,19 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:hostmi/core/app_export.dart';
 
 class CustomCheckbox extends StatelessWidget {
-  CustomCheckbox(
-      {this.shape,
-      this.padding,
-      this.variant,
-      this.fontStyle,
-      this.alignment,
-      this.isRightCheck = false,
-      this.iconSize,
-      this.value,
-      this.onChange,
-      this.text,
-      this.width,
-      this.margin});
+  CustomCheckbox({
+    super.key,
+    this.shape,
+    this.padding,
+    this.variant,
+    this.fontStyle,
+    this.alignment,
+    this.isRightCheck = false,
+    this.iconSize,
+    this.value,
+    this.onChange,
+    this.text,
+    this.width,
+    this.margin,
+  });
 
   CheckboxShape? shape;
 
@@ -79,7 +81,7 @@ class CustomCheckbox extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Padding(
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
             right: 8,
           ),
           child: getTextWidget(),
@@ -94,7 +96,7 @@ class CustomCheckbox extends StatelessWidget {
       children: [
         getCheckboxWidget(),
         Padding(
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
             left: 8,
           ),
           child: getTextWidget(),
@@ -121,7 +123,7 @@ class CustomCheckbox extends StatelessWidget {
           onChange!(value!);
         },
         checkColor: ColorConstant.green500,
-        visualDensity: VisualDensity(
+        visualDensity: const VisualDensity(
           vertical: -4,
           horizontal: -4,
         ),
@@ -210,6 +212,9 @@ class CustomCheckbox extends StatelessWidget {
 }
 
 enum CheckboxShape { RoundedBorder8 }
+
 enum CheckboxPadding { PaddingT14 }
+
 enum CheckboxVariant { OutlineGray300 }
+
 enum CheckboxFontStyle { ManropeSemiBold14Gray900, ManropeSemiBold12 }

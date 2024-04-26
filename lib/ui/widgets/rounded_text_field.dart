@@ -17,6 +17,7 @@ class RoundedTextField extends StatelessWidget {
     this.placeholder,
     this.onChanged,
     this.onTap,
+    this.maxLines = 1,
   }) : super(key: key);
 
   final Widget? prefixIcon;
@@ -24,6 +25,7 @@ class RoundedTextField extends StatelessWidget {
   final String? label;
   final String? placeholder;
   final String errorText;
+  final int? maxLines;
   final bool isEnabled;
   final bool isReadOnly;
   final bool showCursor;
@@ -34,11 +36,15 @@ class RoundedTextField extends StatelessWidget {
   final void Function()? onTap;
   @override
   Widget build(BuildContext context) {
-    return Material(
-      elevation: 1.0,
-      borderRadius: BorderRadius.circular(5.0),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        border: Border.all(color: Colors.grey[200]!),
+        color: AppColor.white,
+      ),
       child: TextFormField(
         showCursor: showCursor,
+        maxLines: maxLines,
         readOnly: isReadOnly,
         obscuringCharacter: ".",
         obscureText: isPassword,
@@ -62,11 +68,11 @@ class RoundedTextField extends StatelessWidget {
           floatingLabelBehavior: FloatingLabelBehavior.never,
           fillColor: AppColor.white,
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(10.0),
             borderSide: const BorderSide(color: AppColor.white),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(10.0),
             borderSide: const BorderSide(color: AppColor.grey),
           ),
         ),

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:hostmi/api/hostmi_local_database/hostmi_local_database.dart';
 import 'package:hostmi/api/models/agency_model.dart';
-import 'package:hostmi/api/supabase/supabase_client.dart';
+import 'package:hostmi/api/providers/hostmi_provider.dart';
+import 'package:hostmi/api/utils/check_connection_and_do.dart';
 import 'package:hostmi/routes.dart';
 import 'package:hostmi/ui/screens/agency_screen/agency_manager_screen.dart';
-import 'package:hostmi/ui/screens/ball_loading_page.dart';
 import 'package:hostmi/ui/screens/create_agency_screen/no_agency.dart';
+import 'package:hostmi/ui/screens/loading_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hostmi/utils/app_color.dart';
+import 'package:provider/provider.dart';
 
 class PublisherPage extends StatefulWidget {
   const PublisherPage({Key? key}) : super(key: key);
@@ -17,7 +18,8 @@ class PublisherPage extends StatefulWidget {
   State<PublisherPage> createState() => _PublisherPageState();
 }
 
-class _PublisherPageState extends State<PublisherPage> {
+class _PublisherPageState extends State<PublisherPage>
+    with AutomaticKeepAliveClientMixin {
   late Future<List<AgencyModel?>> _future;
 
   @override
@@ -28,29 +30,22 @@ class _PublisherPageState extends State<PublisherPage> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        statusBarColor: Colors.grey[200],
-        statusBarIconBrightness: Brightness.dark,
-        // systemNavigationBarColor: Colors.grey,
-      ),
-    );
-
-    if (supabase.auth.currentUser == null) {
+    super.build(context);
+    if (!context.watch<HostmiProvider>().isLoggedIn) {
       return Center(
         child: InkWell(
           onTap: () {
-            context.go(keyLoginRoute);
+            context.push(keyLoginRoute);
           },
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Text("Vous devez vous connecter pour continuer"),
+              const Text("Connectez vous à votre compte"),
               TextButton(
                 child: const Text("Cliquer ici pour se connecter"),
                 onPressed: () {
-                  context.go(keyLoginRoute);
+                  context.push(keyLoginRoute);
                 },
               ),
             ],
@@ -71,8 +66,52 @@ class _PublisherPageState extends State<PublisherPage> {
                 children: [
                   const Text("Une erreur s'est produite. Recharger la page"),
                   IconButton(
+                    onPressed: () {
+                      _future = getAgencyDetails().whenComplete(() {
+                        setState(() {});
+                      });
+                    },
+                    icon: const Icon(
+                      Icons.replay_circle_filled_rounded,
+                      size: 40,
+                      color: AppColor.primary,
+                    ),
+                  ),
+                ],
+              ),
+            ));
+          }
+          if (!snapshot.hasData) {
+            return const BallLoadingPage(
+              loadingTitle: "Recherche de votre agence...",
+            );
+          } else if (snapshot.hasData && snapshot.data!.isEmpty) {
+            return NoAgency(
+              onNotFound: () {
+                checkConnectionAndDo(() {
+                  _future = getAgencyDetails();
+                });
+              },
+            );
+          } else if (snapshot.hasData &&
+              snapshot.data!.isNotEmpty &&
+              snapshot.data![0] == null) {
+            return Center(
+                child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(25.0),
+                    child:
+                        Text("Vérifier votre connexion internet et réessayer:"),
+                  ),
+                  IconButton(
                       onPressed: () {
-                        _future = getAgencyDetails();
+                        checkConnectionAndDo(() {
+                          _future = getAgencyDetails();
+                        });
                       },
                       icon: const Icon(
                         Icons.replay_circle_filled_rounded,
@@ -83,38 +122,14 @@ class _PublisherPageState extends State<PublisherPage> {
               ),
             ));
           }
-          if (!snapshot.hasData) {
-            return const BallLoadingPage();
-          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            if (snapshot.data![0] != null) {
-              return AgencyManagerScreen(
-                agency: snapshot.data![0]!,
-              );
-            } else {
-              return Center(
-                  child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                        "Vérifier votre connexion internet et réessayer:"),
-                    IconButton(
-                        onPressed: () {
-                          _future = getAgencyDetails();
-                        },
-                        icon: const Icon(
-                          Icons.replay_circle_filled_rounded,
-                          size: 40,
-                          color: AppColor.primary,
-                        ))
-                  ],
-                ),
-              ));
-            }
-          }
 
-          return const NoAgency();
+          return AgencyManagerScreen(
+            agency: snapshot.data![0]!,
+          );
         });
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

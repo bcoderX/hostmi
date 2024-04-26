@@ -4,7 +4,7 @@ import 'package:hostmi/widgets/custom_icon_button.dart';
 
 // ignore: must_be_immutable
 class AppbarIconbutton2 extends StatelessWidget {
-  AppbarIconbutton2({this.imagePath, this.svgPath, this.margin, this.onTap});
+  AppbarIconbutton2({super.key, this.imagePath, this.svgPath, this.margin, this.onTap});
 
   String? imagePath;
 

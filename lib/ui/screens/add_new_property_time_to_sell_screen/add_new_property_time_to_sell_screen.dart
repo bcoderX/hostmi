@@ -5,18 +5,16 @@ import 'package:hostmi/widgets/app_bar/appbar_subtitle.dart';
 import 'package:hostmi/widgets/app_bar/custom_app_bar.dart';
 import 'package:hostmi/widgets/custom_button.dart';
 import 'package:hostmi/widgets/custom_text_form_field.dart';
-// ignore_for_file: must_be_immutable
 
-// ignore_for_file: must_be_immutable
+class AddNewPropertyTimeToSellScreen extends StatefulWidget {
+  const AddNewPropertyTimeToSellScreen({Key? key}) : super(key: key);
+  @override
+  State<AddNewPropertyTimeToSellScreen> createState() =>
+      _AddNewPropertyTimeToSellScreenState();
+}
 
-// ignore_for_file: must_be_immutable
-
-// ignore_for_file: must_be_immutable
-
-// ignore_for_file: must_be_immutable
-
-// ignore_for_file: must_be_immutable
-class AddNewPropertyTimeToSellScreen extends StatelessWidget {
+class _AddNewPropertyTimeToSellScreenState
+    extends State<AddNewPropertyTimeToSellScreen> {
   TextEditingController durationController = TextEditingController();
 
   TextEditingController streetaddressController = TextEditingController();
@@ -39,11 +37,12 @@ class AddNewPropertyTimeToSellScreen extends StatelessWidget {
                 height: getVerticalSize(48),
                 leadingWidth: 64,
                 leading: AppbarIconbutton1(
-                    svgPath: ImageConstant.imgArrowleft,
-                    margin: getMargin(left: 24),
-                    onTap: () {
-                      onTapArrowleft7(context);
-                    }),
+                  svgPath: ImageConstant.imgArrowleft,
+                  margin: getMargin(left: 24),
+                  onTap: () {
+                    onTapArrowleft7(context);
+                  },
+                ),
                 centerTitle: true,
                 title: AppbarSubtitle(text: "Add New Property")),
             body: Container(
@@ -165,7 +164,7 @@ class AddNewPropertyTimeToSellScreen extends StatelessWidget {
 
   onTapNext(BuildContext context) {
     //Navigator.pushNamed(
-       // context, AppRoutes.addNewPropertyReasonSellingHomeScreen);
+    // context, AppRoutes.addNewPropertyReasonSellingHomeScreen);
   }
 
   onTapArrowleft7(BuildContext context) {

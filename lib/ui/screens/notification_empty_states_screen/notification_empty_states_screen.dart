@@ -6,6 +6,8 @@ import 'package:hostmi/widgets/app_bar/custom_app_bar.dart';
 import 'package:hostmi/widgets/custom_button.dart';
 
 class NotificationEmptyStatesScreen extends StatelessWidget {
+  const NotificationEmptyStatesScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(

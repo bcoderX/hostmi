@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "461250923898",
+    "project_id": "hostmi-398612",
+    "storage_bucket": "hostmi-398612.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:461250923898:android:65daccd05383f48a1adac3",
+        "android_client_info": {
+          "package_name": "com.hostmi.props.search"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJKFJ5xqSm41Uwbe6XioUfeBKghkmsixU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

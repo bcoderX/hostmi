@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hostmi/api/models/review_model.dart';
-import 'package:hostmi/api/supabase/agencies/reviews/select_reviews_by_agency.dart';
+import 'package:hostmi/api/supabase/rest/agencies/reviews/select_reviews_by_agency.dart';
 import 'package:hostmi/core/utils/size_utils.dart';
-import 'package:hostmi/ui/screens/ball_loading_page.dart';
+import 'package:hostmi/ui/screens/loading_page.dart';
 import 'package:hostmi/ui/screens/product_details_screen/widgets/listrectangle4224_item_widget.dart';
 import 'package:hostmi/utils/app_color.dart';
 
@@ -15,8 +15,6 @@ class ReviewList extends StatefulWidget {
 }
 
 class _ReviewListState extends State<ReviewList> {
-  final int _selectedIndex = 0;
-  int page = 1;
   late Future<List<ReviewModel>> _future;
 
   @override
@@ -46,7 +44,9 @@ class _ReviewListState extends State<ReviewList> {
                   Text("Error: ${snapshot.error}"),
                   IconButton(
                       onPressed: () {
-                        _future = selectReviews();
+                        _future = selectReviews().whenComplete(() {
+                          setState(() {});
+                        });
                       },
                       icon: const Icon(
                         Icons.replay_circle_filled_rounded,

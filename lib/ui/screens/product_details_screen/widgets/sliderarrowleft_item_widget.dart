@@ -1,12 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:hostmi/api/models/house_model.dart';
 import 'package:hostmi/core/app_export.dart';
-import 'package:hostmi/widgets/custom_icon_button.dart';
 
-// ignore: must_be_immutable
 class SliderarrowleftItemWidget extends StatelessWidget {
-  const SliderarrowleftItemWidget({super.key, required this.imageUrl});
+  const SliderarrowleftItemWidget({
+    super.key,
+    required this.imageUrl,
+    required this.house,
+    required this.index,
+  });
   final String imageUrl;
+  final HouseModel house;
+  final int index;
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -26,14 +32,6 @@ class SliderarrowleftItemWidget extends StatelessWidget {
               alignment: Alignment.center,
               fit: BoxFit.cover,
             ),
-            // CustomImageView(
-            //   imagePath: ImageConstant.imgImage343x3431,
-            //   height: getSize(
-            //     343,
-            //   ),
-            //   width: double.infinity,
-            //   alignment: Alignment.center,
-            // ),
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
@@ -52,7 +50,9 @@ class SliderarrowleftItemWidget extends StatelessWidget {
                         bottom: 1,
                       ),
                       child: Text(
-                        "Primary Apartment",
+                        index == 0
+                            ? "${house.houseType!.fr!} - ${house.houseCategory!.fr!}"
+                            : "",
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.left,
                         style: AppStyle.txtManropeExtraBold24WhiteA700,
@@ -63,9 +63,13 @@ class SliderarrowleftItemWidget extends StatelessWidget {
                         bottom: 30,
                       ),
                       child: Text(
-                        "701 Ocean Avenue, Unit 103, Santa Monica",
+                        index == 0
+                            ? house.fullAddress!.isEmpty
+                                ? "${house.sector == 0 ? "" : "Secteur ${house.sector},"} ${house.city}, ${house.country!.fr}"
+                                : house.fullAddress!
+                            : "${house.imagesUrl![index]["description"]}",
                         overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.left,
+                        // textAlign: TextAlign.left,
                         style: AppStyle.txtManropeMedium14,
                       ),
                     ),

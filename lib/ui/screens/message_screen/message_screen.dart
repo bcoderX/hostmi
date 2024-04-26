@@ -1,37 +1,45 @@
-import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hostmi/api/providers/hostmi_provider.dart';
 import 'package:hostmi/api/supabase/supabase_client.dart';
 import 'package:hostmi/routes.dart';
-import 'package:hostmi/ui/screens/chat_page.dart';
-import 'package:hostmi/utils/app_color.dart';
-import '../message_screen/widgets/message_item_widget.dart';
-
+import 'package:hostmi/ui/screens/message_screen/agency_messages_widget.dart';
+import 'package:hostmi/ui/screens/message_screen/user_messages_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:hostmi/core/app_export.dart';
+import 'package:hostmi/utils/app_color.dart';
+import 'package:numeral/numeral.dart';
+import 'package:provider/provider.dart';
 
-class MessagePage extends StatelessWidget {
+class MessagePage extends StatefulWidget {
   const MessagePage({super.key});
 
   @override
+  State<MessagePage> createState() => _MessagePageState();
+}
+
+class _MessagePageState extends State<MessagePage>
+    with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
-    if (supabase.auth.currentUser == null) {
+    super.build(context);
+    if (!context.watch<HostmiProvider>().isLoggedIn) {
       return Center(
         child: InkWell(
           onTap: () {
-            context.go(keyLoginRoute);
+            context.push(keyLoginRoute);
           },
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Text(
-                "Vous devez vous connecter pour envoyer et recevoir des messages",
+                "Connectez vous à votre compte",
                 textAlign: TextAlign.center,
               ),
               TextButton(
                 child: const Text("Cliquer ici pour se connecter"),
                 onPressed: () {
-                  context.go(keyLoginRoute);
+                  context.push(keyLoginRoute);
                 },
               ),
             ],
@@ -41,66 +49,59 @@ class MessagePage extends StatelessWidget {
     }
 
     return SafeArea(
-      child: Scaffold(
-        backgroundColor: ColorConstant.gray50,
-        appBar: AppBar(
-          title: const Text("Messages"),
-          backgroundColor: AppColor.grey,
-          foregroundColor: AppColor.black,
-          elevation: 0.0,
-          systemOverlayStyle: const SystemUiOverlayStyle(
-            statusBarIconBrightness: Brightness.dark,
+      child: DefaultTabController(
+        length: 2,
+        animationDuration: 500.ms,
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: AppColor.grey,
+            title: const Text(
+              "Messages",
+              style: TextStyle(
+                color: AppColor.primary,
+              ),
+            ),
+            elevation: 0.0,
+            bottom: TabBar(
+              tabs: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                      "Agence ${context.watch<HostmiProvider>().unreadUserCount > 0 ? "(${context.watch<HostmiProvider>().unreadUserCount.numeral()})" : ""}",
+                      style: const TextStyle(
+                        color: AppColor.primary,
+                      )),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                      "Locataires${context.watch<HostmiProvider>().unreadAgencyCount > 0 ? "(${context.watch<HostmiProvider>().unreadAgencyCount.numeral()})" : ""}",
+                      style: const TextStyle(
+                        color: AppColor.primary,
+                      )),
+                ),
+              ],
+            ),
           ),
-        ),
-        body: Scrollbar(
-          child: SingleChildScrollView(
-            child: Container(
-                width: double.maxFinite,
-                padding: getPadding(left: 24, top: 42, right: 24, bottom: 42),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      ListView.separated(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          separatorBuilder: (context, index) {
-                            return Padding(
-                                padding: getPadding(top: 17.0, bottom: 17.0),
-                                child: SizedBox(
-                                    width: getHorizontalSize(327),
-                                    child: Divider(
-                                        height: getVerticalSize(1),
-                                        thickness: getVerticalSize(1),
-                                        color: ColorConstant.blueGray50)));
-                          },
-                          itemCount: 5,
-                          itemBuilder: (context, index) {
-                            return MessageItemWidget(onTaptf: () {
-                              onTaptf(context);
-                            });
-                          }),
-                      Padding(
-                        padding: getPadding(top: 14, bottom: 5),
-                        child: Divider(
-                            height: getVerticalSize(1),
-                            thickness: getVerticalSize(1),
-                            color: ColorConstant.blueGray50),
-                      ),
-                    ])),
+          body: TabBarView(
+            children: [
+              UserMessagesWidget(
+                isAgency: false,
+                userId: supabase.auth.currentUser!.id,
+              ),
+              const AgencyMessagesWidget()
+            ],
           ),
         ),
       ),
     );
   }
 
-  onTaptf(BuildContext context) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (BuildContext context) {
-      return const ChatPage();
-    }));
-  }
-
   onTapArrowleft2(BuildContext context) {
     Navigator.pop(context);
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

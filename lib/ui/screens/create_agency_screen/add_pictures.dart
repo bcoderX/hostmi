@@ -3,21 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hostmi/api/providers/hostmi_provider.dart';
 import 'package:hostmi/routes.dart';
-import 'package:hostmi/ui/screens/gears_loading_page.dart';
 import 'package:hostmi/ui/screens/image_editor/image_editor.dart';
-import 'package:hostmi/ui/screens/agency_screen/agency_screen.dart';
-import 'package:hostmi/ui/screens/success_screen.dart';
-import 'package:hostmi/ui/widgets/labeled_field.dart';
-import 'package:hostmi/ui/widgets/landloard_action_button.dart';
+import 'package:hostmi/ui/widgets/action_button.dart';
 import 'package:hostmi/utils/app_color.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:image/image.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '../../widgets/image_form_field.dart';
 
 class AddAgencyPictures extends StatefulWidget {
   const AddAgencyPictures({Key? key}) : super(key: key);
@@ -38,9 +29,6 @@ class _AddAgencyPicturesState extends State<AddAgencyPictures> {
           backgroundColor: AppColor.grey,
           foregroundColor: AppColor.black,
           elevation: 0.0,
-          // systemOverlayStyle: const SystemUiOverlayStyle(
-          //   statusBarIconBrightness: Brightness.dark,
-          // ),
           automaticallyImplyLeading: false,
           title: const Text(
             "Ajouter les images de l'agence",
@@ -52,7 +40,7 @@ class _AddAgencyPicturesState extends State<AddAgencyPictures> {
           actions: [
             TextButton(
                 onPressed: () {
-                  context.go(keyPublishRoute);
+                  context.push(keyPublishRoute);
                 },
                 child: const Text("Sauter")),
           ]),
@@ -141,7 +129,7 @@ class _AddAgencyPicturesState extends State<AddAgencyPictures> {
                         ),
                         Material(
                           color: AppColor.primary,
-                          borderRadius: BorderRadius.circular(5.0),
+                          borderRadius: BorderRadius.circular(10.0),
                           child: MaterialButton(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 20.0),
@@ -258,7 +246,7 @@ class _AddAgencyPicturesState extends State<AddAgencyPictures> {
                         ),
                         Material(
                           color: AppColor.primary,
-                          borderRadius: BorderRadius.circular(5.0),
+                          borderRadius: BorderRadius.circular(10.0),
                           child: MaterialButton(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 20.0),
@@ -294,7 +282,7 @@ class _AddAgencyPicturesState extends State<AddAgencyPictures> {
                 ),
                 Material(
                   color: Colors.grey.withOpacity(.7),
-                  borderRadius: BorderRadius.circular(5.0),
+                  borderRadius: BorderRadius.circular(10.0),
                   child: MaterialButton(
                       padding: const EdgeInsets.symmetric(vertical: 20.0),
                       minWidth: double.infinity,

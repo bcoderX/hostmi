@@ -4,7 +4,7 @@ import 'package:hostmi/core/app_export.dart';
 // ignore: must_be_immutable
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   CustomAppBar(
-      {required this.height,
+      {super.key, required this.height,
       this.styleType,
       this.leadingWidth,
       this.leading,

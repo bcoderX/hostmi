@@ -3,7 +3,7 @@ import 'package:hostmi/core/app_export.dart';
 
 // ignore: must_be_immutable
 class Options2ItemWidget extends StatelessWidget {
-  Options2ItemWidget();
+  const Options2ItemWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

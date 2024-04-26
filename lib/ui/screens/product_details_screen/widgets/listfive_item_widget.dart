@@ -3,7 +3,7 @@ import 'package:hostmi/core/app_export.dart';
 
 // ignore: must_be_immutable
 class ListfiveItemWidget extends StatelessWidget {
-  ListfiveItemWidget();
+  const ListfiveItemWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

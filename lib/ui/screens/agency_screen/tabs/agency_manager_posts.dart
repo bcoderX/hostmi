@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hostmi/api/models/house_model.dart';
-import 'package:hostmi/api/supabase/houses/select_houses.dart';
-import 'package:hostmi/ui/screens/ball_loading_page.dart';
+import 'package:hostmi/api/supabase/rest/houses/delete_house.dart';
+import 'package:hostmi/api/supabase/rest/houses/select_houses.dart';
+import 'package:hostmi/api/utils/check_internet_status.dart';
 import 'package:hostmi/ui/widgets/agency_house_card.dart';
-import 'package:hostmi/ui/widgets/house_card.dart';
+import 'package:hostmi/ui/widgets/house_card_shimmer.dart';
 import 'package:hostmi/utils/app_color.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -20,15 +22,11 @@ class _AgencyManagerPostsState extends State<AgencyManagerPosts> {
     height: 25,
   );
 
-  final int _selectedIndex = 0;
-
-  int page = 1;
-
   late Future<List<HouseModel>> _future;
 
   @override
   void initState() {
-    _future = getHouseList(page, _selectedIndex);
+    _future = getHouseList();
     super.initState();
   }
 
@@ -53,7 +51,28 @@ class _AgencyManagerPostsState extends State<AgencyManagerPosts> {
               future: _future,
               builder: (context, snapshot) {
                 if (snapshot.connectionState != ConnectionState.done) {
-                  return const SizedBox(height: 200, child: BallLoadingPage());
+                  return SingleChildScrollView(
+                      child: Column(children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0,
+                      ),
+                      child: Column(
+                        children: List.generate(
+                          2,
+                          (index) => const HouseCardShimmer(),
+                          growable: false,
+                        ).animate(
+                          onComplete: (controller) {
+                            controller.repeat();
+                          },
+                        ).shimmer(
+                            blendMode: BlendMode.colorDodge,
+                            duration: 1000.ms,
+                            color: Colors.white54),
+                      ),
+                    )
+                  ]));
                 }
 
                 if (snapshot.hasError) {
@@ -63,7 +82,7 @@ class _AgencyManagerPostsState extends State<AgencyManagerPosts> {
                       Text("Error: ${snapshot.error}"),
                       IconButton(
                           onPressed: () {
-                            _future = getHouseList(page, _selectedIndex);
+                            _future = getHouseList();
                           },
                           icon: const Icon(
                             Icons.replay_circle_filled_rounded,
@@ -84,7 +103,7 @@ class _AgencyManagerPostsState extends State<AgencyManagerPosts> {
                     children: [
                       IconButton(
                           onPressed: () {
-                            _future = getHouseList(page, _selectedIndex);
+                            _future = getHouseList();
                           },
                           icon: const Icon(
                             Icons.hide_image,
@@ -117,6 +136,20 @@ class _AgencyManagerPostsState extends State<AgencyManagerPosts> {
                             children: data
                                 .map((house) => AgencyHouseCard(
                                       house: house,
+                                      onDelete: () async {
+                                        bool hasInternet =
+                                            await checkInternetStatus();
+                                        if (hasInternet) {
+                                          bool isDeleted =
+                                              await deleteHouse(house.id!);
+                                          if (isDeleted) {
+                                            _future =
+                                                getHouseList().whenComplete(() {
+                                              setState(() {});
+                                            });
+                                          }
+                                        }
+                                      },
                                     ))
                                 .toList()))
                   ],
@@ -130,7 +163,7 @@ class _AgencyManagerPostsState extends State<AgencyManagerPosts> {
     );
   }
 
-  Future<List<HouseModel>> getHouseList(int page, int type) async {
+  Future<List<HouseModel>> getHouseList() async {
     final List<Map<String, dynamic>> housesList =
         await selectHousesByAgency(widget.agencyId);
     return housesList.map((e) => HouseModel.fromMap(e)).toList();

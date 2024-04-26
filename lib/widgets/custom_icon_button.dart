@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:hostmi/core/app_export.dart';
 
 class CustomIconButton extends StatelessWidget {
-  CustomIconButton(
-      {this.shape,
+  const CustomIconButton(
+      {super.key,
+      this.shape,
       this.padding,
       this.variant,
       this.alignment,
@@ -13,23 +14,23 @@ class CustomIconButton extends StatelessWidget {
       this.child,
       this.onTap});
 
-  IconButtonShape? shape;
+  final IconButtonShape? shape;
 
-  IconButtonPadding? padding;
+  final IconButtonPadding? padding;
 
-  IconButtonVariant? variant;
+  final IconButtonVariant? variant;
 
-  Alignment? alignment;
+  final Alignment? alignment;
 
-  EdgeInsetsGeometry? margin;
+  final EdgeInsetsGeometry? margin;
 
-  double? width;
+  final double? width;
 
-  double? height;
+  final double? height;
 
-  Widget? child;
+  final Widget? child;
 
-  VoidCallback? onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -45,12 +46,12 @@ class CustomIconButton extends StatelessWidget {
     return Padding(
       padding: margin ?? EdgeInsets.zero,
       child: IconButton(
-        visualDensity: VisualDensity(
+        visualDensity: const VisualDensity(
           vertical: -4,
           horizontal: -4,
         ),
         iconSize: getSize(height ?? 0),
-        padding: EdgeInsets.all(0),
+        padding: const EdgeInsets.all(0),
         icon: Container(
           alignment: Alignment.center,
           width: getSize(width ?? 0),
@@ -220,7 +221,7 @@ class CustomIconButton extends StatelessWidget {
             blurRadius: getHorizontalSize(
               2.00,
             ),
-            offset: Offset(
+            offset: const Offset(
               0,
               4,
             ),
@@ -250,11 +251,13 @@ enum IconButtonShape {
   RoundedBorder5,
   CircleBorder24,
 }
+
 enum IconButtonPadding {
   PaddingAll8,
   PaddingAll12,
   PaddingAll5,
 }
+
 enum IconButtonVariant {
   OutlineGray300,
   OutlineBluegray50,

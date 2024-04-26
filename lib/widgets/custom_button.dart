@@ -87,10 +87,6 @@ class CustomButton extends StatelessWidget {
 
   _buildTextButtonStyle() {
     return TextButton.styleFrom(
-      fixedSize: Size(
-        width ?? double.maxFinite,
-        height ?? getVerticalSize(40),
-      ),
       padding: _setPadding(),
       backgroundColor: _setColor(),
       side: _setTextButtonBorder(),

@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:hostmi/ui/widgets/labeled_field.dart';
 import 'package:hostmi/ui/widgets/square_field.dart';
 import 'package:hostmi/utils/app_color.dart';
 
 class RangeField extends StatefulWidget {
-  const RangeField(
-      {Key? key,
-      this.title = "",
-      required this.rangeValues,
-      required this.minTextController,
-      required this.maxTextController})
-      : super(key: key);
+  const RangeField({
+    Key? key,
+    this.title = "",
+    required this.rangeValues,
+    required this.minTextController,
+    required this.maxTextController,
+  }) : super(key: key);
   final String title;
   final RangeValues rangeValues;
   final TextEditingController minTextController;

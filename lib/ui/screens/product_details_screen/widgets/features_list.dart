@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hostmi/api/supabase/houses/select_features.dart';
+import 'package:hostmi/api/supabase/rest/houses/select_features.dart';
 import 'package:hostmi/core/utils/size_utils.dart';
 import 'package:hostmi/ui/screens/add_new_property_screens/add_new_property_select_amenities_screen/widgets/options_item_widget.dart';
-import 'package:hostmi/ui/screens/ball_loading_page.dart';
+import 'package:hostmi/ui/screens/loading_page.dart';
 import 'package:hostmi/utils/app_color.dart';
 
 class FeaturesListWidget extends StatefulWidget {
@@ -30,7 +30,7 @@ class _FeaturesListWidgetState extends State<FeaturesListWidget> {
           builder: (context, snapshot) {
             if (snapshot.connectionState != ConnectionState.done) {
               return const SizedBox(
-                height: 50,
+                height: 100,
                 width: double.infinity,
                 child: BallLoadingPage(
                   loadingTitle: "Chargement des détails...",
@@ -61,7 +61,7 @@ class _FeaturesListWidgetState extends State<FeaturesListWidget> {
             }
 
             if (snapshot.data!.isEmpty) {
-              return const Text("---");
+              return const Text("Pas de caracteristiques");
             }
             List<Map<String, dynamic>> features = snapshot.data!;
             return Wrap(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hostmi/utils/app_color.dart';
-import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -13,48 +12,46 @@ class SearchPlace extends StatefulWidget {
 }
 
 class _SearchPlaceState extends State<SearchPlace> {
-  final _controller = TextEditingController();
-  var uuid = const Uuid();
-  String? _sessionToken;
+  late TextEditingController _controller;
   List<dynamic> _placeList = [];
 
   _onChanged(String? value) {
-    if (_sessionToken == null) {
-      setState(() {
-        _sessionToken = uuid.v4();
-      });
-    }
     getSuggestion(value!);
   }
 
+  @override
+  void initState() {
+    _controller = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   void getSuggestion(String input) async {
-    String kplacesApiKey = "AIzaSyAWO3hxU9IfAC3y2geMwP4f7nRMdUX0kNk";
-    // String type = '(regions)';
     String url =
         "http://dev.virtualearth.net/REST/v1/Locations/$input?includeNeighborhood=1&maxResults=10&include=queryParse,ciso2&key=AqMPtuc1rEJSQqOIho6XQxEAQjMdkPo1jowOgPyPPQLfw3-pgjWhWqeWYYEoEDMc";
-    String baseURL =
-        'https://maps.googleapis.com/maps/api/place/autocomplete/json';
-    var request = Uri.parse(
-        '$baseURL?input=$input&key=$kplacesApiKey&sessiontoken=$_sessionToken');
+
     var req2 = Uri.parse(url);
-    var resp2 = await http.get(req2);
-    var response = await http.get(request);
-    // if (response.statusCode == 200) {
-    //   debugPrint(response.body);
-    //   setState(() {
-    //     _placeList = json.decode(response.body)['resourceSets'];
-    //   });
-    // } else {
-    //   throw Exception('Failed to load predictions');
-    // }
-    if (resp2.statusCode == 200) {
-      //debugPrint(resp2.body);
-      setState(() {
-        _placeList = json.decode(resp2.body)['resourceSets'][0]["resources"];
-        // debugPrint(json.decode(resp2.body)['resourceSets'][0]["resources"]);
-      });
-    } else {
-      throw Exception('Failed to load predictions');
+    try{
+      var resp2 = await http.get(req2);
+
+      if (resp2.statusCode == 200) {
+        //debugPrint(resp2.body);
+        setState(() {
+          _placeList = json.decode(resp2.body)['resourceSets'][0]["resources"];
+          debugPrint(
+              json.decode(resp2.body)['resourceSets'][0]["resources"].toString());
+        });
+    }
+      else {
+        debugPrint('Failed to load predictions');
+      }
+    }catch(e){
+
     }
   }
 
@@ -66,15 +63,18 @@ class _SearchPlaceState extends State<SearchPlace> {
         backgroundColor: AppColor.grey,
         foregroundColor: AppColor.black,
         elevation: 0.0,
-        systemOverlayStyle: const SystemUiOverlayStyle(
-            statusBarColor: AppColor.grey,
-            statusBarIconBrightness: Brightness.dark),
         title: TextFormField(
           controller: _controller,
           onChanged: _onChanged,
+          autofocus: true,
           decoration: InputDecoration(
             hintText: "Chercher un lieu",
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide.none),
             focusColor: Colors.white,
+            filled: true,
+            fillColor: Colors.white,
             floatingLabelBehavior: FloatingLabelBehavior.never,
             prefixIcon: const BackButton(),
             suffixIcon: IconButton(
@@ -97,13 +97,21 @@ class _SearchPlaceState extends State<SearchPlace> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
+                onTap: () {
+                  debugPrint(
+                      "${_placeList[index]["point"]["coordinates"][0]}/${_placeList[index]["point"]["coordinates"][1]}/${_placeList[index]["name"]}");
+                  context.push(
+                      "/map/coords/${_placeList[index]["point"]["coordinates"][0]}/${_placeList[index]["point"]["coordinates"][1]}/${_placeList[index]["name"]}");
+                },
                 title: Text(_placeList[index]["name"]),
+                subtitle: Text(
+                    "${_placeList[index]["address"]["adminDistrict2"]}, ${_placeList[index]["address"]["adminDistrict"]}"),
               ),
               Container(
                 width: double.infinity,
-                height: 2.0,
+                height: 5.0,
                 color: Colors.grey[200],
-              )
+              ),
             ],
           );
         },

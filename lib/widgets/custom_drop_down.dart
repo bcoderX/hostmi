@@ -69,7 +69,7 @@ class CustomDropDown<T> extends StatelessWidget {
       margin: margin,
       child: DropdownButtonFormField<T>(
         isExpanded: true,
-        value: value ?? null,
+        value: value,
         focusNode: focusNode,
         icon: icon,
         style: _setFontStyle(),
@@ -109,9 +109,6 @@ class CustomDropDown<T> extends StatelessWidget {
           ),
           fontFamily: 'Manrope',
           fontWeight: FontWeight.w600,
-          height: getVerticalSize(
-            1.43,
-          ),
         );
       case DropDownFontStyle.ManropeMedium14Bluegray500:
         return TextStyle(
@@ -121,9 +118,6 @@ class CustomDropDown<T> extends StatelessWidget {
           ),
           fontFamily: 'Manrope',
           fontWeight: FontWeight.w500,
-          height: getVerticalSize(
-            1.43,
-          ),
         );
       default:
         return TextStyle(
@@ -133,9 +127,6 @@ class CustomDropDown<T> extends StatelessWidget {
           ),
           fontFamily: 'Manrope',
           fontWeight: FontWeight.w400,
-          height: getVerticalSize(
-            1.43,
-          ),
         );
     }
   }

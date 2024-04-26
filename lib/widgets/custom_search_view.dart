@@ -3,7 +3,7 @@ import 'package:hostmi/core/app_export.dart';
 
 class CustomSearchView extends StatelessWidget {
   CustomSearchView(
-      {this.shape,
+      {super.key, this.shape,
       this.padding,
       this.variant,
       this.fontStyle,

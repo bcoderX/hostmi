@@ -52,7 +52,6 @@ class _SquareTextFieldState extends State<SquareTextField> {
         suffixIcon: widget.suffixIcon,
         labelText: widget.label,
         hintText: widget.placeholder,
-
         hintStyle: const TextStyle(
           color: AppColor.placeholderGrey,
         ),
@@ -64,30 +63,33 @@ class _SquareTextFieldState extends State<SquareTextField> {
         floatingLabelBehavior: FloatingLabelBehavior.never,
         fillColor: AppColor.grey,
         enabledBorder: widget.isFullyBordered
-            ? const OutlineInputBorder(
-                borderSide: BorderSide(color: AppColor.listItemGrey),
+            ? OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: const BorderSide(color: AppColor.listItemGrey),
               )
-            : const UnderlineInputBorder(
-                borderSide: BorderSide(color: AppColor.listItemGrey),
+            : UnderlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: const BorderSide(color: AppColor.listItemGrey),
               ),
         focusedBorder: widget.isFullyBordered
-            ? const OutlineInputBorder(
-                borderSide: BorderSide(color: AppColor.primary),
+            ? OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: const BorderSide(color: AppColor.primary),
               )
-            : const UnderlineInputBorder(
-                borderSide: BorderSide(color: AppColor.primary),
+            : UnderlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: const BorderSide(color: AppColor.primary),
               ),
       ),
-
-
-      validator: !widget.isRequired ? null : (value) {
-        if (value!.isEmpty || value==null ) {
-          return widget.errorText;
-        } else {
-          return null;
-        }
-
-      },
+      validator: !widget.isRequired
+          ? null
+          : (value) {
+              if (value!.isEmpty) {
+                return widget.errorText;
+              } else {
+                return null;
+              }
+            },
       onChanged: widget.onChanged,
       onTap: widget.onTap,
       keyboardType: widget.keyboardType,

@@ -1,15 +1,23 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hostmi/api/providers/hostmi_provider.dart';
+import 'package:hostmi/api/supabase/rest/agencies/check_agency_name.dart';
+import 'package:hostmi/api/utils/check_connection_and_do.dart';
+import 'package:hostmi/api/utils/check_internet_status.dart';
+import 'package:hostmi/core/app_export.dart';
 import 'package:hostmi/routes.dart';
-import 'package:hostmi/ui/widgets/labeled_field.dart';
+import 'package:hostmi/ui/alerts/error_dialog.dart';
+import 'package:hostmi/ui/widgets/default_app_button.dart';
 import 'package:hostmi/utils/app_color.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:hostmi/widgets/custom_button.dart';
+import 'package:hostmi/widgets/custom_drop_down.dart';
+import 'package:hostmi/widgets/custom_text_form_field.dart';
 import 'package:provider/provider.dart';
-
-import '../../widgets/labeled_dropdown.dart';
 
 class CreateAgencyBasicDetails extends StatefulWidget {
   const CreateAgencyBasicDetails({Key? key}) : super(key: key);
@@ -25,6 +33,7 @@ class _CreateAgencyBasicDetailsState extends State<CreateAgencyBasicDetails> {
   final TextEditingController _nameController = TextEditingController();
 
   final TextEditingController _descriptionController = TextEditingController();
+  bool _isCheckingName = false;
 
   @override
   void initState() {
@@ -44,7 +53,9 @@ class _CreateAgencyBasicDetailsState extends State<CreateAgencyBasicDetails> {
   @override
   Widget build(BuildContext context) {
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<HostmiProvider>().getCountries();
+      checkConnectionAndDo(() {
+        context.read<HostmiProvider>().getCountries();
+      });
     });
 
     return Scaffold(
@@ -52,9 +63,6 @@ class _CreateAgencyBasicDetailsState extends State<CreateAgencyBasicDetails> {
         backgroundColor: AppColor.grey,
         foregroundColor: AppColor.black,
         elevation: 0.0,
-        // systemOverlayStyle: const SystemUiOverlayStyle(
-        //   statusBarIconBrightness: Brightness.dark,
-        // ),
         title: const Text(
           "Créer une agence",
           style: TextStyle(
@@ -79,37 +87,43 @@ class _CreateAgencyBasicDetailsState extends State<CreateAgencyBasicDetails> {
           child: Form(
             key: _formState,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _spacer,
-                Row(
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                        style: const TextStyle(color: AppColor.black),
-                        children: [
-                          const TextSpan(
-                              text: "* ", style: TextStyle(color: Colors.red)),
-                          TextSpan(
-                              text:
-                                  " ${AppLocalizations.of(context)!.requiredFieldsWithStar}."),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                _spacer,
-                LabeledField(
+            Text("Vous devez créer une sorte de page que nous appelons \"Agence\" avant de publier une maison. Notre objectif est d'augmenter la visibilité de votre business. Veuillez nous fournir quelques détails de votre business dans les champs ci-dessous.",style:  TextStyle(color: Colors.grey[600])),
+
+                Padding(
+                    padding: getPadding(top: 17),
+                    child: Text("Nom de l'agence",
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.left,
+                        style: AppStyle.txtManropeMedium16
+                            .copyWith(letterSpacing: getHorizontalSize(0.4)))),
+                CustomTextFormField(
                   controller: _nameController,
-                  label: "Nom de l'agence",
-                  isRequired: true,
-                  placeholder:
-                      "${AppLocalizations.of(context)!.pageNameHint}. ex: Hostmi",
-                  errorText: "Veullez saisir le nom de votre agence",
+                  margin: getMargin(top: 7),
+                  padding: TextFormFieldPadding.PaddingAll16,
+                  hintText: "EX: HostMI",
+                  maxLength: 30,
+                  validator: (value) {
+                    if (value!.trim().isEmpty || value.trim().length < 3) {
+                      return "Saisir un nom d'au moins trois lettres";
+                    } else {
+                      return null;
+                    }
+                  },
                 ),
-                _spacer,
-                LabeledDropdownField(
-                  label: "Pays",
+                Padding(
+                    padding: getPadding(top: 17),
+                    child: Text("Pays",
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.left,
+                        style: AppStyle.txtManropeMedium16
+                            .copyWith(letterSpacing: getHorizontalSize(0.4)))),
+                CustomDropDown(
                   value: context.read<HostmiProvider>().agencyCountryId,
+                  margin: getMargin(top: 7),
+                  variant: DropDownVariant.FillBluegray50,
+                  fontStyle: DropDownFontStyle.ManropeMedium14Bluegray500,
                   items: context
                       .watch<HostmiProvider>()
                       .countriesList
@@ -131,64 +145,73 @@ class _CreateAgencyBasicDetailsState extends State<CreateAgencyBasicDetails> {
                         .setAgencyCountry(value!, countries[id]["fr"]);
                   },
                 ),
-                _spacer,
-                LabeledField(
+                Padding(
+                    padding: getPadding(top: 17),
+                    child: Text("Description",
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.left,
+                        style: AppStyle.txtManropeMedium16
+                            .copyWith(letterSpacing: getHorizontalSize(0.4)))),
+                CustomTextFormField(
                   controller: _descriptionController,
-                  label: AppLocalizations.of(context)!.description,
-                  isRequired: true,
-                  placeholder: AppLocalizations.of(context)!.pageDescHint,
+                  margin: getMargin(top: 7),
+                  padding: TextFormFieldPadding.PaddingAll16,
                   maxLines: 4,
-                  errorText: "Saisir une petite description de votre agence",
+                  maxLength: 500,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Saisir une petite description de votre agence";
+                    } else {
+                      return null;
+                    }
+                  },
                 ),
                 _spacer,
-                Material(
-                  color: AppColor.primary,
-                  borderRadius: BorderRadius.circular(5.0),
-                  child: MaterialButton(
-                    padding: const EdgeInsets.symmetric(vertical: 20.0),
-                    minWidth: double.infinity,
-                    onPressed: () {
-                      if (_formState.currentState!.validate()) {
-                        context
-                            .read<HostmiProvider>()
-                            .setAgencyName(_nameController.text);
-                        context
-                            .read<HostmiProvider>()
-                            .setAgencyDescription(_descriptionController.text);
-                        context.go(keyCreateAgencyAdvancedDetailsFullRoute);
+                DefaultAppButton(
+                  onPressed: () async {
+                    if (_formState.currentState!.validate()) {
+                      bool isConnected = await checkInternetStatus();
+                      if (isConnected) {
+                        setState(() {
+                          _isCheckingName = true;
+                        });
+                        bool nameIsExisting =
+                            await checkAgencyName(_nameController.text.trim());
+                        if (nameIsExisting) {
+                          showErrorDialog(
+                              title: "Nom existant",
+                              content:
+                                  "Ce nom n'est pas disponible. Veuillez choisir un autre nom.",
+                              context: context);
+                          setState(() {
+                            _isCheckingName = false;
+                          });
+                        } else {
+                          setState(() {
+                            _isCheckingName = false;
+                          });
+
+                          context
+                              .read<HostmiProvider>()
+                              .setAgencyName(_nameController.text.trim());
+                          context.read<HostmiProvider>().setAgencyDescription(
+                              _descriptionController.text.trim());
+                          Timer(500.ms, () {
+                            context.push(
+                                "$keyCreateAgencyRoute/$keyCreateAgencyAdvancedDetailsRoute");
+                          });
+
+                        }
+                      } else {
+                        showErrorDialog(
+                            title: "Problème de connexion",
+                            content:
+                                "Vérifiez votre connexion internet et rééssayez !",
+                            context: context);
                       }
-                      // Navigator.of(context).push(
-                      //   MaterialPageRoute(
-                      //     builder: (BuildContext context) {
-                      //       return GearsLoadingPage(
-                      //         page: const SuccessPage(
-                      //           continueToPage: LandlordPage(),
-                      //         ),
-                      //         operationTitle:
-                      //             AppLocalizations.of(context)!.creatingPage,
-                      //       );
-                      //     },
-                      //   ),
-                      // );
-                    },
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Suivant",
-                          style: TextStyle(
-                            color: AppColor.grey,
-                          ),
-                        ),
-                        Icon(
-                          Icons.keyboard_arrow_right_outlined,
-                          size: 20.0,
-                          color: Colors.white,
-                        )
-                      ],
-                    ),
-                  ),
+                    }
+                  },
+                  text: _isCheckingName ? "Vérication du nom..." : "Suivant",
                 )
               ],
             ),

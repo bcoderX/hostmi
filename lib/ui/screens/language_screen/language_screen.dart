@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:hostmi/api/providers/locale_provider.dart';
 import 'package:hostmi/core/app_export.dart';
 import 'package:hostmi/utils/app_color.dart';
@@ -27,9 +26,6 @@ class _LanguagePageState extends State<LanguagePage> {
         backgroundColor: AppColor.grey,
         foregroundColor: AppColor.black,
         elevation: 0.0,
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarIconBrightness: Brightness.dark,
-        ),
         title: const Text(
           "Langue",
           style: TextStyle(

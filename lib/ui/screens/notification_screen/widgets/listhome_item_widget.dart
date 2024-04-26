@@ -4,7 +4,7 @@ import 'package:hostmi/widgets/custom_icon_button.dart';
 
 // ignore: must_be_immutable
 class ListhomeItemWidget extends StatelessWidget {
-  ListhomeItemWidget();
+  const ListhomeItemWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

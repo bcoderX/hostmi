@@ -3,7 +3,7 @@ import 'package:hostmi/core/app_export.dart';
 
 // ignore: must_be_immutable
 class AppbarSubtitle extends StatelessWidget {
-  AppbarSubtitle({required this.text, this.margin, this.onTap});
+  AppbarSubtitle({super.key, required this.text, this.margin, this.onTap});
 
   String text;
 

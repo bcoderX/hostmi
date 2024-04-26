@@ -18,10 +18,12 @@ class DetailsRow extends StatelessWidget {
           icon,
           color: AppColor.primary,
         ),
-        Text(
-          "$label : $value",
-          style: const TextStyle(
-            color: AppColor.black,
+        Expanded(
+          child: Text(
+            "$label : $value",
+            style: const TextStyle(
+              color: AppColor.black,
+            ),
           ),
         ),
       ],

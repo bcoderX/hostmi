@@ -1,17 +1,20 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hostmi/api/models/agency_model.dart';
-import 'package:hostmi/api/supabase/agencies/select_agencies_by_id.dart';
+import 'package:hostmi/api/supabase/rest/agencies/select_agencies_by_id.dart';
 import 'package:hostmi/api/supabase/supabase_client.dart';
 import 'package:hostmi/core/utils/size_utils.dart';
+import 'package:hostmi/routes.dart';
+import 'package:hostmi/ui/alerts/error_dialog.dart';
+import 'package:hostmi/ui/alerts/info_dialog.dart';
 import 'package:hostmi/ui/screens/agency_screen/tabs/agency_posts.dart';
 import 'package:hostmi/ui/screens/agency_screen/tabs/agency_reviews.dart';
 import 'package:hostmi/ui/screens/agency_screen/tabs/contacts.dart';
-import 'package:hostmi/ui/screens/ball_loading_page.dart';
-import 'package:hostmi/ui/widgets/landloard_action_button.dart';
+import 'package:hostmi/ui/screens/loading_page.dart';
+import 'package:hostmi/ui/widgets/action_button.dart';
 import 'package:hostmi/utils/app_color.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:go_router/go_router.dart';
-import 'package:hostmi/routes.dart';
 
 class AgencyScreen extends StatefulWidget {
   const AgencyScreen({Key? key, required this.id}) : super(key: key);
@@ -36,42 +39,46 @@ class _AgencyScreenState extends State<AgencyScreen> {
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     if (supabase.auth.currentUser == null) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                      "Vous devez vous connecter pour voir les détails de l'agence."),
-                  TextButton(
-                    child: const Text("Cliquer ici pour se connecter"),
-                    onPressed: () {
-                      context.go(keyLoginRoute);
-                    },
-                  ),
-                  const SizedBox(
-                    height: 25,
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.black87,
-                      backgroundColor: Colors.grey[200],
-                    ),
-                    child: const Text(
-                      "Retour",
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                "Connectez vous à votre compte.",
+                textAlign: TextAlign.center,
               ),
-            );
-          }
+              TextButton(
+                child: const Text("Cliquer ici pour se connecter"),
+                onPressed: () {
+                  context.push(keyLoginRoute);
+                },
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.black87,
+                  backgroundColor: AppColor.grey,
+                ),
+                child: const Text(
+                  "Retour",
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     return FutureBuilder<List<Map<String, dynamic>>>(
         future: _future,
         builder: (context, snapshot) {
-          
           if (!snapshot.hasData) {
             return const BallLoadingPage(
               loadingTitle: "Nous chargons les détails de l'agence...",
@@ -79,25 +86,34 @@ class _AgencyScreenState extends State<AgencyScreen> {
           } else if (snapshot.hasData) {
             if (snapshot.data!.isNotEmpty) {
               var agency = AgencyModel.fromMap(snapshot.data![0]);
-              // print(agency.profileImageUrl);
               return Scaffold(
                 appBar: AppBar(
                   backgroundColor: AppColor.grey,
                   foregroundColor: AppColor.black,
                   elevation: 0.0,
-                  // systemOverlayStyle: const SystemUiOverlayStyle(
-                  //   statusBarBrightness: Brightness.light,
-                  // ),
-                  title: Text(
-                    agency.name!,
-                    style: const TextStyle(color: AppColor.black),
+                  title: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (agency.isVerified!)
+                        const Icon(
+                          Icons.verified,
+                          color: Colors.blue,
+                        ),
+                      Expanded(
+                        child: Text(
+                          agency.name!,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(color: AppColor.black),
+                        ),
+                      ),
+                    ],
                   ),
                   actions: [
                     TextButton.icon(
                         onPressed: () async {
                           final canOpenUrl = await canLaunchUrl(
                               Uri.parse("tel:${agency.phoneNumber!}"));
-                          print(agency.phoneNumber!);
+                          debugPrint(agency.phoneNumber!);
                           if (canOpenUrl) {
                             await launchUrl(
                                 Uri.parse("tel:${agency.phoneNumber!}"));
@@ -125,7 +141,7 @@ class _AgencyScreenState extends State<AgencyScreen> {
                                   decoration: BoxDecoration(
                                     color: AppColor.bottomBarGrey,
                                     image: DecorationImage(
-                                      image: NetworkImage(
+                                      image: CachedNetworkImageProvider(
                                         agency.coverImageUrl == null
                                             ? "https://rwwurjrdtxmszqpwpocx.supabase.co/storage/v1/object/public/agencies/default_images/cover_placeholder.png"
                                             : supabase.storage
@@ -156,11 +172,11 @@ class _AgencyScreenState extends State<AgencyScreen> {
                                       image: agency.profileImageUrl == null
                                           ? null
                                           : DecorationImage(
-                                              image: NetworkImage(supabase
-                                                  .storage
-                                                  .from("agencies")
-                                                  .getPublicUrl(
-                                                      agency.profileImageUrl!)),
+                                              image: CachedNetworkImageProvider(
+                                                  supabase.storage
+                                                      .from("agencies")
+                                                      .getPublicUrl(agency
+                                                          .profileImageUrl!)),
                                               fit: BoxFit.cover,
                                             ),
                                       border: Border.all(
@@ -179,7 +195,7 @@ class _AgencyScreenState extends State<AgencyScreen> {
                           ],
                         ),
                         Container(
-                          margin: const EdgeInsets.only(top: 25),
+                          margin: const EdgeInsets.only(top: 10),
                           width: double.maxFinite,
                           height: 60,
                           decoration: const BoxDecoration(
@@ -193,6 +209,12 @@ class _AgencyScreenState extends State<AgencyScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 ActionButton(
+                                  padding: getPadding(
+                                    left: 12,
+                                    top: 12,
+                                    right: 12,
+                                    bottom: 12,
+                                  ),
                                   icon: Icon(
                                     Icons.pages,
                                     color: _selectedIndex == 0
@@ -216,6 +238,12 @@ class _AgencyScreenState extends State<AgencyScreen> {
                                   },
                                 ),
                                 ActionButton(
+                                  padding: getPadding(
+                                    left: 12,
+                                    top: 12,
+                                    right: 12,
+                                    bottom: 12,
+                                  ),
                                   icon: Icon(
                                     Icons.contact_page,
                                     color: _selectedIndex == 1
@@ -223,7 +251,7 @@ class _AgencyScreenState extends State<AgencyScreen> {
                                         : Colors.grey[800],
                                     size: 18.0,
                                   ),
-                                  text: "Apropos",
+                                  text: "A propos",
                                   backgroundColor: _selectedIndex == 1
                                       ? AppColor.primary
                                       : null,
@@ -239,6 +267,12 @@ class _AgencyScreenState extends State<AgencyScreen> {
                                   },
                                 ),
                                 ActionButton(
+                                  padding: getPadding(
+                                    left: 12,
+                                    top: 12,
+                                    right: 12,
+                                    bottom: 12,
+                                  ),
                                   icon: Icon(
                                     Icons.star,
                                     color: _selectedIndex == 2
@@ -326,7 +360,22 @@ class _AgencyScreenState extends State<AgencyScreen> {
   void setSelectedIndex(int i) => setState(() {
         _selectedIndex = i;
       });
+  _showInfoDialog({
+    void Function()? onClick,
+  }) {
+    showInfoDialog(
+      title: "Infos",
+      content:
+          "Cette action pourrait être facturée dans les prochaines mises à jour. 🙂",
+      actionTitle: "Continuer",
+      context: context,
+      onClick: onClick,
+    );
+  }
 }
+
+  
+
 
   // Future<List<AgencyModel>> getHouseDetails(String id) async {
   //   final housesList = await selectHouseByID(id);

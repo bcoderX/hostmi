@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 class ImageEditor extends StatefulWidget {
 
@@ -24,7 +23,7 @@ class _ImageEditorState extends State<ImageEditor> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: !kIsWeb ? AppBar(title: Text("Modifier l'image")) : null,
+      appBar: !kIsWeb ? AppBar(title: const Text("Modifier l'image")) : null,
       body: Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,

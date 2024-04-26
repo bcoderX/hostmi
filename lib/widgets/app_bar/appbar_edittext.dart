@@ -4,7 +4,7 @@ import 'package:hostmi/widgets/custom_text_form_field.dart';
 
 // ignore: must_be_immutable
 class AppbarEdittext extends StatelessWidget {
-  AppbarEdittext({this.hintText, this.controller, this.margin});
+  AppbarEdittext({super.key, this.hintText, this.controller, this.margin});
 
   String? hintText;
 

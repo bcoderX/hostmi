@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hostmi/core/app_export.dart';
 import 'package:hostmi/utils/app_color.dart';
 
 class DefaultAppButton extends StatelessWidget {
@@ -19,7 +20,7 @@ class DefaultAppButton extends StatelessWidget {
       color: color ?? AppColor.primary,
       borderRadius: BorderRadius.circular(5.0),
       child: MaterialButton(
-          padding: const EdgeInsets.symmetric(vertical: 20.0),
+          padding: getPadding(top: 12.0, bottom: 12.0),
           minWidth: double.infinity,
           onPressed: onPressed,
           child: Text(

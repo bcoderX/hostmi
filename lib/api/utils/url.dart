@@ -1,1 +1,0 @@
-const String endPointUrl = "http://192.168.43.155:8000/api/";

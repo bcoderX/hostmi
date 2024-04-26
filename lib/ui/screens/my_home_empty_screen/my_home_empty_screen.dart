@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hostmi/core/app_export.dart';
-//import 'package:hostmi/presentation/home_page/home_page.dart';
-//import 'package:hostmi/presentation/home_search_page/home_search_page.dart';
-//import 'package:hostmi/presentation/message_page/message_page.dart';
-//import 'package:hostmi/presentation/my_home_page/my_home_page.dart';
-//import 'package:hostmi/presentation/profile_page/profile_screen.dart';
-import 'package:hostmi/widgets/custom_bottom_bar.dart';
 import 'package:hostmi/widgets/custom_button.dart';
 
 class MyHomeEmptyScreen extends StatelessWidget {
-  GlobalKey<NavigatorState> navigatorKey = GlobalKey();
+  const MyHomeEmptyScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -88,53 +82,7 @@ class MyHomeEmptyScreen extends StatelessWidget {
             ],
           ),
         ),
-        bottomNavigationBar: CustomBottomBar(
-          onChanged: (BottomBarEnum type) {
-            Navigator.pushNamed(
-                navigatorKey.currentContext!, getCurrentRoute(type));
-          },
-        ),
       ),
     );
-  }
-
-  ///Handling route based on bottom click actions
-  String getCurrentRoute(BottomBarEnum type) {
-    /*
-    switch (type) {
-      case BottomBarEnum.Home:
-        return AppRoutes.homePage;
-      case BottomBarEnum.Message:
-        return AppRoutes.messagePage;
-      case BottomBarEnum.Discover:
-        return AppRoutes.homeSearchPage;
-      case BottomBarEnum.Myhome:
-        return AppRoutes.myHomePage;
-      case BottomBarEnum.Profile:
-        return AppRoutes.profilePage;
-      default:
-        return "/";
-    }*/
-    return "";
-  }
-
-  ///Handling page based on route
-  Widget getCurrentPage(String currentRoute) {
-    /*
-    switch (currentRoute) {
-      case AppRoutes.homePage:
-        return HomePage();
-      case AppRoutes.messagePage:
-        return MessagePage();
-      case AppRoutes.homeSearchPage:
-        return HomeSearchPage();
-      case AppRoutes.myHomePage:
-        return MyHomePage();
-      case AppRoutes.profilePage:
-        return ProfilePage();
-      default:
-        return DefaultWidget();
-    }*/
-    return DefaultWidget();
   }
 }

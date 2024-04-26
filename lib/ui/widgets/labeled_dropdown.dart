@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hostmi/ui/widgets/square_field.dart';
 
 class LabeledDropdownField extends StatelessWidget {
-  LabeledDropdownField({
+  const LabeledDropdownField({
     Key? key,
     this.label,
     this.value,
@@ -15,8 +14,8 @@ class LabeledDropdownField extends StatelessWidget {
   final String? errorText;
   final String? value;
   final List<DropdownMenuItem<String>>? items;
-  void Function(String?)? onChanged;
-  void Function()? onTap;
+  final void Function(String?)? onChanged;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {

@@ -1,8 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:hostmi/ui/widgets/landloard_action_button.dart';
-import 'package:hostmi/ui/widgets/square_field.dart';
+import 'package:hostmi/core/app_export.dart';
+import 'package:hostmi/ui/widgets/action_button.dart';
+import 'package:hostmi/ui/widgets/rounded_text_field.dart';
 import 'package:hostmi/utils/app_color.dart';
 
 class LocalImagePreview extends StatelessWidget {
@@ -84,16 +85,18 @@ class LocalImagePreview extends StatelessWidget {
                     onTap: onPickImage,
                     child: Container(
                       width: double.infinity,
-                      height: 200,
+                      height: getVerticalSize(200),
                       decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: image == null
-                              ? const AssetImage(
-                                  "assets/images/image_not_found.png")
-                              : FileImage(image!) as ImageProvider,
-                          fit: BoxFit.fitHeight,
-                        ),
-                      ),
+                          image: DecorationImage(
+                            image: image == null
+                                ? const AssetImage(
+                                    "assets/images/image_not_found.png")
+                                : FileImage(image!) as ImageProvider,
+                            fit: BoxFit.fitHeight,
+                          ),
+                          color: Colors.white,
+                          border: Border.all(color: Colors.grey[200]!),
+                          borderRadius: BorderRadius.circular(5.0)),
                       child: const Icon(
                         Icons.camera_alt,
                         color: AppColor.grey,
@@ -122,21 +125,25 @@ class LocalImagePreview extends StatelessWidget {
                   ))
                 ],
               ),
+              const SizedBox(height: 10),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
                     ActionButton(
+                      padding: getPadding(top: 5, bottom: 5, left: 7, right: 7),
                       icon: const Icon(Icons.camera_alt),
                       text: "Choisis une ${image == null ? '' : 'autre '}photo",
                       onPressed: onPickImage,
                     ),
                     ActionButton(
+                      padding: getPadding(top: 5, bottom: 5, left: 7, right: 7),
                       icon: const Icon(Icons.edit),
                       text: "Modifier",
                       onPressed: onEditImage,
                     ),
                     ActionButton(
+                      padding: getPadding(top: 5, bottom: 5, left: 7, right: 7),
                       icon: const Icon(Icons.delete),
                       text: "Suprimer",
                       onPressed: onDeleteImage,
@@ -147,11 +154,25 @@ class LocalImagePreview extends StatelessWidget {
             ],
           ),
         ),
-        SquareTextField(
+        const SizedBox(height: 5),
+        const SizedBox(
+          width: double.infinity,
+          child: Text(
+            "Décrire l'image",
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              fontSize: 18,
+              color: AppColor.listItemGrey,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        const SizedBox(height: 5),
+        RoundedTextField(
           onChanged: onEditDescription,
           errorText: "Une erreur s'est produite",
           placeholder: "Ajouter un titre ou une description",
-          isFullyBordered: true,
+          maxLines: 2,
         ),
       ],
     );

@@ -35,7 +35,7 @@ class LabeledField extends StatelessWidget {
           style: const TextStyle(fontWeight: FontWeight.bold, color: AppColor.black),
           children: [
             TextSpan(text: label),
-            isRequired == true ? TextSpan(text: " *", style: const TextStyle(color: Colors.red)) : TextSpan()
+            isRequired == true ? const TextSpan(text: " *", style: TextStyle(color: Colors.red)) : const TextSpan()
           ]
         )),
         const SizedBox(

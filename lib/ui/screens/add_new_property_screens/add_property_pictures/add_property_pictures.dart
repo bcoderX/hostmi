@@ -4,22 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:hostmi/api/providers/hostmi_provider.dart';
-import 'package:hostmi/api/providers/locale_provider.dart';
 import 'package:hostmi/core/utils/color_constant.dart';
 import 'package:hostmi/core/utils/size_utils.dart';
 import 'package:hostmi/theme/app_style.dart';
 import 'package:hostmi/ui/alerts/error_dialog.dart';
-import 'package:hostmi/ui/screens/add_new_property_screens/add_property_address.dart';
 import 'package:hostmi/ui/screens/add_new_property_screens/add_property_pictures/widgets/local_image_preview.dart';
 import 'package:hostmi/ui/screens/add_new_property_screens/preview_and_save.dart';
 import 'package:hostmi/ui/widgets/default_app_button.dart';
-import 'package:hostmi/ui/widgets/labeled_field.dart';
-import 'package:hostmi/ui/widgets/landloard_action_button.dart';
 import 'package:hostmi/utils/app_color.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hostmi/widgets/custom_button.dart';
-import 'package:hostmi/widgets/custom_radio_button.dart';
-import 'package:hostmi/widgets/custom_text_form_field.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -63,17 +57,33 @@ class _AddPropertyPicturesState extends State<AddPropertyPictures> {
         backgroundColor: AppColor.grey,
         foregroundColor: AppColor.black,
         elevation: 0.0,
-        // systemOverlayStyle: const SystemUiOverlayStyle(
-        //     statusBarColor: AppColor.grey,
-        //     statusBarIconBrightness: Brightness.dark),
         title: Text(AppLocalizations.of(context)!.addHouse),
-        actions: const [TextButton(onPressed: null, child: Text("Sauter"))],
+        actions: [
+          TextButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      context.read<HostmiProvider>().houseForm.images =
+                          croppedImages;
+                      context
+                          .read<HostmiProvider>()
+                          .houseForm
+                          .imagesDescriptions = descriptions;
+                      return const PreviewAndSave();
+                    },
+                  ),
+                );
+              },
+              child: const Text("Sauter"))
+        ],
       ),
       body: Scrollbar(
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -99,10 +109,10 @@ class _AddPropertyPicturesState extends State<AddPropertyPictures> {
                         decoration: BoxDecoration(
                             color: ColorConstant.blueGray50,
                             borderRadius:
-                                BorderRadius.circular(getHorizontalSize(3))),
+                                BorderRadius.circular(getHorizontalSize(10.0))),
                         child: ClipRRect(
                             borderRadius:
-                                BorderRadius.circular(getHorizontalSize(3)),
+                                BorderRadius.circular(getHorizontalSize(10.0)),
                             child: LinearProgressIndicator(
                                 value: 1.0,
                                 backgroundColor: ColorConstant.blueGray50,
@@ -135,181 +145,149 @@ class _AddPropertyPicturesState extends State<AddPropertyPictures> {
                       ),
                     ),
                     _spacer,
-                    SizedBox(
-                      height: 350,
-                      width: double.maxFinite,
-                      child: isLoaading
-                          ? Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Padding(
-                                  padding: getPadding(top: 16),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const Text("Chargement des images..."),
-                                      const SizedBox(
-                                        height: 5.0,
-                                      ),
-                                      Container(
-                                        height: getVerticalSize(100),
-                                        width: getHorizontalSize(100),
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                                getHorizontalSize(3))),
-                                        child: Stack(
-                                          children: [
-                                            CircularProgressIndicator(
-                                              value: loaded / size,
-                                              backgroundColor:
-                                                  ColorConstant.blueGray50,
-                                              valueColor:
-                                                  AlwaysStoppedAnimation<Color>(
-                                                      ColorConstant.brown500),
-                                            ),
-                                            Positioned.fill(
-                                                child: Align(
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                "$loaded/$size",
-                                                style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ))
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            )
-                          : size == 0
-                              ? Column(
+                    isLoaading
+                        ? Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Padding(
+                                padding: getPadding(top: 16),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    TextButton(
-                                      onPressed: () {
-                                        pickImage(-1);
-                                      },
-                                      child: const Center(
-                                          child: Row(
+                                    const Text("Chargement des images..."),
+                                    const SizedBox(
+                                      height: 5.0,
+                                    ),
+                                    Container(
+                                      height: getVerticalSize(100),
+                                      width: getHorizontalSize(100),
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                              getHorizontalSize(3))),
+                                      child: Stack(
                                         children: [
-                                          Icon(Icons.camera_alt),
-                                          Text("Choisir des fichiers"),
+                                          CircularProgressIndicator(
+                                            value: loaded / size,
+                                            backgroundColor:
+                                                ColorConstant.blueGray50,
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                    ColorConstant.brown500),
+                                          ),
+                                          Positioned.fill(
+                                              child: Align(
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              "$loaded/$size",
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ))
                                         ],
-                                      )),
+                                      ),
                                     ),
                                   ],
-                                )
-                              : PageView.builder(
-                                  itemCount: croppedImages.length,
-                                  controller: _pageController,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return LocalImagePreview(
-                                      index: index,
-                                      onEditDescription: (String value) {
-                                        descriptions[index] = value;
-                                      },
-                                      onAddNewImage:
-                                          index == croppedImages.length - 1 &&
-                                                  croppedImages.length < 10
-                                              ? () {
-                                                  setState(() {
-                                                    images.add(null);
-                                                    croppedImages.add(null);
-                                                    descriptions.add("");
-                                                  });
-                                                  _pageController.animateToPage(
-                                                    index + 1,
-                                                    duration: const Duration(
-                                                      microseconds: 500,
-                                                    ),
-                                                    curve: Curves.easeOut,
-                                                  );
-                                                }
-                                              : null,
-                                      image: croppedImages[index],
-                                      onPickImage: () {
-                                        pickImage(index);
-                                      },
-                                      onEditImage: () {
-                                        editImage(context, index);
-                                      },
-                                      onDeleteImage: () {
-                                        setState(
-                                          () {
-                                            images[index] = null;
-                                            croppedImages[index] = null;
-                                          },
-                                        );
-                                      },
-                                      onBackClick: index == 0
-                                          ? null
-                                          : () {
-                                              _pageController.animateToPage(
-                                                index - 1,
-                                                duration: const Duration(
-                                                    milliseconds: 500),
-                                                curve: Curves.easeOut,
-                                              );
+                                ),
+                              ),
+                            ],
+                          )
+                        : size == 0
+                            ? Column(
+                                children: [
+                                  TextButton(
+                                    onPressed: () {
+                                      pickImage(-1);
+                                    },
+                                    child: const Center(
+                                        child: Row(
+                                      children: [
+                                        Icon(Icons.camera_alt),
+                                        Text("Choisir des fichiers"),
+                                      ],
+                                    )),
+                                  ),
+                                ],
+                              )
+                            : LayoutBuilder(builder: (context, constraints) {
+                                return ConstrainedBox(
+                                  constraints:
+                                      const BoxConstraints(maxHeight: 800),
+                                  child: PageView.builder(
+                                    itemCount: croppedImages.length,
+                                    controller: _pageController,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return LocalImagePreview(
+                                        index: index,
+                                        onEditDescription: (String value) {
+                                          descriptions[index] = value;
+                                        },
+                                        onAddNewImage: index ==
+                                                    croppedImages.length - 1 &&
+                                                croppedImages.length < 10
+                                            ? () {
+                                                setState(() {
+                                                  images.add(null);
+                                                  croppedImages.add(null);
+                                                  descriptions.add("");
+                                                });
+                                                _pageController.animateToPage(
+                                                  index + 1,
+                                                  duration: const Duration(
+                                                    microseconds: 500,
+                                                  ),
+                                                  curve: Curves.easeOut,
+                                                );
+                                              }
+                                            : null,
+                                        image: croppedImages[index],
+                                        onPickImage: () {
+                                          pickImage(index);
+                                        },
+                                        onEditImage: () {
+                                          editImage(context, index);
+                                        },
+                                        onDeleteImage: () {
+                                          setState(
+                                            () {
+                                              images[index] = null;
+                                              croppedImages[index] = null;
                                             },
-                                      onRightClick:
-                                          index == croppedImages.length - 1
-                                              ? null
-                                              : () {
-                                                  _pageController.animateToPage(
-                                                    index + 1,
-                                                    duration: const Duration(
-                                                      milliseconds: 500,
-                                                    ),
-                                                    curve: Curves.easeOut,
-                                                  );
-                                                },
-                                      canAdd:
-                                          index == croppedImages.length - 1 &&
-                                              croppedImages.length < 10,
-                                    );
-                                  },
-                                  //   Column
-                                ),
-                    ),
-                    _spacer,
-                    croppedImages.isEmpty
-                        ? const SizedBox()
-                        : DefaultAppButton(
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    context
-                                        .read<HostmiProvider>()
-                                        .houseForm
-                                        .images = croppedImages;
-                                    context
-                                        .read<HostmiProvider>()
-                                        .houseForm
-                                        .imagesDescriptions = descriptions;
-                                    return const PreviewAndSave();
-                                  },
-                                ),
-                              );
-                            },
-                            text: "Prévusialiser et enregistrer",
-                          ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    DefaultAppButton(
-                      text: "Sauter",
-                      color: Colors.grey[200],
-                      textColor: AppColor.black,
-                      onPressed: () {
-                        // onTapNext(context);
-                      },
-                    ),
+                                          );
+                                        },
+                                        onBackClick: index == 0
+                                            ? null
+                                            : () {
+                                                _pageController.animateToPage(
+                                                  index - 1,
+                                                  duration: const Duration(
+                                                      milliseconds: 500),
+                                                  curve: Curves.easeOut,
+                                                );
+                                              },
+                                        onRightClick: index ==
+                                                croppedImages.length - 1
+                                            ? null
+                                            : () {
+                                                _pageController.animateToPage(
+                                                  index + 1,
+                                                  duration: const Duration(
+                                                    milliseconds: 500,
+                                                  ),
+                                                  curve: Curves.easeOut,
+                                                );
+                                              },
+                                        canAdd:
+                                            index == croppedImages.length - 1 &&
+                                                croppedImages.length < 10,
+                                      );
+                                    },
+                                    //   Column
+                                  ),
+                                );
+                              }),
                   ],
                 ),
               ],
@@ -317,6 +295,51 @@ class _AddPropertyPicturesState extends State<AddPropertyPictures> {
           ),
         ),
       ),
+      bottomNavigationBar: croppedImages.isEmpty
+          ? Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: DefaultAppButton(
+                text: "Sauter",
+                color: Colors.grey[200],
+                textColor: AppColor.black,
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        context.read<HostmiProvider>().houseForm.images =
+                            croppedImages;
+                        context
+                            .read<HostmiProvider>()
+                            .houseForm
+                            .imagesDescriptions = descriptions;
+                        return const PreviewAndSave();
+                      },
+                    ),
+                  );
+                },
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: DefaultAppButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        context.read<HostmiProvider>().houseForm.images =
+                            croppedImages;
+                        context
+                            .read<HostmiProvider>()
+                            .houseForm
+                            .imagesDescriptions = descriptions;
+                        return const PreviewAndSave();
+                      },
+                    ),
+                  );
+                },
+                text: "Prévusialiser et enregistrer",
+              ),
+            ),
     );
   }
 

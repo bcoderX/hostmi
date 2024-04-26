@@ -1,16 +1,16 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hostmi/api/hostmi_local_database/hostmi_local_database.dart';
 import 'package:hostmi/api/models/agency_model.dart';
 import 'package:hostmi/api/providers/hostmi_provider.dart';
-import 'package:hostmi/api/supabase/houses/add_picture.dart';
-import 'package:hostmi/api/supabase/houses/insert_house.dart';
+import 'package:hostmi/api/supabase/rest/houses/add_picture.dart';
+import 'package:hostmi/api/supabase/rest/houses/insert_house.dart';
 import 'package:hostmi/api/supabase/supabase_client.dart';
 import 'package:hostmi/core/app_export.dart';
+import 'package:hostmi/routes.dart';
 import 'package:hostmi/ui/alerts/error_dialog.dart';
-import 'package:hostmi/ui/screens/add_new_property_screens/add_property_basic_details.dart';
-import 'package:hostmi/ui/screens/publisher_screen.dart';
 import 'package:hostmi/ui/widgets/default_app_button.dart';
 import 'package:hostmi/ui/widgets/house_preview_card.dart';
 import 'package:hostmi/utils/app_color.dart';
@@ -64,118 +64,112 @@ class _PreviewAndSaveState extends State<PreviewAndSave> {
   @override
   Widget build(BuildContext context) {
     return _isSaved
-        ? Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.check_circle,
-                color: Colors.greenAccent[200],
-                size: getSize(100),
-              ),
-              const Text(
-                "Enregistrement terminé",
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              ConstrainedBox(
-                constraints: const BoxConstraints(minWidth: 185),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) {
-                        context.read<HostmiProvider>().reSetHouseForm();
-                        return const AddNewPropertyBasicDetails();
-                      },
-                    ));
-                  },
-                  child: const Text("Ajouter une autre maison"),
+        ? WillPopScope(
+            onWillPop: () async {
+              context.go(keyPublishRoute);
+              return false;
+            },
+            child: Scaffold(
+              body: SizedBox(
+                width: double.infinity,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.check_circle,
+                      color: Colors.greenAccent[200],
+                      size: getSize(100),
+                    ),
+                    const Text(
+                      "Enregistrement terminé",
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(minWidth: 185),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: AppColor.black,
+                          backgroundColor: AppColor.grey,
+                        ),
+                        onPressed: () {
+                          context.go(keyPublishRoute);
+                        },
+                        child: const Text("Terminer"),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              ConstrainedBox(
-                constraints: const BoxConstraints(minWidth: 185),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: AppColor.black,
-                    backgroundColor: Colors.grey[200],
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) {
-                        return const PublisherPage();
-                      },
-                    ));
-                  },
-                  child: const Text("Terminer"),
-                ),
-              ),
-            ],
+            ),
           )
         : _isSaving
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _errorSavingFile
-                      ? Icon(
-                          Icons.error,
-                          color: AppColor.primary,
-                          size: getSize(50),
-                        )
-                      : LoadingAnimationWidget.threeArchedCircle(
-                          color: AppColor.primary,
-                          size: getSize(50),
-                        ),
-                  const SizedBox(
-                    height: 50,
-                  ),
-                  Text(
-                    _stateText,
-                    textAlign: TextAlign.center,
-                  ),
-                  _step == 2
-                      ? Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              "$_currentImage/$_imagesSize",
-                              textAlign: TextAlign.center,
+            ? Scaffold(
+                body: SizedBox(
+                  width: double.infinity,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _errorSavingFile
+                          ? Icon(
+                              Icons.error,
+                              color: AppColor.primary,
+                              size: getSize(50),
+                            )
+                          : LoadingAnimationWidget.threeArchedCircle(
+                              color: AppColor.primary,
+                              size: getSize(50),
                             ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            _errorSavingFile
-                                ? Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          uploadFiles(start: _currentImage - 1);
-                                        },
-                                        child: const Text("Réessayer"),
-                                      ),
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          foregroundColor: AppColor.black,
-                                          backgroundColor: Colors.grey[200],
-                                        ),
-                                        onPressed: () {
-                                          Navigator.of(context).pushReplacement(
-                                              MaterialPageRoute(
-                                            builder: (context) {
-                                              return const PublisherPage();
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      Text(
+                        _stateText,
+                        textAlign: TextAlign.center,
+                      ),
+                      _step == 2
+                          ? Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "$_currentImage/$_imagesSize",
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                _errorSavingFile
+                                    ? Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              uploadFiles(
+                                                  start: _currentImage - 1);
                                             },
-                                          ));
-                                        },
-                                        child: const Text("Terminer"),
-                                      ),
-                                    ],
-                                  )
-                                : const SizedBox()
-                          ],
-                        )
-                      : const SizedBox()
-                ],
+                                            child: const Text("Réessayer"),
+                                          ),
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              foregroundColor: AppColor.black,
+                                              backgroundColor: AppColor.grey,
+                                            ),
+                                            onPressed: () {
+                                              context.go(keyPublishRoute);
+                                            },
+                                            child: const Text("Terminer"),
+                                          ),
+                                        ],
+                                      )
+                                    : const SizedBox()
+                              ],
+                            )
+                          : const SizedBox()
+                    ],
+                  ),
+                ),
               )
             : Scaffold(
                 backgroundColor: ColorConstant.gray50,
@@ -184,12 +178,12 @@ class _PreviewAndSaveState extends State<PreviewAndSave> {
                   backgroundColor: AppColor.grey,
                   foregroundColor: AppColor.black,
                   elevation: 0.0,
-                  // systemOverlayStyle: const SystemUiOverlayStyle(
-                  //     statusBarColor: AppColor.grey,
-                  //     statusBarIconBrightness: Brightness.dark),
                   title: const Text("Prévisualiser et enregistrer"),
-                  actions: const [
-                    IconButton(onPressed: null, icon: Icon(Icons.save))
+                  actions: [
+                    IconButton(
+                        onPressed: _onSave,
+                        color: AppColor.primary,
+                        icon: const Icon(Icons.save))
                   ],
                 ),
                 body: Scrollbar(
@@ -210,28 +204,7 @@ class _PreviewAndSaveState extends State<PreviewAndSave> {
                   padding: const EdgeInsets.all(5.0),
                   child: DefaultAppButton(
                     text: "Enregistrer maintenant",
-                    onPressed: () async {
-                      setState(() {
-                        _stateText = "Nous enregistrons \nvotre propriété...";
-                        _isSaving = true;
-                      });
-                      String? result = await insertHouse(
-                          context.read<HostmiProvider>().houseForm);
-                      if (result == null) {
-                        setState(() {
-                          _isSaving = false;
-                        });
-
-                        _houseSavingErrorDialog(
-                          title: "Echec de l'enregistrement",
-                          content:
-                              "Nous rencontrons un problème lors de l'enregistrement de votre propriété. Veuillez éessayez.",
-                        );
-                      } else {
-                        houseId = result;
-                        uploadFiles(start: _currentImage - 1);
-                      }
-                    },
+                    onPressed: _onSave,
                   ),
                 ),
               );
@@ -272,6 +245,29 @@ class _PreviewAndSaveState extends State<PreviewAndSave> {
     setState(() {
       _isSaved = true;
     });
+  }
+
+  Future<void> _onSave() async {
+    setState(() {
+      _stateText = "Nous enregistrons \nvotre propriété...";
+      _isSaving = true;
+    });
+    String? result =
+        await insertHouse(context.read<HostmiProvider>().houseForm);
+    if (result == null) {
+      setState(() {
+        _isSaving = false;
+      });
+
+      _houseSavingErrorDialog(
+        title: "Echec de l'enregistrement",
+        content:
+            "Nous rencontrons un problème lors de l'enregistrement de votre propriété. Veuillez éessayez.",
+      );
+    } else {
+      houseId = result;
+      uploadFiles(start: _currentImage - 1);
+    }
   }
 
   Future<bool> _upload({

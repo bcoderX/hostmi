@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:hostmi/core/app_export.dart';
 
 class CustomRadioButton extends StatelessWidget {
-  CustomRadioButton(
-      {this.fontStyle,
-      this.alignment,
-      this.onChange,
-      this.isRightCheck = false,
-      this.iconSize,
-      this.value,
-      this.groupValue,
-      this.text,
-      this.width,
-      this.margin});
+  CustomRadioButton({
+    super.key,
+    this.fontStyle,
+    this.alignment,
+    this.onChange,
+    this.isRightCheck = false,
+    this.iconSize,
+    this.value,
+    this.groupValue,
+    this.text,
+    this.width,
+    this.margin,
+  });
 
   RadioFontStyle? fontStyle;
 
@@ -62,7 +64,7 @@ class CustomRadioButton extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Padding(
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
             right: 8,
           ),
           child: getTextWidget(),
@@ -77,7 +79,7 @@ class CustomRadioButton extends StatelessWidget {
       children: [
         getRadioWidget(),
         Padding(
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
             left: 8,
           ),
           child: getTextWidget(),
@@ -104,7 +106,7 @@ class CustomRadioButton extends StatelessWidget {
         onChanged: (value) {
           onChange!(value!);
         },
-        visualDensity: VisualDensity(
+        visualDensity: const VisualDensity(
           vertical: -4,
           horizontal: -4,
         ),

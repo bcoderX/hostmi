@@ -1,36 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hostmi/api/providers/hostmi_provider.dart';
+import 'package:hostmi/core/utils/color_constant.dart';
+import 'package:hostmi/core/utils/size_utils.dart';
 import 'package:hostmi/routes.dart';
-import 'package:hostmi/ui/widgets/labeled_field.dart';
+import 'package:hostmi/theme/app_style.dart';
 import 'package:hostmi/utils/app_color.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:hostmi/widgets/custom_button.dart';
+import 'package:hostmi/widgets/custom_text_form_field.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 
-class CreateAgencyAdvancedDetails extends StatelessWidget {
-  CreateAgencyAdvancedDetails({Key? key}) : super(key: key);
-  final _formState = GlobalKey<FormState>();
-  final SizedBox _spacer = const SizedBox(height: 25.0);
-  final TextEditingController _phoneNumberController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _addressController = TextEditingController();
-  final TextEditingController _citiesController = TextEditingController();
+class CreateAgencyAdvancedDetails extends StatefulWidget {
+  const CreateAgencyAdvancedDetails({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    _phoneNumberController.text = context.read<HostmiProvider>().agencyPhone;
+  State<CreateAgencyAdvancedDetails> createState() =>
+      _CreateAgencyAdvancedDetailsState();
+}
+
+class _CreateAgencyAdvancedDetailsState
+    extends State<CreateAgencyAdvancedDetails> {
+  final _formState = GlobalKey<FormState>();
+
+  final SizedBox _spacer = const SizedBox(height: 25.0);
+
+  final TextEditingController _emailController = TextEditingController();
+
+  final TextEditingController _addressController = TextEditingController();
+
+  final TextEditingController _citiesController = TextEditingController();
+
+  PhoneNumber phone = PhoneNumber(isoCode: 'BF');
+
+  PhoneNumber whatsapp = PhoneNumber(isoCode: 'BF');
+  @override
+  void initState() {
     _emailController.text = context.read<HostmiProvider>().agencyEmail;
     _addressController.text = context.read<HostmiProvider>().agencyAdress;
     _citiesController.text = context.read<HostmiProvider>().agencyTowns;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColor.grey,
         foregroundColor: AppColor.black,
         elevation: 0.0,
-        // systemOverlayStyle: const SystemUiOverlayStyle(
-        //   statusBarIconBrightness: Brightness.dark,
-        // ),
         title: const Text(
           "Créer une agence",
           style: TextStyle(
@@ -54,108 +73,196 @@ class CreateAgencyAdvancedDetails extends StatelessWidget {
           child: Form(
             key: _formState,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _spacer,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Dites-nous comment contacter ${context.read<HostmiProvider>().agencyName}",
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: AppColor.primary,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )
-                  ],
+                SizedBox(
+                  width: double.infinity,
+                  child: Text(
+                    "Dites-nous comment contacter ${context.read<HostmiProvider>().agencyName}",
+                    style: const TextStyle(
+                      color: AppColor.primary,
+                      fontSize: 18,
+                    ),
+                  ),
                 ),
-                _spacer,
-                LabeledField(
-                  controller: _phoneNumberController,
-                  label: AppLocalizations.of(context)!.phoneNumber,
-                  isRequired: true,
-                  keyboardType: TextInputType.phone,
-                  placeholder: "+22664260325",
-                  errorText: "Veuillez saisir votre numéro",
+                Padding(
+                    padding: getPadding(top: 17),
+                    child: Text(AppLocalizations.of(context)!.phoneNumber,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.left,
+                        style: AppStyle.txtManropeMedium16
+                            .copyWith(letterSpacing: getHorizontalSize(0.4)))),
+                InternationalPhoneNumberInput(
+                  errorMessage: "Numéro de téléphone incorrect",
+                  onInputChanged: (PhoneNumber number) {
+                    print(number.phoneNumber);
+                    phone = number;
+                  },
+                  onInputValidated: (bool value) {
+                    print(value);
+                  },
+                  inputDecoration: InputDecoration(
+                      contentPadding: getPadding(),
+                      filled: true,
+                      fillColor: ColorConstant.blueGray50,
+                      hintText: "Numéro de téléphone",
+                      border: const OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(5.0),
+                              bottomRight: Radius.circular(5.0)))),
+                  selectorConfig: const SelectorConfig(
+                    selectorType: PhoneInputSelectorType.DIALOG,
+                    setSelectorButtonAsPrefixIcon: true,
+                    leadingPadding: 15.0,
+                    // useBottomSheetSafeArea: true,
+                  ),
+                  ignoreBlank: false,
+                  autoValidateMode: AutovalidateMode.onUserInteraction,
+                  selectorTextStyle: const TextStyle(color: Colors.black),
+                  initialValue: phone,
+                  formatInput: true,
+                  keyboardType: const TextInputType.numberWithOptions(
+                      signed: false, decimal: false),
                 ),
-                _spacer,
-                LabeledField(
+                Padding(
+                    padding: getPadding(top: 17),
+                    child: Text("Numéro WhatsApp",
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.left,
+                        style: AppStyle.txtManropeMedium16
+                            .copyWith(letterSpacing: getHorizontalSize(0.4)))),
+                InternationalPhoneNumberInput(
+                  errorMessage: "Numéro whatsapp incorrect",
+                  onInputChanged: (PhoneNumber number) {
+                    print(number.phoneNumber);
+                    whatsapp = number;
+                  },
+                  onInputValidated: (bool value) {
+                    print(value);
+                  },
+                  inputDecoration: InputDecoration(
+                      contentPadding: getPadding(),
+                      filled: true,
+                      fillColor: ColorConstant.blueGray50,
+                      hintText: "Numéro whatsapp",
+                      border: const OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(5.0),
+                              bottomRight: Radius.circular(5.0)))),
+                  selectorConfig: const SelectorConfig(
+                    selectorType: PhoneInputSelectorType.DIALOG,
+                    setSelectorButtonAsPrefixIcon: true,
+                    leadingPadding: 15.0,
+                    // useBottomSheetSafeArea: true,
+                  ),
+                  ignoreBlank: false,
+                  autoValidateMode: AutovalidateMode.onUserInteraction,
+                  selectorTextStyle: const TextStyle(color: Colors.black),
+                  initialValue: whatsapp,
+                  formatInput: true,
+                  keyboardType: const TextInputType.numberWithOptions(
+                      signed: false, decimal: false),
+                ),
+                Padding(
+                    padding: getPadding(top: 17),
+                    child: Text("Email",
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.left,
+                        style: AppStyle.txtManropeMedium16
+                            .copyWith(letterSpacing: getHorizontalSize(0.4)))),
+                CustomTextFormField(
                   controller: _emailController,
-                  label: "Email",
-                  isRequired: true,
-                  keyboardType: TextInputType.emailAddress,
-                  placeholder: "example@email.com",
-                  errorText: "Veuillez saisir votre Email",
+                  margin: getMargin(top: 7),
+                  padding: TextFormFieldPadding.PaddingAll16,
+                  textInputType: TextInputType.emailAddress,
+                  hintText: "example@email.com",
+                  validator: (value) {
+                    final bool emailValid = RegExp(
+                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                        .hasMatch(value ?? "");
+                    if (emailValid) {
+                      return null;
+                    }
+                    return "Email incorrect";
+                  },
                 ),
-                _spacer,
-                LabeledField(
+                Padding(
+                    padding: getPadding(top: 17),
+                    child: Text("Addresse",
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.left,
+                        style: AppStyle.txtManropeMedium16
+                            .copyWith(letterSpacing: getHorizontalSize(0.4)))),
+                CustomTextFormField(
                   controller: _addressController,
-                  label: "Address",
-                  isRequired: true,
-                  keyboardType: TextInputType.streetAddress,
-                  placeholder: "Secteur 9, Koudougou, Burkina Faso",
-                  errorText: "Veuillez saisir votre addressw",
+                  margin: getMargin(top: 7),
+                  padding: TextFormFieldPadding.PaddingAll16,
+                  textInputType: TextInputType.streetAddress,
+                  hintText: "000 Avenue de la nation 01 BP 160 Koudougou",
+                  validator: (value) {
+                    if (value!.trim().isEmpty || value.trim().length < 9) {
+                      return "Veuillez saisir une addresse valide";
+                    } else {
+                      return null;
+                    }
+                  },
                 ),
-                _spacer,
-                LabeledField(
+                Padding(
+                    padding: getPadding(top: 17),
+                    child: Text("Villes",
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.left,
+                        style: AppStyle.txtManropeMedium16
+                            .copyWith(letterSpacing: getHorizontalSize(0.4)))),
+                CustomTextFormField(
                   controller: _citiesController,
-                  label: AppLocalizations.of(context)!.coveredTowns,
-                  isRequired: true,
-                  placeholder: AppLocalizations.of(context)!.coveredTownsHint,
-                  errorText: "Veuillez saisir les villes où vous êtes",
+                  margin: getMargin(top: 7),
+                  padding: TextFormFieldPadding.PaddingAll16,
+                  textInputType: TextInputType.text,
+                  hintText: AppLocalizations.of(context)!.coveredTownsHint,
+                  validator: (value) {
+                    if (value!.trim().isEmpty || value.trim().length < 2) {
+                      return "Veuillez saisir des villes valides";
+                    } else {
+                      return null;
+                    }
+                  },
                 ),
                 _spacer,
-                MaterialButton(
-                  color: AppColor.primary,
-                  padding: const EdgeInsets.symmetric(vertical: 20.0),
-                  minWidth: double.infinity,
-                  onPressed: () {
+                CustomButton(
+                  onTap: () {
                     if (_formState.currentState!.validate()) {
                       context
                           .read<HostmiProvider>()
-                          .setAgencyPhone(_phoneNumberController.text);
+                          .setAgencyPhone(phone.phoneNumber!);
                       context
                           .read<HostmiProvider>()
-                          .setAgencyEmail(_emailController.text);
+                          .setAgencyWhatsApp(whatsapp.phoneNumber!);
                       context
                           .read<HostmiProvider>()
-                          .setAgencyAddress(_addressController.text);
+                          .setAgencyEmail(_emailController.text.trim());
                       context
                           .read<HostmiProvider>()
-                          .setAgencyPlace(_citiesController.text);
-                      context.go(keyReviewAgencyDetailsFullRoute);
+                          .setAgencyAddress(_addressController.text.trim());
+                      context
+                          .read<HostmiProvider>()
+                          .setAgencyPlace(_citiesController.text.trim());
+                      context.push(
+                          "$keyCreateAgencyRoute/$keyReviewAgencyDetailsRoute");
                     }
-                    // Navigator.of(context).push(
-                    //   MaterialPageRoute(
-                    //     builder: (BuildContext context) {
-                    //       return GearsLoadingPage(
-                    //         page: const SuccessPage(
-                    //           continueToPage: LandlordPage(),
-                    //         ),
-                    //         operationTitle:
-                    //             AppLocalizations.of(context)!.creatingPage,
-                    //       );
-                    //     },
-                    //   ),
-                    // );
                   },
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Vérifier et confirmer",
-                        style: TextStyle(
-                          color: AppColor.grey,
-                        ),
-                      ),
-                      Icon(
-                        Icons.keyboard_arrow_right_outlined,
-                        size: 20.0,
-                        color: Colors.white,
-                      )
-                    ],
+                  height: getVerticalSize(56),
+                  text: "Vérifier et créer",
+                  shape: ButtonShape.RoundedBorder10,
+                  padding: ButtonPadding.PaddingAll16,
+                  fontStyle: ButtonFontStyle.ManropeBold16WhiteA700_1,
+                  suffixWidget: const Icon(
+                    Icons.keyboard_arrow_right_outlined,
+                    size: 20.0,
+                    color: Colors.white,
                   ),
                 )
               ],

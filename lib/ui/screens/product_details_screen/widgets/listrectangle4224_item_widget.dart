@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:hostmi/api/models/review_model.dart';
+import 'package:hostmi/api/supabase/supabase_client.dart';
 import 'package:hostmi/core/app_export.dart';
 
 // ignore: must_be_immutable
@@ -20,7 +21,11 @@ class Listrectangle4224ItemWidget extends StatelessWidget {
       child: Row(
         children: [
           CustomImageView(
-            imagePath: ImageConstant.imgRectangle422462x621,
+            url: review.avatarUrl == null
+                ? null
+                : supabase.storage
+                    .from("profiles")
+                    .getPublicUrl(review.avatarUrl!),
             height: getSize(
               62,
             ),

@@ -1,7 +1,7 @@
+import 'package:hostmi/core/utils/size_utils.dart';
 import 'package:hostmi/utils/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 
 class FilterButton extends StatefulWidget {
   const FilterButton({
@@ -17,14 +17,17 @@ class FilterButton extends StatefulWidget {
 class _FilterButtonState extends State<FilterButton> {
   @override
   Widget build(BuildContext context) {
-    return Material(
-      shadowColor: AppColor.placeholderGrey,
-      elevation: 2,
-      borderRadius: BorderRadius.circular(3.0),
+    return Container(
+      margin: const EdgeInsets.only(left: 5.0, bottom: 5.0),
+      decoration: BoxDecoration(
+        color: AppColor.white,
+        borderRadius: BorderRadius.circular(10.0),
+        border: Border.all(color: Colors.grey[300]!),
+      ),
       child: GestureDetector(
         onTap: widget.onTap,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 6.0),
+          padding: getPadding(all: 10),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,7 +42,7 @@ class _FilterButtonState extends State<FilterButton> {
               Text(
                 AppLocalizations.of(context)!.sort,
                 style: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 18,
                 ),
               ),
             ],

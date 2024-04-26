@@ -1,15 +1,34 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hostmi/api/models/database_response.dart';
+import 'package:hostmi/api/models/user_profile_model.dart';
 import 'package:hostmi/api/supabase/supabase_client.dart';
+import 'package:hostmi/api/supabase/rest/users/select_profile.dart';
 import 'package:hostmi/core/app_export.dart';
 import 'package:hostmi/routes.dart';
-import 'package:hostmi/ui/screens/edit_profile_screen/edit_profile_screen.dart';
 import 'package:hostmi/utils/app_color.dart';
 import 'package:hostmi/widgets/custom_icon_button.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  Future<DatabaseResponse>? _profileFuture;
+
+  UserProfileModel? _user;
+
+  @override
+  void initState() {
+    if (supabase.auth.currentUser != null) {
+      _profileFuture = getProfile(supabase.auth.currentUser!.id);
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,26 +39,11 @@ class ProfilePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Text("Vous devez vous connecter pour continuer."),
+              const Text("Connectez vous à votre compte"),
               TextButton(
                 child: const Text("Cliquer ici pour se connecter"),
                 onPressed: () {
-                  context.go(keyLoginRoute);
-                },
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black87,
-                  backgroundColor: Colors.grey[200],
-                ),
-                child: const Text(
-                  "Retour",
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
+                  context.push(keyLoginRoute);
                 },
               ),
             ],
@@ -54,232 +58,320 @@ class ProfilePage extends StatelessWidget {
           backgroundColor: AppColor.grey,
           foregroundColor: AppColor.black,
           elevation: 0.0,
-          systemOverlayStyle: const SystemUiOverlayStyle(
-            statusBarBrightness: Brightness.light,
-            statusBarIconBrightness: Brightness.dark,
-          ),
         ),
-        body: Container(
-            width: double.maxFinite,
-            padding: getPadding(left: 24, top: 32, right: 24, bottom: 32),
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-              SizedBox(
-                  height: getSize(70),
-                  width: getSize(70),
-                  child: Stack(alignment: Alignment.bottomRight, children: [
-                    CustomImageView(
-                        imagePath: ImageConstant.imageNotFound,
-                        height: getSize(70),
-                        width: getSize(70),
-                        radius: BorderRadius.circular(getHorizontalSize(35)),
-                        alignment: Alignment.center),
-                    CustomIconButton(
-                        height: 24,
-                        width: 24,
-                        variant: IconButtonVariant.OutlineBluegray50_2,
-                        shape: IconButtonShape.RoundedBorder10,
-                        padding: IconButtonPadding.PaddingAll5,
-                        alignment: Alignment.bottomRight,
-                        onTap: () {
-                          onTapBtnEdit(context);
-                        },
-                        child: CustomImageView(
-                            svgPath: ImageConstant.imgEdit12x12))
-                  ])),
-              Padding(
-                  padding: getPadding(top: 8),
-                  child: Text("---",
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.left,
-                      style: AppStyle.txtManropeBold18
-                          .copyWith(letterSpacing: getHorizontalSize(0.2)))),
-              Padding(
-                  padding: getPadding(top: 4),
-                  child: Text(
-                      "${supabase.auth.currentUser!.email ?? supabase.auth.currentUser!.phone}",
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.left,
-                      style: AppStyle.txtManropeMedium14Bluegray500)),
-              Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                      padding: getPadding(top: 31),
-                      child: Text("Home search",
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.left,
-                          style: AppStyle.txtManropeExtraBold14Bluegray500
-                              .copyWith(
-                                  letterSpacing: getHorizontalSize(0.2))))),
-              GestureDetector(
-                  onTap: () {
-                    onTapRowinstagram(context);
-                  },
-                  child: Padding(
-                      padding: getPadding(top: 15),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CustomIconButton(
-                                height: 40,
-                                width: 40,
-                                variant: IconButtonVariant.FillBluegray50,
-                                shape: IconButtonShape.RoundedBorder10,
-                                padding: IconButtonPadding.PaddingAll12,
-                                child: const Icon(
-                                  Icons.remove_red_eye,
-                                  color: AppColor.primary,
-                                  size: 15,
-                                )),
-                            Padding(
-                                padding:
-                                    getPadding(left: 16, top: 12, bottom: 7),
-                                child: Text("Recently viewed",
+        body: Scrollbar(
+          child: SingleChildScrollView(
+            child: Container(
+                width: double.maxFinite,
+                padding: getPadding(left: 24, top: 32, right: 24, bottom: 32),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                          height: getSize(70),
+                          width: getSize(70),
+                          child: Stack(
+                              alignment: Alignment.bottomRight,
+                              children: [
+                                FutureBuilder<DatabaseResponse>(
+                                    future: _profileFuture,
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData) {
+                                        if (snapshot.data!.isSuccess) {
+                                          _user = UserProfileModel.fromMap(
+                                              data: snapshot.data!.list![0]);
+
+                                          return Container(
+                                              width: getSize(100),
+                                              height: getSize(100),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(50.0),
+                                                color: AppColor.primary,
+                                              ),
+                                              child: _user!.avatarUrl == null
+                                                  ? const Icon(
+                                                      Icons.person,
+                                                      color: Colors.white,
+                                                    )
+                                                  : ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              50.0),
+                                                      child: CachedNetworkImage(
+                                                        imageUrl: supabase
+                                                            .storage
+                                                            .from("profiles")
+                                                            .getPublicUrl(_user!
+                                                                .avatarUrl!),
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ));
+                                        }
+                                      }
+                                      return CustomImageView(
+                                          imagePath:
+                                              ImageConstant.imageNotFound,
+                                          height: getSize(70),
+                                          width: getSize(70),
+                                          radius: BorderRadius.circular(
+                                              getHorizontalSize(35)),
+                                          alignment: Alignment.center);
+                                    }),
+                              ])),
+                      Padding(
+                          padding: getPadding(top: 8),
+                          child: FutureBuilder<DatabaseResponse>(
+                              future: _profileFuture,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  if (snapshot.data!.isSuccess) {
+                                    _user = UserProfileModel.fromMap(
+                                        data: snapshot.data!.list![0]);
+
+                                    return Text(
+                                        _user == null ||
+                                                _user!.firstname == null
+                                            ? "---"
+                                            : "${_user!.firstname} ${_user!.lastname}",
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.left,
+                                        style: AppStyle.txtManropeBold18
+                                            .copyWith(
+                                                letterSpacing:
+                                                    getHorizontalSize(0.2)));
+                                  }
+                                }
+                                return Text("---",
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.left,
-                                    style:
-                                        AppStyle.txtManropeSemiBold14Gray900)),
-                            const Spacer(),
-                            CustomImageView(
-                                svgPath: ImageConstant.imgArrowrightBlueGray500,
-                                height: getSize(20),
-                                width: getSize(20),
-                                margin: getMargin(top: 10, bottom: 10))
-                          ]))),
-              GestureDetector(
-                  onTap: () {
-                    onTapMyfavorites(context);
-                  },
-                  child: Padding(
-                      padding: getPadding(top: 16),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CustomIconButton(
-                                height: 40,
-                                width: 40,
-                                variant: IconButtonVariant.FillBluegray50,
-                                shape: IconButtonShape.RoundedBorder10,
-                                padding: IconButtonPadding.PaddingAll12,
-                                child: const Icon(
-                                  Icons.favorite_border,
-                                  color: AppColor.primary,
-                                  size: 15,
-                                )),
-                            Padding(
-                                padding:
-                                    getPadding(left: 16, top: 12, bottom: 7),
-                                child: Text("My favorites",
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.left,
-                                    style:
-                                        AppStyle.txtManropeSemiBold14Gray900)),
-                            const Spacer(),
-                            CustomImageView(
-                                svgPath: ImageConstant.imgArrowrightBlueGray500,
-                                height: getSize(20),
-                                width: getSize(20),
-                                margin: getMargin(top: 10, bottom: 10))
-                          ]))),
-              GestureDetector(
-                  onTap: () {
-                    onTapPasttour(context);
-                  },
-                  child: Padding(
-                      padding: getPadding(top: 16),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CustomIconButton(
-                                height: 40,
-                                width: 40,
-                                variant: IconButtonVariant.FillBluegray50,
-                                shape: IconButtonShape.RoundedBorder10,
-                                padding: IconButtonPadding.PaddingAll12,
-                                child: const Icon(
-                                  Icons.calendar_month,
-                                  color: AppColor.primary,
-                                  size: 15,
-                                )),
-                            Padding(
-                                padding:
-                                    getPadding(left: 16, top: 10, bottom: 9),
-                                child: Text("Past Tour",
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.left,
-                                    style:
-                                        AppStyle.txtManropeSemiBold14Gray900)),
-                            const Spacer(),
-                            CustomImageView(
-                                svgPath: ImageConstant.imgArrowrightBlueGray500,
-                                height: getSize(20),
-                                width: getSize(20),
-                                margin: getMargin(top: 10, bottom: 10))
-                          ]))),
-              GestureDetector(
-                  onTap: () {
-                    onTapMylistings(context);
-                  },
-                  child: Padding(
-                      padding: getPadding(top: 16),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CustomIconButton(
-                                height: 40,
-                                width: 40,
-                                variant: IconButtonVariant.FillBluegray50,
-                                shape: IconButtonShape.RoundedBorder10,
-                                padding: IconButtonPadding.PaddingAll12,
-                                child: const Icon(
-                                  Icons.house_siding,
-                                  color: AppColor.primary,
-                                  size: 15,
-                                )),
-                            Padding(
-                                padding:
-                                    getPadding(left: 16, top: 12, bottom: 7),
-                                child: Text("My listings ",
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.left,
-                                    style:
-                                        AppStyle.txtManropeSemiBold14Gray900)),
-                            const Spacer(),
-                            CustomImageView(
-                                svgPath: ImageConstant.imgArrowrightBlueGray500,
-                                height: getSize(20),
-                                width: getSize(20),
-                                margin: getMargin(top: 10, bottom: 10))
-                          ]))),
-            ])));
+                                    style: AppStyle.txtManropeBold18.copyWith(
+                                        letterSpacing: getHorizontalSize(0.2)));
+                              })),
+                      Padding(
+                          padding: getPadding(top: 4),
+                          child: Text(
+                              supabase.auth.currentUser!.email ??
+                                  supabase.auth.currentUser!.phone ??
+                                  '---',
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.left,
+                              style: AppStyle.txtManropeMedium14Bluegray500)),
+                      GestureDetector(
+                          onTap: () {
+                            onTapBtnEdit(context);
+                          },
+                          child: Padding(
+                              padding: getPadding(top: 15),
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const CustomIconButton(
+                                        height: 40,
+                                        width: 40,
+                                        variant:
+                                            IconButtonVariant.FillBluegray50,
+                                        shape: IconButtonShape.RoundedBorder10,
+                                        padding: IconButtonPadding.PaddingAll12,
+                                        child: Icon(
+                                          Icons.person_4,
+                                          color: AppColor.primary,
+                                          size: 15,
+                                        )),
+                                    Padding(
+                                        padding: getPadding(
+                                            left: 16, top: 12, bottom: 7),
+                                        child: Text("Données personnelles",
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.left,
+                                            style: AppStyle
+                                                .txtManropeSemiBold14Gray900)),
+                                    const Spacer(),
+                                    CustomImageView(
+                                        svgPath: ImageConstant
+                                            .imgArrowrightBlueGray500,
+                                        height: getSize(20),
+                                        width: getSize(20),
+                                        margin: getMargin(top: 10, bottom: 10))
+                                  ]))),
+                      GestureDetector(
+                          onTap: () {
+                            onTapRecentlyView(context);
+                          },
+                          child: Padding(
+                              padding: getPadding(top: 15),
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const CustomIconButton(
+                                        height: 40,
+                                        width: 40,
+                                        variant:
+                                            IconButtonVariant.FillBluegray50,
+                                        shape: IconButtonShape.RoundedBorder10,
+                                        padding: IconButtonPadding.PaddingAll12,
+                                        child: Icon(
+                                          Icons.remove_red_eye,
+                                          color: AppColor.primary,
+                                          size: 15,
+                                        )),
+                                    Padding(
+                                        padding: getPadding(
+                                            left: 16, top: 12, bottom: 7),
+                                        child: Text("Historique des vues",
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.left,
+                                            style: AppStyle
+                                                .txtManropeSemiBold14Gray900)),
+                                    const Spacer(),
+                                    CustomImageView(
+                                        svgPath: ImageConstant
+                                            .imgArrowrightBlueGray500,
+                                        height: getSize(20),
+                                        width: getSize(20),
+                                        margin: getMargin(top: 10, bottom: 10))
+                                  ]))),
+                      GestureDetector(
+                          onTap: () {
+                            onTapMyfavorites(context);
+                          },
+                          child: Padding(
+                              padding: getPadding(top: 16),
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const CustomIconButton(
+                                        height: 40,
+                                        width: 40,
+                                        variant:
+                                            IconButtonVariant.FillBluegray50,
+                                        shape: IconButtonShape.RoundedBorder10,
+                                        padding: IconButtonPadding.PaddingAll12,
+                                        child: Icon(
+                                          Icons.favorite_border,
+                                          color: AppColor.primary,
+                                          size: 15,
+                                        )),
+                                    Padding(
+                                        padding: getPadding(
+                                            left: 16, top: 12, bottom: 7),
+                                        child: Text("Mes favoris",
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.left,
+                                            style: AppStyle
+                                                .txtManropeSemiBold14Gray900)),
+                                    const Spacer(),
+                                    CustomImageView(
+                                        svgPath: ImageConstant
+                                            .imgArrowrightBlueGray500,
+                                        height: getSize(20),
+                                        width: getSize(20),
+                                        margin: getMargin(top: 10, bottom: 10))
+                                  ]))),
+                      GestureDetector(
+                          onTap: () {
+                            onTapMylistings(context);
+                          },
+                          child: Padding(
+                              padding: getPadding(top: 16),
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const CustomIconButton(
+                                        height: 40,
+                                        width: 40,
+                                        variant:
+                                            IconButtonVariant.FillBluegray50,
+                                        shape: IconButtonShape.RoundedBorder10,
+                                        padding: IconButtonPadding.PaddingAll12,
+                                        child: Icon(
+                                          Icons.house_siding,
+                                          color: AppColor.primary,
+                                          size: 15,
+                                        )),
+                                    Padding(
+                                        padding: getPadding(
+                                            left: 16, top: 12, bottom: 7),
+                                        child: Text("Mes propriétés",
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.left,
+                                            style: AppStyle
+                                                .txtManropeSemiBold14Gray900)),
+                                    const Spacer(),
+                                    CustomImageView(
+                                        svgPath: ImageConstant
+                                            .imgArrowrightBlueGray500,
+                                        height: getSize(20),
+                                        width: getSize(20),
+                                        margin: getMargin(top: 10, bottom: 10))
+                                  ]))),
+                      GestureDetector(
+                          onTap: () {
+                            onTapPasttour(context);
+                          },
+                          child: Padding(
+                              padding: getPadding(top: 16),
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const CustomIconButton(
+                                        height: 40,
+                                        width: 40,
+                                        variant:
+                                            IconButtonVariant.FillBluegray50,
+                                        shape: IconButtonShape.RoundedBorder10,
+                                        padding: IconButtonPadding.PaddingAll12,
+                                        child: Icon(
+                                          Icons.lock_reset_outlined,
+                                          color: AppColor.primary,
+                                          size: 15,
+                                        )),
+                                    Padding(
+                                        padding: getPadding(
+                                            left: 16, top: 10, bottom: 9),
+                                        child: Text(
+                                            "Rénitialiser mon mot de passe",
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.left,
+                                            style: AppStyle
+                                                .txtManropeSemiBold14Gray900)),
+                                    const Spacer(),
+                                    CustomImageView(
+                                        svgPath: ImageConstant
+                                            .imgArrowrightBlueGray500,
+                                        height: getSize(20),
+                                        width: getSize(20),
+                                        margin: getMargin(top: 10, bottom: 10))
+                                  ]))),
+                    ])),
+          ),
+        ));
   }
 
   onTapBtnEdit(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (BuildContext context) => EditProfileScreen()));
+    context.push("/complete-profile/profile/profile");
   }
 
-  onTapRowinstagram(BuildContext context) {
+  onTapRecentlyView(BuildContext context) {
+    context.push('/recently-viewed');
     //Navigator.pushNamed(context, AppRoutes.recentlyViewsScreen);
   }
 
   onTapMyfavorites(BuildContext context) {
-    //Navigator.pushNamed(context, AppRoutes.favoriteScreen);
+    context.push('/favorites');
   }
 
   onTapPasttour(BuildContext context) {
+    context.push("/change-password");
     //Navigator.pushNamed(context, AppRoutes.pastToursScreen);
   }
 
   onTapMylistings(BuildContext context) {
+    context.push("/publish");
     //Navigator.pushNamed(context, AppRoutes.homeListingScreen);
   }
 
   onTapSettings(BuildContext context) {
     //Navigator.pushNamed(context, AppRoutes.settingsScreen);
-  }
-
-  onTapArrowleft15(BuildContext context) {
-    Navigator.pop(context);
   }
 }
