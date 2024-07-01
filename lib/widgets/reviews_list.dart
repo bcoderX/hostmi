@@ -61,25 +61,7 @@ class _ReviewListState extends State<ReviewList> {
             }
             var data = snapshot.data;
             if (data!.isEmpty) {
-              return Center(
-                  child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                      onPressed: () {
-                        _future = selectReviews();
-                      },
-                      icon: const Icon(
-                        Icons.hide_image,
-                        size: 40,
-                        color: AppColor.primary,
-                      )),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Text("Aucun résultat.")
-                ],
-              ));
+              return const SizedBox();
             }
             return ListView.separated(
                 physics: const NeverScrollableScrollPhysics(),

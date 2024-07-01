@@ -8,7 +8,6 @@ import 'package:hostmi/api/hostmi_local_database/hostmi_local_database.dart';
 import 'package:hostmi/api/models/agency_model.dart';
 import 'package:hostmi/api/utils/check_connection_and_do.dart';
 import 'package:hostmi/routes.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hostmi/ui/widgets/default_app_button.dart';
 import 'package:hostmi/widgets/custom_button.dart';
 

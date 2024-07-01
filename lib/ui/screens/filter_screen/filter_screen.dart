@@ -62,12 +62,9 @@ class _FilterScreenState extends State<FilterScreen> {
         context.read<HostmiProvider>().filterForm.minPrice.toString();
     _maxPriceController.text =
         context.read<HostmiProvider>().filterForm.maxPrice.toString();
-    _cityController.text = context
-        .read<HostmiProvider>()
-        .filterForm
-        .cities
-        .map((e) => e.replaceAll(r"%", ""))
-        .join(", ");
+    _cityController.text = context.read<HostmiProvider>().filterForm.cities;
+    // .map((e) => e.replaceAll(r"%", ""))
+    // .join(", ");
 
     _quarterController.text = context
         .read<HostmiProvider>()
@@ -125,16 +122,16 @@ class _FilterScreenState extends State<FilterScreen> {
         ),
         actions: [
           TextButton.icon(
-              onPressed: () {
-                _onApplyFilters(context);
-                Navigator.of(context).pop();
-              },
-              icon: const Icon(
-                Icons.check,
-                color: AppColor.primary,
-                size: 20,
-              ),
-              label: const Text("Appliquer"),
+            onPressed: () {
+              _onApplyFilters(context);
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(
+              Icons.check,
+              color: AppColor.primary,
+              size: 20,
+            ),
+            label: const Text("Appliquer"),
           )
         ],
       ),
@@ -784,8 +781,8 @@ class _FilterScreenState extends State<FilterScreen> {
     context.read<HostmiProvider>().filterForm.country = selectedCountry;
     context.read<HostmiProvider>().filterForm.sectors =
         _getSearchIntArray(_sectorController.text);
-    context.read<HostmiProvider>().filterForm.cities =
-        _getSearchStringArray(_cityController.text);
+    context.read<HostmiProvider>().filterForm.cities = _cityController.text;
+    // _getSearchStringArray(_cityController.text);
     context.read<HostmiProvider>().filterForm.quarters =
         _getSearchStringArray(_quarterController.text);
 

@@ -29,7 +29,6 @@ Future<PostgrestResponse?> filterAllHousesAttributes(
             filters.sectors.isEmpty ? -1 : filters.sectors,
           )
           .ilikeAnyOf("quarter", filters.quarters)
-          .ilikeAnyOf("city", filters.cities)
           .eq("country", filters.country.id)
           .filter("bedrooms", filters.beds < 0 ? 'neq' : 'eq', filters.beds)
           .filter("bedrooms", filters.bathrooms < 0 ? 'neq' : 'eq',
@@ -41,6 +40,12 @@ Future<PostgrestResponse?> filterAllHousesAttributes(
           .is_("is_under_verification", false)
           .is_("is_accepted", true)
           .is_("is_available", true)
+          .textSearch(
+            "search_terms",
+            filters.cities,
+            config: 'english',
+            type: TextSearchType.websearch,
+          )
           .order(
             "available_on",
             ascending: false,
@@ -66,7 +71,12 @@ Future<PostgrestResponse?> filterAllHousesAttributes(
           .filter("sector", filters.sectors.isEmpty ? 'neq' : "in",
               filters.sectors.isEmpty ? -1 : filters.sectors)
           .ilikeAnyOf("quarter", filters.quarters)
-          .ilikeAnyOf("city", filters.cities)
+          .textSearch(
+            "search_terms",
+            filters.cities,
+            config: 'english',
+            type: TextSearchType.websearch,
+          )
           .eq("country", filters.country.id)
           .filter("bedrooms", filters.beds < 0 ? 'neq' : 'eq', filters.beds)
           .filter("bedrooms", filters.bathrooms < 0 ? 'neq' : 'eq',

@@ -53,6 +53,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   File? image;
   bool _isAddingProfilePicture = false;
   bool _isUpdatingProfile = false;
+  bool _isFilled = false;
   late Future<DatabaseResponse> _profileFuture;
   UserProfileModel? _user = UserProfileModel();
   String? imageUrl;
@@ -106,16 +107,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           if (snapshot.hasData) {
             DatabaseResponse response = snapshot.data!;
             if (response.isSuccess) {
-              _user = UserProfileModel.fromMap(data: response.list![0]);
-              lastnameController.text = _user!.lastname ?? "";
-              firstnameController.text = _user!.firstname ?? "";
-              selectedCountry = _user!.country ?? 854;
-              selectedGender = _user!.gender ?? 1;
-              selectedJob = _user!.jobTitle ?? 1;
-              birthday = _user!.birthday;
-              dateController.text = birthday == null
-                  ? ""
-                  : DateFormat("dd/MM/yyyy").format(birthday!);
+              if (!_isFilled) {
+                _user = UserProfileModel.fromMap(data: response.list![0]);
+                lastnameController.text = _user!.lastname ?? "";
+                firstnameController.text = _user!.firstname ?? "";
+                selectedCountry = _user!.country ?? 854;
+                selectedGender = _user!.gender ?? 1;
+                selectedJob = _user!.jobTitle ?? 1;
+                birthday = _user!.birthday;
+                dateController.text = birthday == null
+                    ? ""
+                    : DateFormat("dd/MM/yyyy").format(birthday!);
+                _isFilled = true;
+              }
             } else {
               return Scaffold(
                 body: InkWell(
@@ -368,11 +372,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       onShowPicker:
                                           (context, currentValue) async {
                                         return showDatePicker(
-                                            context: context,
-                                            firstDate: DateTime(1900),
-                                            initialDate:
-                                                currentValue ?? DateTime.now(),
-                                            lastDate: DateTime(2100));
+                                          context: context,
+                                          firstDate: DateTime(1900),
+                                          initialDate:
+                                              currentValue ?? DateTime.now(),
+                                          lastDate: DateTime(2100),
+                                        );
                                       },
                                       validator: (value) {
                                         if (value == null) {

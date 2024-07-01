@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hostmi/api/models/country_model.dart';
 import 'package:hostmi/api/providers/hostmi_provider.dart';
 import 'package:hostmi/api/utils/check_connection_and_do.dart';
@@ -235,7 +236,6 @@ class _AddPropertyAddressScreenState extends State<AddPropertyAddressScreen> {
                     _spacer,
                     Container(
                       width: double.infinity,
-                      height: 40,
                       padding: const EdgeInsets.symmetric(
                           vertical: 4.5, horizontal: 5.0),
                       color: AppColor.grey,
@@ -357,9 +357,8 @@ class _AddPropertyAddressScreenState extends State<AddPropertyAddressScreen> {
         double.tryParse(longitudeController.text.trim()) ?? 0;
     context.read<HostmiProvider>().houseForm.latitude =
         double.tryParse(latitudeController.text.trim()) ?? 0;
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return const AddNewPropertySelectAmenitiesScreen();
-    }));
+
+    context.push('/add-house-amenities');
   }
 
   void _checkPermission(BuildContext context) async {

@@ -49,6 +49,7 @@ class HostmiProvider with ChangeNotifier {
   //Login Variables
   bool canResendSMS = true;
   int smsSentCount = 0;
+  final List<String> _featuresNames = [];
 
   //Unread messages variables
   int unreadUserCount = 0;
@@ -199,7 +200,7 @@ class HostmiProvider with ChangeNotifier {
           maritalStatusList.map((e) => MaritalStatus.fromMap(data: e)).toList(),
       quarters: ["%%"],
       sectors: [],
-      cities: ["%%"],
+      cities: "",
     );
 
     return _filterForm!;
@@ -222,6 +223,8 @@ class HostmiProvider with ChangeNotifier {
   List<dynamic> get jobsList => _jobsList;
   List<dynamic> get maritalStatusList => _maritalStatusList;
   List<dynamic> get currenciesList => _currenciesList;
+  List<String> get featuresNames => _featuresNames;
+
   //updates check
   bool get hasCheckedUpdates => _hasCheckedUpdates;
   bool get hasCheckedDbUpdates => _hasCheckedDbUpdates;
@@ -671,7 +674,7 @@ class HostmiProvider with ChangeNotifier {
           maritalStatusList.map((e) => MaritalStatus.fromMap(data: e)).toList(),
       quarters: ["%%"],
       sectors: [],
-      cities: ["%%"],
+      cities: "",
     );
     notifyListeners();
   }

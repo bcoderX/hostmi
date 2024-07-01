@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hostmi/ui/screens/about_screen.dart';
+import 'package:hostmi/ui/screens/add_new_property_screens/add_new_property_select_amenities_screen/add_new_property_select_amenities_screen.dart';
 import 'package:hostmi/ui/screens/add_new_property_screens/add_property_address.dart';
 import 'package:hostmi/ui/screens/add_new_property_screens/add_property_basic_details.dart';
+import 'package:hostmi/ui/screens/add_new_property_screens/add_property_pictures/add_property_pictures.dart';
+import 'package:hostmi/ui/screens/add_new_property_screens/preview_and_save.dart';
 import 'package:hostmi/ui/screens/create_agency_screen/update_agency_details.dart';
 import 'package:hostmi/ui/screens/favorite_screen/favorite_houses_screen.dart';
 import 'package:hostmi/ui/screens/message_screen/message_details_screen.dart';
@@ -135,8 +138,16 @@ class HostMiRouter {
         builder: (context, state) => const AddPropertyAddressScreen(),
       ),
       GoRoute(
+        path: '/add-house-amenities',
+        builder: (context, state) => const AddNewPropertySelectAmenitiesScreen(),
+      ),
+      GoRoute(
+        path: '/add-house-pictures',
+        builder: (context, state) => const AddPropertyPictures(),
+      ),
+      GoRoute(
         path: '/add-house-preview',
-        builder: (context, state) => const FavoriteHousesScreen(),
+        builder: (context, state) => const PreviewAndSave(),
       ),
       GoRoute(
         path: '/verify-login-otp/:email/:phone',

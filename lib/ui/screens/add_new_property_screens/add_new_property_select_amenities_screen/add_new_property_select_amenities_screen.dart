@@ -1,9 +1,9 @@
 import 'package:flutter/scheduler.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hostmi/api/models/job.dart';
 import 'package:hostmi/api/models/marital_status.dart';
 import 'package:hostmi/api/providers/hostmi_provider.dart';
 import 'package:hostmi/api/utils/check_connection_and_do.dart';
-import 'package:hostmi/ui/screens/add_new_property_screens/add_property_pictures/add_property_pictures.dart';
 import 'package:hostmi/ui/widgets/default_app_button.dart';
 import 'package:hostmi/utils/app_color.dart';
 import 'package:hostmi/widgets/custom_drop_down.dart';
@@ -32,6 +32,7 @@ class _AddNewPropertySelectAmenitiesScreenState
   late final TextEditingController _conditionController;
   final GlobalKey<FormState> _formState = GlobalKey();
   List<int> selectedFeatures = [];
+  List<String> selectedFeaturesName = [];
   Gender selectedGender = const Gender(
     id: 3,
     en: "Any",
@@ -50,6 +51,8 @@ class _AddNewPropertySelectAmenitiesScreenState
     _conditionController = TextEditingController();
     selectedFeatures =
         context.read<HostmiProvider>().houseForm.features as List<int>? ?? [];
+    selectedFeaturesName =
+        context.read<HostmiProvider>().houseForm.featuresName ?? [];
     selectedGender = context.read<HostmiProvider>().houseForm.gender!;
     selectedJob = context.read<HostmiProvider>().houseForm.occupation!;
     selectedMaritalStatus =
@@ -153,7 +156,8 @@ class _AddNewPropertySelectAmenitiesScreenState
                         .map((feature) => OptionsItemWidget(
                               amenity: feature,
                               selected: selectedFeatures,
-                              onPressed: () => onSelected(feature["id"]),
+                              onPressed: () =>
+                                  onSelected(feature["id"], feature["fr"]),
                             ))
                         .toList(),
                   ),
@@ -338,7 +342,9 @@ class _AddNewPropertySelectAmenitiesScreenState
                           },
                         ),
                       ),
-                      SizedBox(width: 15,),
+                      const SizedBox(
+                        width: 15,
+                      ),
                       Expanded(
                         child: DefaultAppButton(
                           text: "Suivant",
@@ -369,8 +375,10 @@ class _AddNewPropertySelectAmenitiesScreenState
           _descriptionController.text.trim();
       context.read<HostmiProvider>().houseForm.conditions =
           _conditionController.text.trim();
-      Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const AddPropertyPictures()));
+      context.read<HostmiProvider>().houseForm.featuresName =
+          selectedFeaturesName;
+
+      context.push('/add-house-pictures');
     }
   }
 
@@ -378,12 +386,18 @@ class _AddNewPropertySelectAmenitiesScreenState
     Navigator.pop(context);
   }
 
-  onSelected(int index) {
+  onSelected(int index, String name) {
     setState(() {
       if (selectedFeatures.contains(index)) {
         selectedFeatures.remove(index);
       } else {
         selectedFeatures.add(index);
+      }
+
+      if (selectedFeaturesName.contains(name)) {
+        selectedFeaturesName.remove(name);
+      } else {
+        selectedFeaturesName.add(name);
       }
     });
   }

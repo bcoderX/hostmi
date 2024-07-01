@@ -46,6 +46,7 @@ class HouseModel {
     this.images,
     this.imagesUrl,
     this.imagesDescriptions,
+    this.featuresName,
     this.currency,
     this.agencyId,
     this.agency,
@@ -75,6 +76,7 @@ class HouseModel {
   List<File?>? images;
   List<dynamic>? imagesUrl;
   List<String>? imagesDescriptions;
+  List<String>? featuresName;
   String? agencyId;
   Gender? gender;
   Job? occupation;

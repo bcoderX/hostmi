@@ -20,11 +20,13 @@ class LocalImagePreview extends StatelessWidget {
     this.canAdd = false,
     this.onAddNewImage,
     this.onEditDescription,
+    required this.textController,
   });
   final bool canAdd;
   final int index;
   final int? total;
   final File? image;
+  final TextEditingController textController;
   final void Function()? onPickImage;
   final void Function()? onEditImage;
   final void Function()? onDeleteImage;
@@ -170,6 +172,7 @@ class LocalImagePreview extends StatelessWidget {
         const SizedBox(height: 5),
         RoundedTextField(
           onChanged: onEditDescription,
+          controller: textController,
           errorText: "Une erreur s'est produite",
           placeholder: "Ajouter un titre ou une description",
           maxLines: 2,

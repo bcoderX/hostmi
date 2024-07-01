@@ -23,6 +23,7 @@ import 'package:hostmi/ui/screens/message_screen/message_details_screen.dart';
 import 'package:hostmi/ui/screens/product_details_screen/widgets/features_list.dart';
 import 'package:hostmi/ui/screens/product_details_screen/widgets/fullsize_image.dart';
 import 'package:hostmi/ui/screens/product_details_screen/widgets/rate_average_widget.dart';
+import 'package:hostmi/ui/widgets/default_app_button.dart';
 import 'package:hostmi/widgets/reviews_list.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -443,26 +444,26 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                     FeaturesListWidget(
                                       featuresIDs: house.features ?? [],
                                     ),
-                                    Padding(
-                                        padding: getPadding(left: 8, top: 15),
-                                        child: Row(children: [
-                                          Text("Toutes les caractéristiques",
-                                              overflow: TextOverflow.ellipsis,
-                                              textAlign: TextAlign.left,
-                                              style: AppStyle
-                                                  .txtManropeBold14Blue500
-                                                  .copyWith(
-                                                      letterSpacing:
-                                                          getHorizontalSize(
-                                                              0.2))),
-                                          CustomImageView(
-                                              svgPath: ImageConstant
-                                                  .imgArrowright16x16,
-                                              height: getSize(16),
-                                              width: getSize(16),
-                                              margin: getMargin(
-                                                  left: 14, top: 1, bottom: 2))
-                                        ])),
+                                    // Padding(
+                                    //     padding: getPadding(left: 8, top: 15),
+                                    //     child: Row(children: [
+                                    //       Text("Toutes les caractéristiques",
+                                    //           overflow: TextOverflow.ellipsis,
+                                    //           textAlign: TextAlign.left,
+                                    //           style: AppStyle
+                                    //               .txtManropeBold14Blue500
+                                    //               .copyWith(
+                                    //                   letterSpacing:
+                                    //                       getHorizontalSize(
+                                    //                           0.2))),
+                                    //       CustomImageView(
+                                    //           svgPath: ImageConstant
+                                    //               .imgArrowright16x16,
+                                    //           height: getSize(16),
+                                    //           width: getSize(16),
+                                    //           margin: getMargin(
+                                    //               left: 14, top: 1, bottom: 2))
+                                    //     ])),
                                     Padding(
                                         padding: getPadding(top: 24),
                                         child: Divider(
@@ -517,26 +518,26 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                             textAlign: TextAlign.justify,
                                             style: AppStyle
                                                 .txtManropeRegular14Gray900)),
-                                    Padding(
-                                        padding: getPadding(left: 8, top: 13),
-                                        child: Row(children: [
-                                          Text("Voir plus",
-                                              overflow: TextOverflow.ellipsis,
-                                              textAlign: TextAlign.left,
-                                              style: AppStyle
-                                                  .txtManropeBold14Blue500
-                                                  .copyWith(
-                                                      letterSpacing:
-                                                          getHorizontalSize(
-                                                              0.2))),
-                                          CustomImageView(
-                                              svgPath: ImageConstant
-                                                  .imgArrowright16x16,
-                                              height: getSize(16),
-                                              width: getSize(16),
-                                              margin: getMargin(
-                                                  left: 8, top: 1, bottom: 2))
-                                        ])),
+                                    // Padding(
+                                    //     padding: getPadding(left: 8, top: 13),
+                                    //     child: Row(children: [
+                                    //       Text("Voir plus",
+                                    //           overflow: TextOverflow.ellipsis,
+                                    //           textAlign: TextAlign.left,
+                                    //           style: AppStyle
+                                    //               .txtManropeBold14Blue500
+                                    //               .copyWith(
+                                    //                   letterSpacing:
+                                    //                       getHorizontalSize(
+                                    //                           0.2))),
+                                    //       CustomImageView(
+                                    //           svgPath: ImageConstant
+                                    //               .imgArrowright16x16,
+                                    //           height: getSize(16),
+                                    //           width: getSize(16),
+                                    //           margin: getMargin(
+                                    //               left: 8, top: 1, bottom: 2))
+                                    //     ])),
                                     Padding(
                                         padding: getPadding(
                                             left: 8, top: 34, bottom: 13),
@@ -1068,6 +1069,51 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                             color: ColorConstant.gray300,
                                             indent: getHorizontalSize(8),
                                             endIndent: getHorizontalSize(39))),
+                                    Padding(
+                                        padding: getPadding(
+                                          top: 23,
+                                        ),
+                                        child: Text(
+                                            "Vous êtes intéressé(e)s ? Contactez-nous tout de suite .",
+                                            textAlign: TextAlign.left,
+                                            style: AppStyle.txtManropeBold18
+                                                .copyWith(
+                                                    letterSpacing:
+                                                        getHorizontalSize(
+                                                            0.2)))),
+                                    const SizedBox(
+                                      height: 15.0,
+                                    ),
+                                    DefaultAppButton(
+                                      onPressed: _onCall,
+                                      text: "Voir le numéro de téléphone",
+                                      color: Colors.grey[300],
+                                      textColor: Colors.black,
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+
+                                    DefaultAppButton(
+                                        onPressed: () =>
+                                            _onWhatsappClick(context),
+                                        color: Colors.green,
+                                        text: "Contacter sur WhatsApp"),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    DefaultAppButton(
+                                        onPressed: _onMessageClick,
+                                        text: "Envoyer un message"),
+
+                                    Padding(
+                                        padding: getPadding(top: 24),
+                                        child: Divider(
+                                            height: getVerticalSize(1),
+                                            thickness: getVerticalSize(1),
+                                            color: ColorConstant.gray300,
+                                            indent: getHorizontalSize(8),
+                                            endIndent: getHorizontalSize(39))),
                                     RateAverageWidget(
                                         agencyId: house.agencyId!),
                                     Padding(
@@ -1079,26 +1125,26 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                             indent: getHorizontalSize(8),
                                             endIndent: getHorizontalSize(39))),
                                     ReviewList(agencyId: house.agencyId!),
-                                    Padding(
-                                        padding: getPadding(left: 8, top: 16),
-                                        child: Row(children: [
-                                          Text("Voir plus",
-                                              overflow: TextOverflow.ellipsis,
-                                              textAlign: TextAlign.left,
-                                              style: AppStyle
-                                                  .txtManropeBold14Blue500
-                                                  .copyWith(
-                                                      letterSpacing:
-                                                          getHorizontalSize(
-                                                              0.2))),
-                                          CustomImageView(
-                                              svgPath: ImageConstant
-                                                  .imgArrowright16x16,
-                                              height: getSize(16),
-                                              width: getSize(16),
-                                              margin: getMargin(
-                                                  left: 8, top: 1, bottom: 2))
-                                        ])),
+                                    // Padding(
+                                    //     padding: getPadding(left: 8, top: 16),
+                                    //     child: Row(children: [
+                                    //       Text("Voir plus",
+                                    //           overflow: TextOverflow.ellipsis,
+                                    //           textAlign: TextAlign.left,
+                                    //           style: AppStyle
+                                    //               .txtManropeBold14Blue500
+                                    //               .copyWith(
+                                    //                   letterSpacing:
+                                    //                       getHorizontalSize(
+                                    //                           0.2))),
+                                    //       CustomImageView(
+                                    //           svgPath: ImageConstant
+                                    //               .imgArrowright16x16,
+                                    //           height: getSize(16),
+                                    //           width: getSize(16),
+                                    //           margin: getMargin(
+                                    //               left: 8, top: 1, bottom: 2))
+                                    //     ])),
                                   ])),
                         ],
                       );
@@ -1162,83 +1208,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                       variant:
                                           IconButtonVariant.OutlineBluegray50_1,
                                       padding: IconButtonPadding.PaddingAll12,
+                                      onTap: _onMessageClick,
                                       child: const Icon(
                                         Icons.mail_outline,
                                         color: AppColor.primary,
                                         size: 20,
-                                      ),
-                                      onTap: () {
-                                        if (supabase.auth.currentUser == null) {
-                                          showInfoDialog(
-                                            actionTitle:
-                                                "Se connecter maintenant",
-                                            ignoreTitle: "Annuler",
-                                            title: "Utilisateur inconnu",
-                                            content:
-                                                "Vous devez être connecter à votre compte pour utiliser cette fonctionnalité",
-                                            context: context,
-                                            onClick: () {
-                                              if (getRole() == Role.UNKNOWN) {
-                                                context.push("/");
-                                              } else {
-                                                context.push(keyLoginRoute);
-                                              }
-                                            },
-                                          );
-                                        } else {
-                                          analytics.logSelectItem(
-                                              itemListName: "Hostmi message");
-                                          Navigator.of(context,
-                                                  rootNavigator: true)
-                                              .push(
-                                            MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  MessagesDetailsScreen(
-                                                userId: supabase
-                                                    .auth.currentUser!.id,
-                                                agencyId:
-                                                    '${loadedHouse!.agencyId}',
-                                                opener: 'user',
-                                                defaultMessage:
-                                                    "J'ai vu cette maison https://hostmi.vercel.app/property-details/${loadedHouse!.id} de votre agence. Puis-je avoir plus de détails ?",
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                      }),
+                                      )),
                                   CustomIconButton(
-                                      onTap: () async {
-                                        if (supabase.auth.currentUser == null) {
-                                          showInfoDialog(
-                                            actionTitle:
-                                                "Se connecter maintenant",
-                                            ignoreTitle: "Annuler",
-                                            title: "Utilisateur inconnu",
-                                            content:
-                                                "Vous devez être connecter à votre compte pour utiliser cette fonctionnalité",
-                                            context: context,
-                                            onClick: () {
-                                              if (getRole() == Role.UNKNOWN) {
-                                                context.push("/");
-                                              } else {
-                                                context.push(keyLoginRoute);
-                                              }
-                                            },
-                                          );
-                                        } else {
-                                          analytics.logSelectItem(
-                                              itemListName: "Appel simple");
-                                          final canOpenUrl = await canLaunchUrl(
-                                              Uri.parse(
-                                                  "tel:${loadedHouse!.agency?.phoneNumber!}"));
-                                          debugPrint(loadedHouse!
-                                              .agency?.phoneNumber!);
-                                          if (canOpenUrl) {
-                                            await launchUrl(Uri.parse(
-                                                "tel:${loadedHouse!.agency?.phoneNumber!}"));
-                                          }
-                                        }
-                                      },
+                                      onTap: _onCall,
                                       height: 55,
                                       width: 55,
                                       margin:
@@ -1261,47 +1238,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                                     padding: IconButtonPadding.PaddingAll12,
                                     child: CustomImageView(
                                         svgPath: ImageConstant.imgWhatsapp),
-                                    onTap: () async {
-                                      if (supabase.auth.currentUser == null) {
-                                        showInfoDialog(
-                                          actionTitle:
-                                              "Se connecter maintenant",
-                                          ignoreTitle: "Annuler",
-                                          title: "Utilisateur inconnu",
-                                          content:
-                                              "Vous devez être connecter à votre compte pour utiliser cette fonctionnalité",
-                                          context: context,
-                                          onClick: () {
-                                            if (getRole() == Role.UNKNOWN) {
-                                              context.push("/");
-                                            } else {
-                                              context.push(keyLoginRoute);
-                                            }
-                                          },
-                                        );
-                                      } else {
-                                        analytics.logSelectItem(
-                                            itemListName: "Whatsapp");
-                                        final canOpenUrl = await canLaunchUrl(
-                                            Uri.parse(
-                                                "tel:${loadedHouse!.agency?.whatsapp ?? ""}"));
-                                        debugPrint(
-                                            loadedHouse!.agency?.whatsapp ??
-                                                "");
-                                        if (canOpenUrl) {
-                                          await launchUrl(Uri.parse(
-                                              "https://wa.me/${loadedHouse!.agency?.whatsapp!.replaceAll("+", "")}?text=Bonjour%20j'ai%20vu%20une%20maison%20sur%20Hostmi%20https://hostmi.vercel.app/property-details/${loadedHouse!.id}"));
-                                        } else {
-                                          showInfoDialog(
-                                            title: "Pas de numéro whatsapp",
-                                            content:
-                                                "Nous n'avons pas trouvé de numéro whatsapp.",
-                                            context: context,
-                                            onClick: () {},
-                                          );
-                                        }
-                                      }
-                                    },
+                                    onTap: () => _onWhatsappClick(context),
                                   ),
                                   const Expanded(child: SizedBox()),
                                   CustomButton(
@@ -1373,5 +1310,102 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
     }
     return [];
     // setState(() {});
+  }
+
+  void _onMessageClick() {
+    if (supabase.auth.currentUser == null) {
+      showInfoDialog(
+        actionTitle: "Se connecter maintenant",
+        ignoreTitle: "Annuler",
+        title: "Utilisateur inconnu",
+        content:
+            "Vous devez être connecter à votre compte pour utiliser cette fonctionnalité",
+        context: context,
+        onClick: () {
+          if (getRole() == Role.UNKNOWN) {
+            context.push("/");
+          } else {
+            context.push(keyLoginRoute);
+          }
+        },
+      );
+    } else {
+      analytics.logSelectItem(itemListName: "Hostmi message");
+      Navigator.of(context, rootNavigator: true).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) => MessagesDetailsScreen(
+            userId: supabase.auth.currentUser!.id,
+            agencyId: '${loadedHouse!.agencyId}',
+            opener: 'user',
+            defaultMessage:
+                "J'ai vu cette maison https://hostmi.vercel.app/property-details/${loadedHouse!.id} de votre agence. Puis-je avoir plus de détails ?",
+          ),
+        ),
+      );
+    }
+  }
+
+  void _onWhatsappClick(BuildContext context) async {
+    if (supabase.auth.currentUser == null) {
+      showInfoDialog(
+        actionTitle: "Se connecter maintenant",
+        ignoreTitle: "Annuler",
+        title: "Utilisateur inconnu",
+        content:
+            "Vous devez être connecter à votre compte pour utiliser cette fonctionnalité",
+        context: context,
+        onClick: () {
+          if (getRole() == Role.UNKNOWN) {
+            context.push("/");
+          } else {
+            context.push(keyLoginRoute);
+          }
+        },
+      );
+    } else {
+      analytics.logSelectItem(itemListName: "Whatsapp");
+      final canOpenUrl = await canLaunchUrl(
+          Uri.parse("tel:${loadedHouse!.agency?.whatsapp ?? ""}"));
+      debugPrint(loadedHouse!.agency?.whatsapp ?? "");
+      if (canOpenUrl) {
+        await launchUrl(Uri.parse(
+            "https://wa.me/${loadedHouse!.agency?.whatsapp!.replaceAll("+", "")}?text=Bonjour%20j'ai%20vu%20une%20maison%20sur%20Hostmi%20https://hostmi.vercel.app/property-details/${loadedHouse!.id}"));
+      } else {
+        showInfoDialog(
+          title: "Pas de numéro whatsapp",
+          content: "Nous n'avons pas trouvé de numéro whatsapp.",
+          context: context,
+          onClick: () {},
+        );
+      }
+    }
+  }
+
+  void _onCall() async {
+    if (supabase.auth.currentUser == null) {
+      showInfoDialog(
+        actionTitle: "Se connecter maintenant",
+        ignoreTitle: "Annuler",
+        title: "Utilisateur inconnu",
+        content:
+            "Vous devez être connecter à votre compte pour utiliser cette fonctionnalité",
+        context: context,
+        onClick: () {
+          if (getRole() == Role.UNKNOWN) {
+            context.push("/");
+          } else {
+            context.push(keyLoginRoute);
+          }
+        },
+      );
+    } else {
+      analytics.logSelectItem(itemListName: "Appel simple");
+      final canOpenUrl = await canLaunchUrl(
+          Uri.parse("tel:${loadedHouse!.agency?.phoneNumber!}"));
+      debugPrint(loadedHouse!.agency?.phoneNumber!);
+      if (canOpenUrl) {
+        await launchUrl(Uri.parse("tel:${loadedHouse!.agency?.phoneNumber!}"));
+      }
+    }
   }
 }

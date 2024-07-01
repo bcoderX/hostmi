@@ -251,9 +251,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                           padding: getPadding(top: 1),
                                           child: Text("Profile",
                                               overflow: TextOverflow.ellipsis,
-                                              textAlign: TextAlign.left,
-                                              style: AppStyle
-                                                  .txtManropeSemiBold14Gray900)),
+                                              textAlign: TextAlign.left,)),
                                       CustomImageView(
                                           svgPath:
                                               ImageConstant.imgArrowright20x20,
@@ -282,9 +280,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                           padding: getPadding(top: 1),
                                           child: Text("Favoris",
                                               overflow: TextOverflow.ellipsis,
-                                              textAlign: TextAlign.left,
-                                              style: AppStyle
-                                                  .txtManropeSemiBold14Gray900)),
+                                              textAlign: TextAlign.left,)),
                                       CustomImageView(
                                           svgPath:
                                               ImageConstant.imgArrowright20x20,
@@ -313,9 +309,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                           padding: getPadding(top: 1),
                                           child: Text("Historique de vues",
                                               overflow: TextOverflow.ellipsis,
-                                              textAlign: TextAlign.left,
-                                              style: AppStyle
-                                                  .txtManropeSemiBold14Gray900)),
+                                              textAlign: TextAlign.left,)),
                                       CustomImageView(
                                           svgPath:
                                               ImageConstant.imgArrowright20x20,
@@ -346,9 +340,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                     children: [
                                       Text("Condiditions d'utilisation",
                                           overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.left,
-                                          style: AppStyle
-                                              .txtManropeSemiBold14Gray900),
+                                          textAlign: TextAlign.left,),
                                       CustomImageView(
                                           svgPath:
                                               ImageConstant.imgArrowright20x20,
@@ -379,9 +371,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                           child: Text(
                                               "Politiques de confidentialité",
                                               overflow: TextOverflow.ellipsis,
-                                              textAlign: TextAlign.left,
-                                              style: AppStyle
-                                                  .txtManropeSemiBold14Gray900)),
+                                              textAlign: TextAlign.left,)),
                                       CustomImageView(
                                           svgPath:
                                               ImageConstant.imgArrowright20x20,
@@ -407,9 +397,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                       padding: getPadding(top: 1, right: 4),
                                       child: Text("A propos",
                                           overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.left,
-                                          style: AppStyle
-                                              .txtManropeSemiBold14Gray900)),
+                                          textAlign: TextAlign.left,)),
                                   context.read<HostmiProvider>().hasUpdates
                                       ? Container(
                                           padding: const EdgeInsets.symmetric(
@@ -480,9 +468,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                       padding: getPadding(top: 3),
                                       child: Text("Langue",
                                           overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.left,
-                                          style: AppStyle
-                                              .txtManropeSemiBold14Gray900)),
+                                          textAlign: TextAlign.left,)),
                                   const Spacer(),
                                   Padding(
                                       padding: getPadding(top: 2, bottom: 1),
@@ -493,9 +479,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                           AppLocalizations.of(context)
                                               ?.localeName]!,
                                           overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.left,
-                                          style:
-                                          AppStyle.txtManropeSemiBold14)),
+                                          textAlign: TextAlign.left,)),
                                   CustomImageView(
                                       svgPath: ImageConstant
                                           .imgArrowrightBlueGray500,
@@ -524,8 +508,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                   Text("Nous envoyer un commentaire",
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.left,
-                                      style:
-                                      AppStyle.txtManropeSemiBold14Gray900.copyWith(
+                                      style: TextStyle(
                                         color: Colors.green
                                       )),
                                   CustomImageView(
@@ -606,13 +589,9 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                 : "Se déconnecter",
                                             overflow: TextOverflow.ellipsis,
                                             textAlign: TextAlign.left,
-                                            style: supabase.auth.currentUser ==
-                                                    null
-                                                ? TextStyle(
+                                            style:  TextStyle(
                                                     fontSize: getFontSize(16),
-                                                    color: AppColor.primary)
-                                                : AppStyle
-                                                    .txtManropeSemiBold16Brown500),
+                                                    color: AppColor.primary)),
                                       ])))
                         ])),
               ),

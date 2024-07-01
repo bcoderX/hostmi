@@ -59,18 +59,20 @@ class SliderarrowleftItemWidget extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: getPadding(
-                        bottom: 30,
-                      ),
-                      child: Text(
-                        index == 0
-                            ? house.fullAddress!.isEmpty
-                                ? "${house.sector == 0 ? "" : "Secteur ${house.sector},"} ${house.city}, ${house.country!.fr}"
-                                : house.fullAddress!
-                            : "${house.imagesUrl![index]["description"]}",
-                        overflow: TextOverflow.ellipsis,
-                        // textAlign: TextAlign.left,
-                        style: AppStyle.txtManropeMedium14,
+                      padding: getPadding(bottom: 30),
+                      child: Container(
+                        color: Colors.black.withOpacity(.3),
+                        padding: getPadding(all: 10),
+                        child: Text(
+                          index == 0
+                              ? house.fullAddress!.isEmpty
+                                  ? "${house.sector == 0 ? "" : "Secteur ${house.sector},"} ${house.city}, ${house.country!.fr}"
+                                  : house.fullAddress!
+                              : "${house.imagesUrl![index]["description"]}",
+                          overflow: TextOverflow.ellipsis,
+                          // textAlign: TextAlign.left,
+                          style: AppStyle.txtManropeMedium14,
+                        ),
                       ),
                     ),
                   ],

@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hostmi/api/models/currency.dart';
 import 'package:hostmi/api/models/house_category.dart';
 import 'package:hostmi/api/models/house_type.dart';
@@ -520,6 +521,7 @@ class _AddNewPropertyBasicDetailsState
                                   },
                                 ),
                               );
+                              context.push('/add-house-address');
                             }
                           },
                         ),
@@ -546,7 +548,8 @@ class _AddNewPropertyBasicDetailsState
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.grey,
           textColor: Colors.white,
-          fontSize: 16.0);
+          fontSize: 16.0,
+      );
       final imageTemp = await compressFile(File(image.path));
       setState(() {
         mainImage = imageTemp;

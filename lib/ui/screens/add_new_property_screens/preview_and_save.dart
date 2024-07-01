@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hostmi/api/hostmi_local_database/hostmi_local_database.dart';
 import 'package:hostmi/api/models/agency_model.dart';
+import 'package:hostmi/api/models/house_model.dart';
 import 'package:hostmi/api/providers/hostmi_provider.dart';
 import 'package:hostmi/api/supabase/rest/houses/add_picture.dart';
 import 'package:hostmi/api/supabase/rest/houses/insert_house.dart';
@@ -252,8 +253,10 @@ class _PreviewAndSaveState extends State<PreviewAndSave> {
       _stateText = "Nous enregistrons \nvotre propriété...";
       _isSaving = true;
     });
-    String? result =
-        await insertHouse(context.read<HostmiProvider>().houseForm);
+    String searchTerms = generateSearchTerms();
+
+    String? result = await insertHouse(context.read<HostmiProvider>().houseForm,
+        searchTerms: searchTerms);
     if (result == null) {
       setState(() {
         _isSaving = false;
@@ -324,5 +327,77 @@ class _PreviewAndSaveState extends State<PreviewAndSave> {
     required String content,
   }) {
     showErrorDialog(title: title, content: content, context: context);
+  }
+
+  String generateSearchTerms() {
+    String terms = "";
+    HouseModel houseForm = context.read<HostmiProvider>().houseForm;
+    //Add houses types
+    terms = "$terms ${houseForm.houseType!.fr}, ";
+
+    //Add houses categories
+    terms = "$terms ${houseForm.houseCategory!.fr}, ";
+
+    //Add houses gender
+    terms = "$terms ${houseForm.gender!.fr}, ";
+
+    //Add houses countries
+    terms = "$terms ${houseForm.country!.fr}, ";
+
+    //Add houses city
+    terms = "$terms ${houseForm.city}, ";
+
+    //Add houses sector
+    terms = "Secteur $terms ${houseForm.sector}, ";
+
+    //Add houses quarter
+    terms = "$terms ${houseForm.quarter}, ";
+
+    //Add houses full address
+    terms = "$terms ${houseForm.fullAddress}, ";
+
+    //Add houses price
+    terms = "$terms ${houseForm.price!.toInt()}, ";
+
+    //Add houses currencies
+    terms =
+        "$terms ${houseForm.currency!.en}, ${houseForm.currency!.currency}, ${(houseForm.currency!.currency == 'XOF' || houseForm.currency!.currency == 'XAF') ? 'FCFA, F CFA, ' : ''}";
+
+    //Add houses price type
+    terms =
+        "$terms ${houseForm.priceType!.fr}, par ${houseForm.priceType!.fr!.replaceAll("/", "")}, ";
+
+    //Add houses city
+    terms =
+        "$terms ${houseForm.bathrooms! <= 1 ? 'douche' : '${houseForm.bathrooms} douches'}, ";
+
+    //Add houses full address
+    terms = "$terms ${houseForm.fullAddress}, ";
+
+    //Add houses beds
+    terms =
+        "$terms ${houseForm.beds! <= 0 ? 'Entré couché' : houseForm.beds! == 1 ? 'chambre salon' : '${houseForm.beds!} chambres salon'}, ";
+
+    //Add houses descriptions
+    terms = "$terms ${houseForm.description}, ";
+
+    //Add houses conditions
+    terms = "$terms ${houseForm.conditions}, ";
+
+    //Add houses expected tenants work
+    terms = "$terms ${houseForm.occupation!.fr}, ";
+
+    //Add houses expected tenants status
+    terms = "$terms ${houseForm.maritalStatus!.fr}, ";
+
+    //Add houses images descriptions
+    terms = "$terms ${houseForm.imagesDescriptions!.join(', ')}, maison, ";
+
+    //Add houses features
+    for (var feature in houseForm.featuresName!) {
+      terms = "$terms $feature, ";
+    }
+
+    return terms;
   }
 }

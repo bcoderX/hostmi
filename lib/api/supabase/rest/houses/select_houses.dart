@@ -4,7 +4,7 @@ import 'package:hostmi/api/supabase/supabase_client.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<PostgrestResponse<dynamic>?> selectHouses(
-    {required int from, required int to, required List<String> cities}) async {
+    {required int from, required int to, required String cities}) async {
   try {
     PostgrestResponse response = await supabase
         .from("houses")
@@ -16,11 +16,16 @@ Future<PostgrestResponse<dynamic>?> selectHouses(
         .is_("is_available", true)
         .is_("is_deleted", false)
         .is_("is_hidden", false)
-        .ilikeAnyOf("city", cities)
+        .textSearch(
+          "search_terms",
+          cities,
+          config: 'english',
+          type: TextSearchType.websearch,
+        )
         .is_("is_under_verification", false)
         .is_("is_accepted", true)
         .order("available_on", ascending: false);
-    // print(list);
+    print(response.data);
     return response;
   } catch (e) {
     debugPrint(e.toString());

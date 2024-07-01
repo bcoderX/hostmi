@@ -31,11 +31,14 @@ Future<DatabaseDynamicResponse> getAllNearbyHouses(
     LatLng coords, double distance) async {
   try {
     final list = await supabase
-        .rpc("nearby_houses", params: {
-          "lat": coords.latitude,
-          "long": coords.longitude,
-          "distance": distance
-        })
+        .rpc(
+          "nearby_houses",
+          params: {
+            "lat": coords.latitude,
+            "long": coords.longitude,
+            "distance": distance,
+          },
+        )
         .is_("is_deleted", false)
         .is_("is_hidden", false)
         .is_("is_under_verification", false)

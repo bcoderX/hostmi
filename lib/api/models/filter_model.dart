@@ -39,7 +39,7 @@ class FilterModel {
   int bathrooms;
   List<int> sectors;
   List<String> quarters;
-  List<String> cities;
+  String cities;
   Country country;
   double? longitude;
   double? latitude;

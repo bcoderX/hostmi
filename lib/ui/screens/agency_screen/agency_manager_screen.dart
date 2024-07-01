@@ -438,11 +438,12 @@ class _AgencyManagerScreenState extends State<AgencyManagerScreen> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (BuildContext context) {
-              //return const AddHouse1();
-              return const AddNewPropertyBasicDetails();
-            }));
+            context.push('/add-basic-house-details');
+            // Navigator.of(context)
+            //     .push(MaterialPageRoute(builder: (BuildContext context) {
+            //   //return const AddHouse1();
+            //   return const AddNewPropertyBasicDetails();
+            // }));
           },
           child: const Icon(Icons.add_home_outlined),
         ),

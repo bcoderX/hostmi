@@ -4,7 +4,8 @@ import 'package:hostmi/api/models/agency_model.dart';
 import 'package:hostmi/api/models/house_model.dart';
 import 'package:hostmi/api/supabase/supabase_client.dart';
 
-Future<String?> insertHouse(HouseModel house) async {
+Future<String?> insertHouse(HouseModel house,
+    {required String searchTerms}) async {
   AgencyModel? agencyModel = getData(keyAgencyDetails);
   if (agencyModel != null) {
     try {
@@ -32,6 +33,7 @@ Future<String?> insertHouse(HouseModel house) async {
         "location": "POINT(${house.longitude} ${house.latitude})",
         "house_category": house.houseCategory!.id,
         "currency": house.currency!.id,
+        'search_terms': searchTerms
       }).select<List<Map<String, dynamic>>>();
       //debugPrint(list.toString());
       if (list.isNotEmpty) {
